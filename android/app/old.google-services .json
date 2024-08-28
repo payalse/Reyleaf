@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "124903365878",
+    "project_id": "reyleaf-5c95f",
+    "storage_bucket": "reyleaf-5c95f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:124903365878:android:bb8fc225c3f8d58398e0d7",
+        "android_client_info": {
+          "package_name": "com.reyleaf.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "124903365878-h8gaq03vtq2jvs23jrnnha6ersjal100.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.reyleaf.app",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "124903365878-72v50rr9lj1d238ra05v9nh0ocav75fb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQun7LzEuzd-buLmJoXgprnEFcvbGyAcY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "124903365878-72v50rr9lj1d238ra05v9nh0ocav75fb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
