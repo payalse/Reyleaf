@@ -80,7 +80,7 @@ const OnBoarding = () => {
               alignSelf: 'flex-end',
               justifyContent: 'center',
               alignItems: 'center',
-
+              marginTop: 30,
               opacity: activeIndex === 2 ? 0 : 1,
             }}>
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>

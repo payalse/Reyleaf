@@ -51,9 +51,7 @@ const WelcomeScreen = () => {
 
         <View style={{width: '90%', paddingVertical: 20, gap: 20}}>
           <GoogleButton />
-          {Platform.OS === 'ios' && (
-            <MyButton text="Continue with Apple" leftComp={() => <Apple />} />
-          )}
+         
           {/* <MyButton
             text="Continue with Facebook"
             leftComp={() => <Facebook />}
