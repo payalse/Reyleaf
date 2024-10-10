@@ -73,7 +73,7 @@ const OrderReviewScreen = () => {
           Enter your Review
         </MyText>
         <MyText style={{ marginTop: 5 }} color={COLORS.grey}>
-          Lorem ipsom is simple dummy Text that can
+        Share your thoughts about our service or product experience.
         </MyText>
 
         <View

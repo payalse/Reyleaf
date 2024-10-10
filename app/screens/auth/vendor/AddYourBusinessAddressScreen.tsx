@@ -117,7 +117,7 @@ const AddYourBusinessAddressScreen = () => {
                 Add your Business Address
               </MyText>
               <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
-                Lorem ipsom is simple dummy Text that can
+              Enter your business address to help customers find you easily.
               </MyText>
             </View>
             <View style={{marginTop: 20}}>

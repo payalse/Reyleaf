@@ -19,8 +19,7 @@ const OrderSuccessScreen = () => {
             Your Order Has been Placed Successfully
           </MyText>
           <MyText style={{marginHorizontal: 20}} center color={COLORS.grey}>
-            Lorem ipsom is simple dummy Text that simply dummy text of the that
-            on all is simply dummy text of the printing
+          Your order has been confirmed. You will receive a confirmation email shortly with the details of your purchase.
           </MyText>
         </View>
       </View>

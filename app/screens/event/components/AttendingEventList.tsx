@@ -10,15 +10,6 @@ import {useSelector} from 'react-redux';
 import FullScreenLoader from '../../../components/FullScreenLoader';
 import moment from 'moment';
 
-const data = [
-  {
-    id: '1',
-    title: 'Event Title',
-    date: '15 Dec,2023',
-    category: 'Event Category',
-    des: 'Lorem Ipsum is simply dummy text of the printing and type setting industry...',
-  },
-];
 
 const AttendingEventList = ({isFocused}: {isFocused: boolean}) => {
   const navigation =

@@ -136,40 +136,6 @@ const MyResourcesList = ({isFocused}: {isFocused: boolean}) => {
 
 const LISTS = ['All Resources', 'My Resources'];
 
-const data = [
-  {
-    id: '1',
-    title: 'Resource Title',
-    des: 'Lorem Ipsum is simply dummy text of the printing and type setting industry...',
-  },
-  {
-    id: '2',
-    title: 'Resource Title',
-    des: 'Lorem Ipsum is simply dummy text of the printing and type setting industry...',
-  },
-  {
-    id: '3',
-    title: 'Resource Title',
-    des: 'Lorem Ipsum is simply dummy text of the printing and type setting industry...',
-  },
-  {
-    id: '4',
-    title: 'Resource Title',
-    des: 'Lorem Ipsum is simply dummy text of the printing and type setting industry...',
-  },
-
-  {
-    id: '5',
-    title: 'Resource Title',
-    des: 'Lorem Ipsum is simply dummy text of the printing and type setting industry...',
-  },
-  {
-    id: '6',
-    title: 'Resource Title',
-    des: 'Lorem Ipsum is simply dummy text of the printing and type setting industry...',
-  },
-];
-
 const ResourceAndArticleTab = ({isFocused}: {isFocused: boolean}) => {
   const [activeList, setActiveList] = useState(LISTS[0]);
   // const isFocused = useIsFocused();

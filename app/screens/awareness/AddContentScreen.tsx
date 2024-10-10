@@ -2,7 +2,7 @@ import {View} from 'react-native';
 import React, {useState} from 'react';
 import MainLayout from '../../components/layout/MainLayout';
 import SecondaryHeader from '../../components/header/SecondaryHeader';
-import {useNavigation} from '@react-navigation/native';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import PrimaryBtn from '../../components/buttons/PrimaryBtn';
 import InputWrapper from '../../components/inputs/InputWrapper';
 import TextArea from '../../components/inputs/TextArea';
@@ -12,6 +12,11 @@ import * as yup from 'yup';
 import {ShowAlert} from '../../utils/alert';
 import InputErrorMsg from '../../components/inputs/InputErrorMsg';
 import {ALERT_TYPE} from 'react-native-alert-notification';
+import { api_forumContent } from '../../api/forum';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
+import { AwarenessStackParams } from '../../naviagtion/types';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 type Values = {
   content: string;
@@ -21,22 +26,29 @@ const validationSchema = yup.object().shape({
 });
 
 const AddContentScreen = () => {
+  const params =
+  useRoute<RouteProp<AwarenessStackParams, 'AddContent'>>().params;
+  const navigation =
+    useNavigation<NativeStackNavigationProp<AwarenessStackParams>>();
   useHideBottomBar({unSubDisable: false});
   const [loading, setLoading] = useState(false);
-
-  const navigation = useNavigation();
+  const {token} = useSelector((s: RootState) => s.auth);
 
   const onSubmit = async (values: Values) => {
-    console.log(values);
     try {
+      const data = {
+        content: values.content
+      }
       setLoading(true);
-      // const res = await api_
+      const res: any = await api_forumContent(token!, data, params.id);
     } catch (error: any) {
       ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
     } finally {
       setTimeout(() => {
         setLoading(false);
-        navigation.goBack();
+        navigation.navigate('JoinedForumDetail', {
+          id: params.id,
+        })
       }, 1000);
     }
   };

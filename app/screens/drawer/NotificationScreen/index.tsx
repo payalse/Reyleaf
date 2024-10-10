@@ -95,8 +95,7 @@ const NotificationScreen = () => {
       >
         <MyText bold={FONT_WEIGHT.bold}>All Notification</MyText>
         <MyText color={COLORS.grey}>
-          Lorem Ipsum is simply dummy text of the printing and type setting
-          industry Text that can
+        Manage your notifications! Choose how you'd like to stay updated—enable or disable alerts for updates, promotions, and more.
         </MyText>
       </View>
       <View style={{ gap: 20, marginVertical: 20 }}>
@@ -110,7 +109,7 @@ const NotificationScreen = () => {
           <View style={{ gap: 5 }}>
             <MyText bold={FONT_WEIGHT.semibold}>Order Notification</MyText>
             <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
-              Lorem Ipsum is simply dummy text of the
+            Adjust your settings to manage order notification preferences.
             </MyText>
           </View>
           <SwitchComp
@@ -131,7 +130,7 @@ const NotificationScreen = () => {
           <View style={{ gap: 5 }}>
             <MyText bold={FONT_WEIGHT.semibold}>Event Notification</MyText>
             <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
-              Lorem Ipsum is simply dummy text of the
+            Customize your preferences to receive event notifications easily.
             </MyText>
           </View>
           <SwitchComp
@@ -152,7 +151,7 @@ const NotificationScreen = () => {
           <View style={{ gap: 5 }}>
             <MyText bold={FONT_WEIGHT.semibold}>Message Notification</MyText>
             <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
-              Lorem Ipsum is simply dummy text of the
+            Update your preferences to manage your message notifications.
             </MyText>
           </View>
           <SwitchComp

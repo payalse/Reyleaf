@@ -18,23 +18,11 @@ const AllEventList = ({isFocused}: {isFocused: boolean}) => {
   const {token} = useSelector((s: RootState) => s.auth);
   const [events, setEvents] = useState<any>([]);
   const [loading, setLoading] = useState(false);
-  // const fetchAllEvents = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const res: any = await api_getEvents(token!);
-  //     console.log(res);
-  //     setEvents(res?.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-  const getEventByDate = async (date: string) => {
+  const fetchAllEvents = async () => {
     try {
       setLoading(true);
-      const res: any = await api_getEventsByDate(token!, date);
-      console.log(res, '2024-05-15');
+      const res: any = await api_getEvents(token!);
+      console.log(res);
       setEvents(res?.data);
     } catch (error) {
       console.log(error);
@@ -42,10 +30,26 @@ const AllEventList = ({isFocused}: {isFocused: boolean}) => {
       setLoading(false);
     }
   };
+  const getEventByDate = async (date: string) => {
+    try {
+      setEvents([]);
+      setLoading(true);
+      const res: any = await api_getEventsByDate(token!, date);
+      setEvents(res?.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    // fetchAllEvents();
+    fetchAllEvents();
+  }, [isFocused]);
+
+  useEffect(() => {
     getEventByDate(activeEventDate);
-  }, [isFocused, activeEventDate]);
+  }, [activeEventDate]);
 
   return (
     <View style={{marginTop: 20}}>

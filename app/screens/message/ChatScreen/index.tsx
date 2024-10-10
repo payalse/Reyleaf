@@ -69,7 +69,7 @@ export const ChatMessageDisplay = ({
           borderRadius: 20,
         }}>
         <MyText color={COLORS.grey} size={FONT_SIZE.xs}>
-          {time}
+        {moment(time).fromNow()}
         </MyText>
       </View>
     );
@@ -90,7 +90,7 @@ export const ChatMessageDisplay = ({
           </MyText>
         </GradientBox>
         <MyText color={COLORS.grey} size={FONT_SIZE.xs * 0.8}>
-          {time.substring(time.length - 3, 0)}
+        {moment(time).fromNow()}
         </MyText>
       </View>
     );
@@ -99,7 +99,7 @@ export const ChatMessageDisplay = ({
       <View style={{marginVertical: 10, alignItems: 'flex-start', gap: 10}}>
         <View
           style={{
-            width: wp(75),
+            maxWidth: wp(75),
             padding: 15,
             borderRadius: 15,
             borderBottomLeftRadius: 0,
@@ -110,7 +110,7 @@ export const ChatMessageDisplay = ({
           </MyText>
         </View>
         <MyText color={COLORS.grey} size={FONT_SIZE.xs}>
-          {time}
+        {moment(time).fromNow()}
         </MyText>
       </View>
     );

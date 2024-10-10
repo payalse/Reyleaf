@@ -23,6 +23,7 @@ import {ShowAlert} from '../../../utils/alert';
 import {ALERT_TYPE} from 'react-native-alert-notification';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../redux/store';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 type Values = {
   description: string;
@@ -100,7 +101,7 @@ const CreateFeedScreen = () => {
             />
           }>
           <View style={{flex: 1}}>
-            <View
+            <TouchableOpacity  onPress={openPicker}
               style={{
                 backgroundColor: COLORS.white,
                 width: 100,
@@ -137,7 +138,7 @@ const CreateFeedScreen = () => {
                   color={COLORS.white}
                 />
               </View>
-            </View>
+            </TouchableOpacity>
             <MyText color={COLORS.grey} size={FONT_SIZE.sm} center>
               Upload your Images
             </MyText>

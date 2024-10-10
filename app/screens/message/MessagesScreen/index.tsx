@@ -142,6 +142,7 @@ const MessagesScreen = () => {
     try {
       setLoading(true);
       const res: any = await api_getAllRoom(token!);
+      console.log(res, 'allrooms');
       setData(res?.data);
       setFilteredData(res?.data);
     } catch (error) {
@@ -155,7 +156,7 @@ const MessagesScreen = () => {
     if (text) {
       setSearchString(text);
       const newData = filteredData.filter((item: any) =>
-        item?.sender?.fullname.toLowerCase().includes(text.toLowerCase()),
+        item?.sender?.fullname.toLowerCase().includes(text.toLowerCase()) || item?.receiver?.fullname.toLowerCase().includes(text.toLowerCase()),
       );
       setFilteredData(newData);
     } else {
@@ -254,7 +255,7 @@ const MessagesScreen = () => {
         contentContainerStyle={{ marginHorizontal: 20, marginVertical: 20 }}
         renderItem={({ item }) => {
           let otherUserObj =
-            item?.receiver?._id !== user?._id ? item?.reciver : item?.sender;
+            item?.receiver?._id !== user?._id ? item?.receiver : item?.sender;
 
           return (
             <Item

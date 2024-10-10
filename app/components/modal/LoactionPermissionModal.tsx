@@ -39,7 +39,7 @@ const LoactionPermissionModal = ({visible, onPress,  value, onChange}: Props) =>
             Search Feed by Location
           </MyText>
           <MyText center color={COLORS.grey}>
-            lorem ipsom is simple dummy text that can help on that people can to
+          Discover unique activity nearby with our feed. Find events, activity, and more around your location.
           </MyText>
           <View
             style={{

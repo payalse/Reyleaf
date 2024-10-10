@@ -40,6 +40,9 @@ type Props = {
   likeCount: number;
   isLiked: boolean;
   comments: CommentType[];
+  showThreeDots: Boolean;
+  onReporting: (id: any) => void;
+  userId:any;
 };
 const FeedItem = ({
   id,
@@ -51,6 +54,9 @@ const FeedItem = ({
   images,
   isLiked,
   comments,
+  showThreeDots,
+  userId,
+  onReporting
 }: Props) => {
   const { token } = useSelector((s: RootState) => s.auth);
   const navigation =
@@ -79,25 +85,11 @@ const FeedItem = ({
     }
   };
 
-  const reportPost = async () => {
-    try {
-      setLoading(true);
-      const data = {
-        feedId: id,
-      };
-      const res = await api_reportPost(token!, data);
-      console.log(res);
-      if (!liked) {
-        setLocalLikeCount(localLikeCount + 1);
-      } else {
-        setLocalLikeCount(localLikeCount - 1);
-      }
-      setLiked(!liked);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
+  const handleChatPress = () => {
+    navigation.navigate('ChatStack', {
+      screen: 'Chat',
+      params: { otherUserId: userId, fullname: name },
+    });
   };
 
   return (
@@ -174,7 +166,10 @@ const FeedItem = ({
           }}
         >
           <View style={{ flexDirection: 'row', gap: 10 }}>
-            <View style={{ flexDirection: 'row', gap: 5 }}>
+            <TouchableOpacity
+              style={{ flexDirection: 'row', gap: 5 }}
+              onPress={handleLikeDisLike}
+            >
               {loading ? (
                 <ActivityIndicator />
               ) : (
@@ -187,68 +182,76 @@ const FeedItem = ({
                 />
               )}
               <MyText size={FONT_SIZE.sm}>{localLikeCount} Likes</MyText>
-            </View>
-            <View style={{ flexDirection: 'row', gap: 5 }}>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{ flexDirection: 'row', gap: 5 }}
+              onPress={() =>
+                navigation.navigate('CommentScreen', {
+                  feedId: id,
+                  comments,
+                })
+              }
+            >
               <MaterialCommunityIcons
-                onPress={() =>
-                  navigation.navigate('CommentScreen', {
-                    feedId: id,
-                    comments,
-                  })
-                }
                 name="comment-processing"
                 size={18}
                 style={{ transform: [{ rotateY: '180deg' }] }}
                 color={COLORS.greenDark}
               />
               <MyText size={FONT_SIZE.sm}>{comments.length} Comments</MyText>
-            </View>
+            </TouchableOpacity>
           </View>
 
-          <Tooltip
-            backgroundColor={COLORS.transparent}
-            arrowStyle={{ backgroundColor: 'red', display: 'none', opacity: 0 }}
-            placement="bottom"
-            isVisible={isOpen}
-            contentStyle={{
-              borderRadius: 10,
-              borderTopRightRadius: 0,
-              height: hp(15),
-              shadowColor: '#000',
-              width: wp(28),
-              transform: [{ translateX: wp(-5) }],
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
-              shadowOpacity: 0.25,
-              shadowRadius: 3.84,
-              elevation: 5,
-              position: 'absolute',
-              zIndex: 1,
-              gap: 5,
-            }}
-            content={
-              <View style={{ justifyContent: 'space-evenly', flex: 1 }}>
-                {/* <MyText size={FONT_SIZE.base}>Share</MyText> */}
-                <MyText size={FONT_SIZE.base}>Message</MyText>
-                <MyText
-                  size={FONT_SIZE.base}
-                  color={COLORS.red}
-                  onPress={reportPost}
-                >
-                  Report
-                </MyText>
-              </View>
-            }
-            onClose={() => setIsOpen(false)}
-          >
-            <TouchableOpacity onPress={() => setIsOpen(true)}>
-              <Image
-                source={require('../../../../assets/img/icons/three-dots.png')}
-              />
-            </TouchableOpacity>
-          </Tooltip>
+          {showThreeDots && (
+            <Tooltip
+              backgroundColor={COLORS.transparent}
+              arrowStyle={{
+                backgroundColor: 'red',
+                display: 'none',
+                opacity: 0,
+              }}
+              placement="bottom"
+              isVisible={isOpen}
+              contentStyle={{
+                borderRadius: 10,
+                borderTopRightRadius: 0,
+                height: hp(15),
+                shadowColor: '#000',
+                width: wp(28),
+                transform: [{ translateX: wp(-5) }],
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 3.84,
+                elevation: 5,
+                position: 'absolute',
+                zIndex: 1,
+                gap: 5,
+              }}
+              content={
+                <View style={{ justifyContent: 'space-evenly', flex: 1 }}>
+                  {/* <MyText size={FONT_SIZE.base}>Share</MyText> */}
+                  <MyText size={FONT_SIZE.base} onPress={handleChatPress}>Message</MyText>
+                  <MyText
+                    size={FONT_SIZE.base}
+                    color={COLORS.red}
+                    onPress={() => onReporting(id)}
+                  >
+                    Report
+                  </MyText>
+                </View>
+              }
+              onClose={() => setIsOpen(false)}
+            >
+              <TouchableOpacity onPress={() => setIsOpen(true)}>
+                <Image
+                  source={require('../../../../assets/img/icons/three-dots.png')}
+                />
+              </TouchableOpacity>
+            </Tooltip>
+          )}
         </View>
       </View>
     </View>

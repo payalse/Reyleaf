@@ -13,6 +13,7 @@ export const api_getHomeProducts = (
   }
 
   return new Promise((resolve, reject) => {
+    console.log(token);
     fetch(uri, {
       method: 'GET',
       headers: {
@@ -22,7 +23,7 @@ export const api_getHomeProducts = (
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
+        console.log(data, 'hzghdsjdh');
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }

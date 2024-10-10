@@ -29,6 +29,7 @@ const NotificationItem = ({
   from,
   payload,
 }: NotiItemType) => {
+  console.log(payload);
   return (
     <View
       style={{
@@ -46,8 +47,7 @@ const NotificationItem = ({
           width: wp(15),
           height: wp(15),
           borderRadius: wp(15) / 2,
-          backgroundColor:
-            category === 'Product' ? 'rgba(6, 95, 70, 0.2)' : COLORS.grey,
+          backgroundColor:'rgba(6, 95, 70, 0.2)',
           justifyContent: 'center',
           alignItems: 'center',
         }}
@@ -55,6 +55,14 @@ const NotificationItem = ({
         {category === 'Product' && (
           <FontAwesome5
             name="shopping-bag"
+            color={COLORS.greenDark}
+            size={FONT_SIZE.xl}
+          />
+        )}
+
+        {category === 'Friend' && (
+          <FontAwesome5
+            name="user-friends"
             color={COLORS.greenDark}
             size={FONT_SIZE.xl}
           />
@@ -73,9 +81,6 @@ const NotificationItem = ({
               {payload?.notification}
             </MyText>
           </View>
-          <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
-            New update regarding your order
-          </MyText>
         </View>
       )}
 

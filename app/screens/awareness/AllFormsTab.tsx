@@ -22,6 +22,7 @@ type ForumType = {
   status: string;
   title: string;
   updated_at: string;
+  picture: string;
   _id: string;
 };
 // ALL FORUMS
@@ -31,7 +32,6 @@ const AllFoumsList = ({isFocused}: {isFocused: boolean}) => {
   const [data, setData] = useState<ForumType[]>([]);
   const naviagtion =
     useNavigation<NativeStackNavigationProp<AwarenessStackParams>>();
-
   const requestApi = async () => {
     try {
       setLoading(true);
@@ -59,6 +59,7 @@ const AllFoumsList = ({isFocused}: {isFocused: boolean}) => {
               des={item.description}
               id={item._id}
               title={item.title}
+              picture={item.picture}
               onPress={() =>
                 naviagtion.navigate('ForumDetail', {
                   id: item._id,
@@ -109,6 +110,7 @@ const JoinedFoumsList = ({isFocused}: {isFocused: boolean}) => {
               des={item.description}
               id={item._id}
               title={item.title}
+              picture={item.picture}
               onPress={() =>
                 naviagtion.navigate('JoinedForumDetail', {
                   id: item._id,
@@ -125,46 +127,6 @@ const JoinedFoumsList = ({isFocused}: {isFocused: boolean}) => {
 };
 
 const LISTS = ['All Forums', 'Joined Forums'];
-
-const data = [
-  {
-    id: '1',
-    title: 'Forum Title',
-    noOfMembers: 181,
-    des: 'Lorem Ipsum is simply dummy text of the printing and type setting industry...',
-  },
-  {
-    id: '2',
-    title: 'Forum Title',
-    noOfMembers: 181,
-    des: 'Lorem Ipsum is simply dummy text of the printing and type setting industry...',
-  },
-  {
-    id: '3',
-    title: 'Forum Title',
-    noOfMembers: 181,
-    des: 'Lorem Ipsum is simply dummy text of the printing and type setting industry...',
-  },
-  {
-    id: '4',
-    title: 'Forum Title',
-    noOfMembers: 181,
-    des: 'Lorem Ipsum is simply dummy text of the printing and type setting industry...',
-  },
-
-  {
-    id: '5',
-    title: 'Forum Title',
-    noOfMembers: 181,
-    des: 'Lorem Ipsum is simply dummy text of the printing and type setting industry...',
-  },
-  {
-    id: '6',
-    title: 'Forum Title',
-    noOfMembers: 181,
-    des: 'Lorem Ipsum is simply dummy text of the printing and type setting industry...',
-  },
-];
 
 const AllFormsTab = ({isFocused}: {isFocused: boolean}) => {
   const [activeList, setActiveList] = useState(LISTS[0]);

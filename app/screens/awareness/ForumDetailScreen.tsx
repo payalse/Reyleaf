@@ -16,9 +16,7 @@ import FullScreenLoader from '../../components/FullScreenLoader';
 import {api_joinLeaveForm} from '../../api/awareness';
 import MyButton from '../../components/buttons/MyButton';
 import {useAppAlert} from '../../context/AppAlertContext';
-
-const IMAGE_URI =
-  'https://media.istockphoto.com/id/1421993924/photo/creative-writing-at-home-by-female-hands-enjoying-a-calm-peaceful-day-off-indoors-woman.webp?b=1&s=170667a&w=0&k=20&c=GstM6PeYECR0ftSIk-60TIO2b6JUhkMG3tlUhFDpR8k=';
+import { BUILD_IMAGE_URL } from '../../api';
 
 const ForumDetailScreen = () => {
   useHideBottomBar({});
@@ -94,7 +92,7 @@ const ForumDetailScreen = () => {
               right: 0,
               resizeMode: 'cover',
             }}
-            source={{uri: IMAGE_URI}}
+            source={{uri: BUILD_IMAGE_URL(data?.picture)}}
           />
         </View>
         <View

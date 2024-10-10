@@ -136,8 +136,7 @@ const FeedbackScreen = () => {
           How was your Experience
         </MyText>
         <MyText center color={COLORS.grey}>
-          Lorem Ipsum is simply dummy text of the printing and type setting
-          industry Text that can
+        Your feedback helps us improve! Share your thoughts and let us know how we can make your experience better. Thank you!
         </MyText>
       </View>
 

@@ -82,7 +82,7 @@ const AddYourAddressScreen = () => {
       )) as any;
       console.log(res, 'api_addUpdateAddress');
       dispatch(updateUser(res));
-      navigation.navigate('ConnectWithCalendar');
+      navigation.navigate('AccountCreatedSuccess');
     } catch (error: any) {
       ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
     } finally {

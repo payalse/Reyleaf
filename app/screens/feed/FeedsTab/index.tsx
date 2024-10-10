@@ -6,7 +6,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { MyText } from '../../../components/MyText';
 import FullScreenLoader from '../../../components/FullScreenLoader';
-import { api_getFeeds, api_getFeedsByZipCode } from '../../../api/feeds';
+import { api_getFeeds, api_getFeedsByZipCode, api_reportPost } from '../../../api/feeds';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../redux/store';
 import { FeedType } from '../../../types';
@@ -25,7 +25,7 @@ const FeedsTab = ({
   modalView,
   zipCode,
 }: Props) => {
-  const { token } = useSelector((s: RootState) => s.auth);
+  const { token, user } = useSelector((s: RootState) => s.auth);
   const { feed } = useSelector((s: RootState) => s.feed);
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
@@ -36,13 +36,28 @@ const FeedsTab = ({
       const res = (await api_getFeeds(token!, description)) as {
         data: FeedType[];
       };
-      dispatch(addFeed(res?.data))
+      dispatch(addFeed(res?.data));
     } catch (error) {
       console.log(error);
     } finally {
       setLoading(false);
     }
-  }
+  };
+
+  const reportPost = async (id: any) => {
+    try {
+      setLoading(true);
+      const data = {
+        feedId: id,
+      };
+      const res = await api_reportPost(token!, data);
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      requestApi()
+    }
+  };
 
   return (
     <>
@@ -94,6 +109,7 @@ const FeedsTab = ({
         renderItem={({ item }) => {
           return (
             <FeedItem
+              showThreeDots={item?.userId?._id === user?._id ? false : true}
               id={item._id}
               isLiked={item.isLiked}
               name={item?.userId?.fullname || ''}
@@ -103,6 +119,8 @@ const FeedsTab = ({
               des={item?.description}
               likeCount={item?.likes.length || 0}
               comments={item.comments || []}
+              onReporting={reportPost}
+              userId={item.userId?._id}
             />
           );
         }}

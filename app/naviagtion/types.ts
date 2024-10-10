@@ -122,7 +122,7 @@ export type AwarenessStackParams = {
   AddResource: undefined;
   ForumDetail: {id: string};
   JoinedForumDetail: {id: string};
-  AddContent: undefined;
+  AddContent: {id: string};
   CommentScreen: undefined;
   LikeScreen: undefined;
   AddEvent: undefined;

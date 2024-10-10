@@ -110,6 +110,7 @@ const AddEventScreen = () => {
 
     try {
       setLoading(true);
+      console.log(values.title,  values.description, selectCategory?._id,values.location, date);
       const res = await api_addEvent(token!, formData);
       navigation.goBack();
       showModal({ text: 'Event Created!' });
@@ -241,8 +242,9 @@ const AddEventScreen = () => {
                 onPress={() => {
                   SheetManager.show(SHEETS.CategorySelectSheet, {
                     // @ts-ignore
-                    payload: {
+                    payload: { 
                       onSelect: (data: any) => {
+                        console.log(data);
                         setSelectCategory(data);
                       },
                     },

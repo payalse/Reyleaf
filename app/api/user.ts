@@ -140,3 +140,24 @@ export const api_addReviewByUser = (token: string, body: any, orderId: any) => {
       });
   });
 };
+
+export const api_deleteUserProfile = (token: string) => {
+  const uri = `${BASE_URL}/api/v1/user/delete-profile`;
+  return new Promise((resolve, reject) => {
+    fetch(uri, {
+      method: 'POST',
+      headers: {
+        authorization: token,
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        resolve(data);
+      })
+      .catch(err => {
+        console.log(err, 'hhhhhhhh');
+        reject(err);
+      });
+  });
+};

@@ -13,15 +13,13 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useHideBottomBar} from '../../hook/useHideBottomBar';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AwarenessStackParams} from '../../naviagtion/types';
-import {api_getForumDetails} from '../../api/forum';
+import {api_getForumContents, api_getForumDetails} from '../../api/forum';
 import {useAppAlert} from '../../context/AppAlertContext';
 import {RootState} from '../../redux/store';
 import {useSelector} from 'react-redux';
 import FullScreenLoader from '../../components/FullScreenLoader';
 import {api_joinLeaveForm} from '../../api/awareness';
-
-const IMAGE_URI =
-  'https://media.istockphoto.com/id/1421993924/photo/creative-writing-at-home-by-female-hands-enjoying-a-calm-peaceful-day-off-indoors-woman.webp?b=1&s=170667a&w=0&k=20&c=GstM6PeYECR0ftSIk-60TIO2b6JUhkMG3tlUhFDpR8k=';
+import { BUILD_IMAGE_URL } from '../../api';
 
 const JoinedForumDetailScreen = () => {
   useHideBottomBar({});
@@ -32,14 +30,28 @@ const JoinedForumDetailScreen = () => {
     useRoute<RouteProp<AwarenessStackParams, 'JoinedForumDetail'>>().params;
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<any>({});
+  const [forumContent, setForumContent] = useState<[]>([]);
   const {token} = useSelector((s: RootState) => s.auth);
   const {showModal} = useAppAlert()!;
+  
   const requestApi = async () => {
     try {
       setLoading(true);
       const res: any = await api_getForumDetails(token!, params.id);
       console.log(res);
       setData(res.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      getForumContents();
+      setLoading(false);
+    }
+  };
+
+  const getForumContents = async () => {
+    try {
+      const res: any = await api_getForumContents(token!, params.id);
+      setForumContent(res.data);
     } catch (error) {
       console.log(error);
     } finally {
@@ -79,7 +91,9 @@ const JoinedForumDetailScreen = () => {
           pointerEvents: 'box-none',
         }}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('AddContent')}
+          onPress={() => navigation.navigate('AddContent',  {
+            id: params.id,
+          })}
           style={{
             position: 'absolute',
             bottom: hp(5),
@@ -127,7 +141,7 @@ const JoinedForumDetailScreen = () => {
               right: 0,
               resizeMode: 'cover',
             }}
-            source={{uri: IMAGE_URI}}
+            source={{uri: BUILD_IMAGE_URL(data?.picture)}}
           />
         </View>
         <View
@@ -198,8 +212,8 @@ const JoinedForumDetailScreen = () => {
           </MyText>
         </View>
 
-        {[1, 1, 1, 1, 1, 1, 1].map((_, index) => {
-          return <FeatureContent key={index} />;
+        {forumContent.length > 0 && forumContent.map((data: any, index: any) => {
+          return <FeatureContent key={index} name={data?.userId?.fullname} updated_at={data?.updated_at} status={data?.status} picture={data?.userId?.picture} />
         })}
       </ScrollView>
     </View>

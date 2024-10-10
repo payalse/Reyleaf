@@ -10,13 +10,13 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import PrimaryBtn from '../../../components/buttons/PrimaryBtn';
 import TextArea from '../../../components/inputs/TextArea';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ProfileEditStackParams } from '../../../naviagtion/types';
+import { ProfileEditStackParams, RootStackParams } from '../../../naviagtion/types';
 import MainLayout from '../../../components/layout/MainLayout';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { api_completeProfile } from '../../../api/auth';
-import { updateUser } from '../../../redux/features/auth/authSlice';
+import { logout, updateUser } from '../../../redux/features/auth/authSlice';
 import { ShowAlert } from '../../../utils/alert';
 import { ALERT_TYPE } from 'react-native-alert-notification';
 import DatePicker from 'react-native-date-picker';
@@ -32,6 +32,8 @@ import { SHEETS } from '../../../sheets/sheets';
 import { SheetManager } from 'react-native-actions-sheet';
 import { BUILD_IMAGE_URL } from '../../../api';
 import { CountryType } from '../../../utils/countryTable';
+import { api_deleteUserProfile } from '../../../api/user';
+import { setFirstLaunched } from '../../../redux/features/app/appSlice';
 
 type FormValues = {
   name: string;
@@ -93,12 +95,15 @@ const EditProfileScreen = () => {
   const { mode } = useSelector((s: RootState) => s.app);
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileEditStackParams>>();
+  const navigation1 =
+    useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const dispatch = useDispatch<AppDispatch>();
   const [date, setDate] = useState<Date | null>(null);
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
   const [extraError, setExtraError] = useState({ date: '' });
   const [pronoun, setPronoun] = useState('');
   const [loading, setLoading] = useState(false);
+  const [loading1, setLoading1] = useState(false);
   const [selectedImage, setSelectedImage] = useState<
     SelectedImage | AvatarDefaultType | null
   >(null);
@@ -160,8 +165,11 @@ const EditProfileScreen = () => {
 
   const onVendorSubmit = async (values: VendorFormValues) => {
     if (country === null) {
-      ShowAlert({ textBody: 'Please select a country', type: ALERT_TYPE.SUCCESS });
-      return
+      ShowAlert({
+        textBody: 'Please select a country',
+        type: ALERT_TYPE.SUCCESS,
+      });
+      return;
     }
     const formData = new FormData();
     formData.append('fullname', values.name);
@@ -195,13 +203,35 @@ const EditProfileScreen = () => {
         formData,
         authUser?.token!,
       )) as any;
-      ShowAlert({ textBody: 'profile updated successfully', type: ALERT_TYPE.SUCCESS });
+      ShowAlert({
+        textBody: 'profile updated successfully',
+        type: ALERT_TYPE.SUCCESS,
+      });
       dispatch(updateUser(res.data));
     } catch (error: any) {
       console.log(error);
       ShowAlert({ textBody: error.message, type: ALERT_TYPE.DANGER });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const deleteProfile = async () => {
+    try {
+      setLoading1(true);
+      const res: any = await api_deleteUserProfile(authUser?.token!);
+      dispatch(setFirstLaunched(false));
+      dispatch(logout());
+      navigation1.navigate('Login');
+      ShowAlert({
+        textBody: 'profile deleted successfully',
+        type: ALERT_TYPE.SUCCESS,
+      });
+    } catch (error: any) {
+      ShowAlert({ textBody: error.message, type: ALERT_TYPE.DANGER });
+      console.log(error);
+    } finally {
+      setLoading1(false);
     }
   };
 
@@ -636,6 +666,12 @@ const EditProfileScreen = () => {
           )}
         </Formik>
       )}
+      <PrimaryBtn
+        loading={loading1}
+        onPress={deleteProfile}
+        text="Delete Account"
+        conatinerStyle={{ marginTop: 0, marginBottom: 20 }}
+      />
     </MainLayout>
   );
 };

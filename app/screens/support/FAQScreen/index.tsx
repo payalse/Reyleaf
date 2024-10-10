@@ -124,8 +124,7 @@ const FAQScreen = () => {
             Contact Support
           </MyText>
           <MyText style={{flex: 1}} color={COLORS.white} size={FONT_SIZE.xs}>
-            Lorem Ipsum is simply dummy text of the that printing and type
-            setting industry has
+          Need help or have a question? Check out our FAQ or reach out to our support team. We're here to assist you!
           </MyText>
         </View>
         <View
