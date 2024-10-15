@@ -1,4 +1,12 @@
-import { CartItemType, CategoryType, FAQ, OrderType, ProductType, Reviews, Sellers } from '.';
+import {
+  CartItemType,
+  CategoryType,
+  FAQ,
+  OrderType,
+  ProductType,
+  Reviews,
+  Sellers,
+} from '.';
 
 interface ApiResponse {
   status: 200 | number;
@@ -26,7 +34,7 @@ export interface SignupResponse extends ApiResponse {
   data: BeforeLoginUser;
 }
 
-export interface VerifyEmailResponse extends ApiResponse { }
+export interface VerifyEmailResponse extends ApiResponse {}
 export interface ForgetPasswordResponse extends ApiResponse {
   refData: string;
 }
@@ -41,7 +49,7 @@ export interface GetHomeProductResponse extends ApiResponse {
   data: {
     bestSeller: ProductType[];
     newAdded: [ProductType];
-    recentViewed: ProductType[]; 
+    recentViewed: ProductType[];
   };
 }
 export interface GetCartResponse extends ApiResponse {

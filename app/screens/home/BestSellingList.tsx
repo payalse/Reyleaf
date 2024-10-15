@@ -6,14 +6,13 @@ import {FlatList} from 'react-native';
 import ProductItem from '../../components/ProductItem';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/store';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { HomeStackParams } from '../../naviagtion/types';
-
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {HomeStackParams} from '../../naviagtion/types';
 
 const BestSellingList = () => {
   const navigation =
-  useNavigation<NativeStackNavigationProp<HomeStackParams>>();
+    useNavigation<NativeStackNavigationProp<HomeStackParams>>();
   const {bestSellingProducts} = useSelector((s: RootState) => s.product);
   if (!bestSellingProducts.length) {
     return null;

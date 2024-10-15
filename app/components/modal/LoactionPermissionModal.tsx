@@ -11,7 +11,12 @@ type Props = {
   value?: string;
 };
 
-const LoactionPermissionModal = ({visible, onPress,  value, onChange}: Props) => {
+const LoactionPermissionModal = ({
+  visible,
+  onPress,
+  value,
+  onChange,
+}: Props) => {
   return (
     <Modal transparent visible={visible} animationType="slide">
       <View
@@ -39,7 +44,8 @@ const LoactionPermissionModal = ({visible, onPress,  value, onChange}: Props) =>
             Search Feed by Location
           </MyText>
           <MyText center color={COLORS.grey}>
-          Discover unique activity nearby with our feed. Find events, activity, and more around your location.
+            Discover unique activity nearby with our feed. Find events,
+            activity, and more around your location.
           </MyText>
           <View
             style={{
@@ -55,8 +61,8 @@ const LoactionPermissionModal = ({visible, onPress,  value, onChange}: Props) =>
               paddingHorizontal: 20,
             }}>
             <TextInput
-             value={value}
-             onChangeText={onChange}
+              value={value}
+              onChangeText={onChange}
               placeholderTextColor={COLORS.lightgrey}
               placeholder="Enter Zip Code"
               style={{

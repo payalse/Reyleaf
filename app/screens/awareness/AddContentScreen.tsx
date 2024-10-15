@@ -12,11 +12,11 @@ import * as yup from 'yup';
 import {ShowAlert} from '../../utils/alert';
 import InputErrorMsg from '../../components/inputs/InputErrorMsg';
 import {ALERT_TYPE} from 'react-native-alert-notification';
-import { api_forumContent } from '../../api/forum';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
-import { AwarenessStackParams } from '../../naviagtion/types';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import {api_forumContent} from '../../api/forum';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../redux/store';
+import {AwarenessStackParams} from '../../naviagtion/types';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 type Values = {
   content: string;
@@ -27,7 +27,7 @@ const validationSchema = yup.object().shape({
 
 const AddContentScreen = () => {
   const params =
-  useRoute<RouteProp<AwarenessStackParams, 'AddContent'>>().params;
+    useRoute<RouteProp<AwarenessStackParams, 'AddContent'>>().params;
   const navigation =
     useNavigation<NativeStackNavigationProp<AwarenessStackParams>>();
   useHideBottomBar({unSubDisable: false});
@@ -37,8 +37,8 @@ const AddContentScreen = () => {
   const onSubmit = async (values: Values) => {
     try {
       const data = {
-        content: values.content
-      }
+        content: values.content,
+      };
       setLoading(true);
       const res: any = await api_forumContent(token!, data, params.id);
     } catch (error: any) {
@@ -48,7 +48,7 @@ const AddContentScreen = () => {
         setLoading(false);
         navigation.navigate('JoinedForumDetail', {
           id: params.id,
-        })
+        });
       }, 1000);
     }
   };

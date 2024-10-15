@@ -1,4 +1,4 @@
-import { BASE_URL } from './index';
+import {BASE_URL} from './index';
 
 export const api_getHomeProducts = (
   token: string,

@@ -1,18 +1,18 @@
-import { ScrollView, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { MyText } from '../../../components/MyText';
-import { COLORS, FONT_SIZE, FONT_WEIGHT } from '../../../styles';
+import {ScrollView, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {MyText} from '../../../components/MyText';
+import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../../styles';
 import Entypo from 'react-native-vector-icons/Entypo';
 import PrimaryBtn from '../../../components/buttons/PrimaryBtn';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import MainLayout from '../../../components/layout/MainLayout';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
-import { OptionBox } from '../../cart/CheckOutScreen';
-import { ShippingAddressStackParams } from '../../../naviagtion/DrawerNavigator';
-import { api_getAddress } from '../../../api/user';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
+import {OptionBox} from '../../cart/CheckOutScreen';
+import {ShippingAddressStackParams} from '../../../naviagtion/DrawerNavigator';
+import {api_getAddress} from '../../../api/user';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../../redux/store';
 import FullScreenLoader from '../../../components/FullScreenLoader';
 
 // address
@@ -23,7 +23,7 @@ const AllAddressScreen = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<ShippingAddressStackParams>>();
   const [loading, setLoading] = useState(false);
-  const { token } = useSelector((s: RootState) => s.auth);
+  const {token} = useSelector((s: RootState) => s.auth);
   const isFocused = useIsFocused();
   const [data, setData] = useState<any>([]);
   const requestApi = async () => {
@@ -43,21 +43,20 @@ const AllAddressScreen = () => {
   }, [isFocused, navigation]);
   return (
     <MainLayout
-      contentContainerStyle={{ flex: 1 }}
+      contentContainerStyle={{flex: 1}}
       headerComp={
         <SecondaryHeader
           onBack={navigation.goBack}
-          backBtnContainerStyle={{ left: 0 }}
+          backBtnContainerStyle={{left: 0}}
           title="All Address"
         />
-      }
-    >
+      }>
       {loading && <FullScreenLoader />}
-      <View style={{ marginTop: 20, flex: 1 }}>
+      <View style={{marginTop: 20, flex: 1}}>
         <MyText bold={FONT_WEIGHT.bold}>Shipping to</MyText>
 
         <ScrollView>
-          <View style={{ gap: 20, marginTop: 20 }}>
+          <View style={{gap: 20, marginTop: 20}}>
             {data?.map((item: any) => {
               return (
                 <OptionBox
@@ -85,11 +84,11 @@ const AllAddressScreen = () => {
           </View>
         </ScrollView>
       </View>
-      <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+      <View style={{flex: 1, justifyContent: 'flex-end'}}>
         <PrimaryBtn
           onPress={() => navigation.navigate('AddAddress')}
           text="Add New Address"
-          conatinerStyle={{ marginTop: 10, marginBottom: 20 }}
+          conatinerStyle={{marginTop: 10, marginBottom: 20}}
         />
       </View>
     </MainLayout>

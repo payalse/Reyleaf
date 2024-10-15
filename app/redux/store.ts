@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import {configureStore} from '@reduxjs/toolkit';
 import appReducer from './features/app/appSlice';
 import authReducer from './features/auth/authSlice';
 import categoryReducer from './features/category/categorySlice';
@@ -7,7 +7,7 @@ import eventReducer from './features/event/eventSlice';
 import sellerReducer from './features/seller/sellerSlice';
 import feedReducer from './features/feed/feedSlice';
 import supportReducer from './features/support/supportSlice';
-import { createLogger } from 'redux-logger';
+import {createLogger} from 'redux-logger';
 import friendReducer from './features/friends/friendsSlice';
 
 const logger = createLogger({});

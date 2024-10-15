@@ -1,4 +1,4 @@
-import { BASE_URL } from './index';
+import {BASE_URL} from './index';
 
 export const api_searchSuggessions = (token: string, username: string) => {
   const uri = `${BASE_URL}/api/v1/friend/search?username=${username}`;
@@ -166,7 +166,7 @@ export const api_friendfollowUnfollow = (
 };
 export const api_requestAcceptReject = (token: string, payload: any) => {
   const uri = `${BASE_URL}/api/v1/friend/requestAcceptReject`;
-  console.log({ payload }, token);
+  console.log({payload}, token);
   return new Promise((resolve, reject) => {
     fetch(uri, {
       method: 'POST',
@@ -215,10 +215,7 @@ export const api_reportOrBlock = (token: string, payload: any) => {
   });
 };
 
-export const api_cancelRequest = (
-  token: string,
-  followingId: string,
-) => {
+export const api_cancelRequest = (token: string, followingId: string) => {
   const uri = `${BASE_URL}/api/v1/friend/cancelFollowRequest`;
   return new Promise((resolve, reject) => {
     fetch(uri, {

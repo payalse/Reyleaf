@@ -1,10 +1,16 @@
-import { Image, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {
   createBottomTabNavigator,
   BottomTabBar,
 } from '@react-navigation/bottom-tabs';
-import { COLORS, FONT_SIZE, hp, wp } from '../styles';
-import { MyText } from '../components/MyText';
+import {COLORS, FONT_SIZE, hp, wp} from '../styles';
+import {MyText} from '../components/MyText';
 // ICONS
 import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -27,11 +33,11 @@ import CartStack from './CartStack';
 import EventStack from './EventStack';
 import AwarenessStack from './AwarenessStack';
 import SearchStack from './SearchStack';
-import { useEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { useIsFocused } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { SearchStackParams } from './types';
+import {useEffect, useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {SearchStackParams} from './types';
 
 const TAB_ICON_SIZE = FONT_SIZE['2xl'];
 
@@ -52,7 +58,7 @@ function MainTab() {
     }
   };
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       <Tab.Navigator
         id="MainTab"
         tabBar={props => (
@@ -62,8 +68,7 @@ function MainTab() {
               left: 0,
               right: 0,
               bottom: 0,
-            }}
-          >
+            }}>
             <BottomTabBar {...props} />
           </View>
         )}
@@ -90,15 +95,14 @@ function MainTab() {
               />
             );
           },
-        }}
-      >
+        }}>
         <Tab.Screen
           name="HomeTab"
           component={HomeStack}
           options={{
             tabBarLabel: '',
             unmountOnBlur: true,
-            tabBarIcon: ({ focused }) => {
+            tabBarIcon: ({focused}) => {
               const color = focused ? COLORS.white : COLORS.grey;
               return (
                 <View style={styles.tabItemContainer}>
@@ -120,7 +124,7 @@ function MainTab() {
           component={CartStack}
           options={{
             tabBarLabel: '',
-            tabBarIcon: ({ focused }) => {
+            tabBarIcon: ({focused}) => {
               const color = focused ? COLORS.white : COLORS.grey;
 
               return (
@@ -144,7 +148,7 @@ function MainTab() {
           options={{
             unmountOnBlur: true,
             tabBarLabel: '',
-            tabBarIcon: ({ focused }) => {
+            tabBarIcon: ({focused}) => {
               const color = focused ? COLORS.white : COLORS.grey;
               return (
                 <View style={styles.tabItemContainer}>
@@ -176,7 +180,7 @@ function MainTab() {
               top: hp(4.5),
             },
             tabBarLabel: '',
-            tabBarIcon: ({ focused }) => {
+            tabBarIcon: ({focused}) => {
               return (
                 <TouchableOpacity
                   onPress={() => handleTabPress(focused)} // Handle icon press
@@ -188,8 +192,7 @@ function MainTab() {
                     borderRadius: ACTION_SIZE,
                     justifyContent: 'center',
                     alignItems: 'center',
-                  }}
-                >
+                  }}>
                   {focused ? (
                     <AntDesign
                       name="close"
@@ -214,7 +217,7 @@ function MainTab() {
           options={{
             unmountOnBlur: true,
             tabBarLabel: '',
-            tabBarIcon: ({ focused }) => {
+            tabBarIcon: ({focused}) => {
               const color = focused ? COLORS.white : COLORS.grey;
               return (
                 <View style={styles.tabItemContainer}>
@@ -244,7 +247,7 @@ function MainTab() {
           options={{
             unmountOnBlur: true,
             tabBarLabel: '',
-            tabBarIcon: ({ focused }) => {
+            tabBarIcon: ({focused}) => {
               const color = focused ? COLORS.white : COLORS.grey;
               return (
                 <View style={styles.tabItemContainer}>
@@ -287,4 +290,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export { styles };
+export {styles};

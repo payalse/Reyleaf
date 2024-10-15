@@ -16,12 +16,11 @@ import {HomeStackParams} from '../../naviagtion/types';
 import {RootState} from '../../redux/store';
 import {useSelector} from 'react-redux';
 
-
 const NewlyArrivalList = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<HomeStackParams>>();
 
-  const {newlyProducts} = useSelector((s: RootState) => s.product);
+  const {newlyProducts} = useSelector((s: RootState) => s.product); 
   return (
     <View style={{marginBottom: 20}}>
       <View

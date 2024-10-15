@@ -10,7 +10,7 @@ export const SHEETS = {
   CategorySelectSheet: 'CategorySelectSheet',
   PronounSelectSheet: 'PronounSelectSheet',
   SellerSelectSheet: 'SellerSelectSheet',
-  SubjectSelectSheet : 'SubjectSelectSheet',
+  SubjectSelectSheet: 'SubjectSelectSheet',
 };
 
 registerSheet(SHEETS.CountrySelectSheet, CountrySelectSheet);

@@ -42,7 +42,7 @@ const VendorEventScreen = () => {
                   backgroundColor: 'transparent',
                 }}>
                 <MyText
-                 style={{fontSize : isActive ? FONT_SIZE.lg : FONT_SIZE.sm}}
+                  style={{fontSize: isActive ? FONT_SIZE.lg : FONT_SIZE.sm}}
                   bold={isActive ? FONT_WEIGHT.bold : FONT_WEIGHT.normal}
                   center
                   color={isActive ? COLORS.black : COLORS.grey}>

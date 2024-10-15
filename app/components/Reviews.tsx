@@ -7,12 +7,12 @@ import {
   View,
 } from 'react-native';
 import React from 'react';
-import { COLORS, FONT_SIZE } from '../styles';
-import { BUILD_IMAGE_URL } from '../api';
-import { MyText } from './MyText';
+import {COLORS, FONT_SIZE} from '../styles';
+import {BUILD_IMAGE_URL} from '../api';
+import {MyText} from './MyText';
 import moment from 'moment';
 import AntDesgin from 'react-native-vector-icons/AntDesign';
-import { Rating } from 'react-native-ratings';
+import {Rating} from 'react-native-ratings';
 
 type Props = {
   id: string;
@@ -22,7 +22,7 @@ type Props = {
   value: any;
 };
 
-const Review = ({ id, user, updateAt, review, value }: Props) => {
+const Review = ({id, user, updateAt, review, value}: Props) => {
   return (
     <View
       key={id}
@@ -32,24 +32,21 @@ const Review = ({ id, user, updateAt, review, value }: Props) => {
         borderBottomWidth: 1,
         paddingBottom: 10,
         borderBottomColor: COLORS.lightgrey2,
-      }}
-    >
+      }}>
       <View
         style={{
           flexDirection: 'row',
           alignItems: 'center',
           gap: 10,
           marginBottom: 5,
-        }}
-      >
+        }}>
         <View
           style={{
             width: 50,
             height: 50,
             backgroundColor: COLORS.grey,
             borderRadius: 25,
-          }}
-        >
+          }}>
           {user?.picture && (
             <Image
               source={{
@@ -67,9 +64,8 @@ const Review = ({ id, user, updateAt, review, value }: Props) => {
               gap: 5,
               alignItems: 'center',
               marginTop: 5,
-            }}
-          >
-            <View style={{ flexDirection: 'row' }}>
+            }}>
+            <View style={{flexDirection: 'row'}}>
               <Rating
                 type="star"
                 ratingCount={5}

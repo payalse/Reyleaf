@@ -58,7 +58,7 @@ const ResourceItem = ({picture, title, des, onPress}: Props) => {
           </MyText>
           <View style={{flex: 1, marginTop: 5}}>
             <MyText size={FONT_SIZE.xs} color={COLORS.grey}>
-            {des.length > 90 ? `${des.substring(0, 100)}...` : des}
+              {des.length > 90 ? `${des.substring(0, 100)}...` : des}
             </MyText>
           </View>
         </View>

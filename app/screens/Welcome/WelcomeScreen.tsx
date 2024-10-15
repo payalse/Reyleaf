@@ -50,8 +50,8 @@ const WelcomeScreen = () => {
         </MyText>
 
         <View style={{width: '90%', paddingVertical: 20, gap: 20}}>
-          <GoogleButton />
-         
+          {/* <GoogleButton /> */}
+
           {/* <MyButton
             text="Continue with Facebook"
             leftComp={() => <Facebook />}
@@ -101,6 +101,44 @@ const WelcomeScreen = () => {
               <FontAwesome size={20} color={'#444'} name="user-circle-o" />
             )}
             text="Continue with Seller account"
+          />
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            width: '90%',
+            alignItems: 'center',
+          }}>
+          <View
+            style={{
+              height: 1,
+              opacity: 0.4,
+              backgroundColor: COLORS.grey,
+              flex: 1,
+            }}
+          />
+
+          <MyText
+            size={FONT_SIZE.sm}
+            style={{opacity: 0.5, paddingHorizontal: 20}}>
+            Or explore products
+          </MyText>
+          <View
+            style={{
+              height: 1,
+              opacity: 0.4,
+              backgroundColor: COLORS.grey,
+              flex: 1,
+            }}
+          />
+        </View>
+        <View style={{width: '90%', paddingVertical: 20}}>
+          <MyButton
+            onPress={() => navigation.navigate('Home')}
+            leftComp={() => (
+              <FontAwesome size={20} color={'#444'} name="user-circle-o" />
+            )}
+            text="Explore Products"
           />
         </View>
       </ScrollView>

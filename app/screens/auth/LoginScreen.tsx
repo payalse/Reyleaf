@@ -116,7 +116,7 @@ const LoginScreen = () => {
             style={{
               marginHorizontal: 20,
               paddingBottom: 25,
-            }}>  
+            }}>
             <View>
               <BackBtn onPress={navigation.goBack} />
               <View

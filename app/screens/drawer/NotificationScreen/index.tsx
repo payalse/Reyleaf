@@ -1,16 +1,16 @@
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import React, { useState } from 'react';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import React, {useState} from 'react';
 import MainLayout from '../../../components/layout/MainLayout';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
-import { MyText } from '../../../components/MyText';
-import { COLORS, FONT_SIZE, FONT_WEIGHT } from '../../../styles';
-import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../../redux/store';
-import { api_updateNotificationSettings } from '../../../api/user';
-import { ShowAlert } from '../../../utils/alert';
-import { ALERT_TYPE } from 'react-native-alert-notification';
-import { updateUser } from '../../../redux/features/auth/authSlice';
+import {MyText} from '../../../components/MyText';
+import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../../styles';
+import {useNavigation} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch, RootState} from '../../../redux/store';
+import {api_updateNotificationSettings} from '../../../api/user';
+import {ShowAlert} from '../../../utils/alert';
+import {ALERT_TYPE} from 'react-native-alert-notification';
+import {updateUser} from '../../../redux/features/auth/authSlice';
 
 const SwitchComp = ({
   value,
@@ -30,8 +30,7 @@ const SwitchComp = ({
         height: 35,
         justifyContent: 'center',
         alignItems: value ? 'flex-end' : 'flex-start',
-      }}
-    >
+      }}>
       <View
         style={{
           backgroundColor: value ? COLORS.greenDark : COLORS.lightgrey,
@@ -45,7 +44,7 @@ const SwitchComp = ({
 };
 
 const NotificationScreen = () => {
-  const { token } = useSelector((s: RootState) => s.auth);
+  const {token} = useSelector((s: RootState) => s.auth);
   const authUser = useSelector((s: RootState) => s.auth.user);
   const dispatch = useDispatch<AppDispatch>();
   const [notiObj, setNotObj] = useState({
@@ -79,11 +78,10 @@ const NotificationScreen = () => {
       headerComp={
         <SecondaryHeader
           onBack={navigation.goBack}
-          backBtnContainerStyle={{ left: 0 }}
+          backBtnContainerStyle={{left: 0}}
           title="Notification"
         />
-      }
-    >
+      }>
       <View
         style={{
           marginTop: 20,
@@ -91,31 +89,30 @@ const NotificationScreen = () => {
           paddingBottom: 20,
           borderBlockColor: COLORS.lightgrey2,
           borderBottomWidth: 2,
-        }}
-      >
+        }}>
         <MyText bold={FONT_WEIGHT.bold}>All Notification</MyText>
         <MyText color={COLORS.grey}>
-        Manage your notifications! Choose how you'd like to stay updated—enable or disable alerts for updates, promotions, and more.
+          Manage your notifications! Choose how you'd like to stay
+          updated—enable or disable alerts for updates, promotions, and more.
         </MyText>
       </View>
-      <View style={{ gap: 20, marginVertical: 20 }}>
+      <View style={{gap: 20, marginVertical: 20}}>
         <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
-          }}
-        >
-          <View style={{ gap: 5 }}>
+          }}>
+          <View style={{gap: 5}}>
             <MyText bold={FONT_WEIGHT.semibold}>Order Notification</MyText>
             <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
-            Adjust your settings to manage order notification preferences.
+              Adjust your settings to manage order notification preferences.
             </MyText>
           </View>
           <SwitchComp
             value={notiObj.order}
             onPress={() => {
-              setNotObj((s: any) => ({ ...s, order: !notiObj.order }));
+              setNotObj((s: any) => ({...s, order: !notiObj.order}));
               updateSettings(!notiObj.order, 'order');
             }}
           />
@@ -125,18 +122,17 @@ const NotificationScreen = () => {
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
-          }}
-        >
-          <View style={{ gap: 5 }}>
+          }}>
+          <View style={{gap: 5}}>
             <MyText bold={FONT_WEIGHT.semibold}>Event Notification</MyText>
             <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
-            Customize your preferences to receive event notifications easily.
+              Customize your preferences to receive event notifications easily.
             </MyText>
           </View>
           <SwitchComp
             value={notiObj.event}
             onPress={() => {
-              setNotObj((s: any) => ({ ...s, event: !notiObj.event }));
+              setNotObj((s: any) => ({...s, event: !notiObj.event}));
               updateSettings(!notiObj.event, 'event');
             }}
           />
@@ -146,18 +142,17 @@ const NotificationScreen = () => {
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
-          }}
-        >
-          <View style={{ gap: 5 }}>
+          }}>
+          <View style={{gap: 5}}>
             <MyText bold={FONT_WEIGHT.semibold}>Message Notification</MyText>
             <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
-            Update your preferences to manage your message notifications.
+              Update your preferences to manage your message notifications.
             </MyText>
           </View>
           <SwitchComp
             value={notiObj.message}
             onPress={() => {
-              setNotObj((s: any) => ({ ...s, message: !notiObj.message }));
+              setNotObj((s: any) => ({...s, message: !notiObj.message}));
               updateSettings(!notiObj.message, 'message');
             }}
           />

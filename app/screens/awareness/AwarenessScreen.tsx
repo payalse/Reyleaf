@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {TouchableOpacity, View} from 'react-native';
 import MainHeader from '../../components/header/MainHeader';
 import MainLayout from '../../components/layout/MainLayout';
-import { COLORS, D, FONT_WEIGHT, hp } from '../../styles';
-import { MyText } from '../../components/MyText';
+import {COLORS, D, FONT_WEIGHT, hp} from '../../styles';
+import {MyText} from '../../components/MyText';
 import AllFormsTab from './AllFormsTab';
 import ResourceAndArticleTab from './ResourceAndArticleTab';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AwarenessStackParams } from '../../naviagtion/types';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {AwarenessStackParams} from '../../naviagtion/types';
 import AddActionButton from '../../components/buttons/AddActionButton';
-import { TAB_BAR_BG_HEIGHT } from '../../naviagtion/MainTab';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
+import {TAB_BAR_BG_HEIGHT} from '../../naviagtion/MainTab';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../redux/store';
 import VendorEventScreen from '../event/VandorEvents';
 
 let Tabs = ['All Forums', 'Resource & Articles'];
@@ -21,7 +21,7 @@ const AwarenessScreen = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<AwarenessStackParams>>();
   const isFocused = useIsFocused();
-  const { token, user } = useSelector((s: RootState) => s.auth);
+  const {token, user} = useSelector((s: RootState) => s.auth);
 
   useEffect(() => {
     if (user?.role == 2) {
@@ -29,7 +29,7 @@ const AwarenessScreen = () => {
     }
   }, [isFocused]);
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       {user?.role == 2 ? (
         <>
           <View
@@ -41,15 +41,13 @@ const AwarenessScreen = () => {
               left: 0,
               top: 0,
               pointerEvents: 'box-none',
-            }}
-          >
+            }}>
             {activeTab == Tabs[1] && (
               <TouchableOpacity
                 onPress={() => navigation.navigate('AddEvent')}
-                style={{ position: 'absolute', zIndex: 2, bottom: 10 }}
-              >
+                style={{position: 'absolute', zIndex: 2, bottom: 10}}>
                 <AddActionButton
-                  containerStyle={{ paddingBottom: 0 }}
+                  containerStyle={{paddingBottom: 0}}
                   onPress={() => navigation.navigate('AddEvent')}
                 />
               </TouchableOpacity>
@@ -61,9 +59,8 @@ const AwarenessScreen = () => {
                 onMessagePress={() => navigation.navigate('ChatStack')}
                 onNotiPress={() => navigation.navigate('AppNotification')}
               />
-            }
-          >
-            <View style={{ flex: 1, paddingBottom: 160 }}>
+            }>
+            <View style={{flex: 1, paddingBottom: 160}}>
               {/* TAB TOGGLE */}
               <View
                 style={{
@@ -74,8 +71,7 @@ const AwarenessScreen = () => {
                   flexDirection: 'row',
                   gap: 15,
                   marginTop: 20,
-                }}
-              >
+                }}>
                 {Tabs.map(tab => {
                   const isActive = tab === activeTab;
                   return (
@@ -91,13 +87,11 @@ const AwarenessScreen = () => {
                         height: 45,
                         justifyContent: 'center',
                         alignItems: 'center',
-                      }}
-                    >
+                      }}>
                       <MyText
                         bold={isActive ? FONT_WEIGHT.bold : FONT_WEIGHT.normal}
                         center
-                        color={isActive ? COLORS.white : COLORS.grey}
-                      >
+                        color={isActive ? COLORS.white : COLORS.grey}>
                         {tab}
                       </MyText>
                     </TouchableOpacity>
@@ -105,9 +99,7 @@ const AwarenessScreen = () => {
                 })}
               </View>
               {activeTab === Tabs[0] && <AllFormsTab isFocused={isFocused} />}
-              {activeTab === Tabs[1] && (
-                <VendorEventScreen />
-              )}
+              {activeTab === Tabs[1] && <VendorEventScreen />}
             </View>
           </MainLayout>
         </>
@@ -122,15 +114,13 @@ const AwarenessScreen = () => {
               left: 0,
               top: 0,
               pointerEvents: 'box-none',
-            }}
-          >
+            }}>
             {activeTab == Tabs[1] && (
               <TouchableOpacity
                 onPress={() => navigation.navigate('AddResource')}
-                style={{ position: 'absolute', zIndex: 2, bottom: 10 }}
-              >
+                style={{position: 'absolute', zIndex: 2, bottom: 10}}>
                 <AddActionButton
-                  containerStyle={{ paddingBottom: 0 }}
+                  containerStyle={{paddingBottom: 0}}
                   onPress={() => navigation.navigate('AddResource')}
                 />
               </TouchableOpacity>
@@ -142,9 +132,8 @@ const AwarenessScreen = () => {
                 onMessagePress={() => navigation.navigate('ChatStack')}
                 onNotiPress={() => navigation.navigate('AppNotification')}
               />
-            }
-          >
-            <View style={{ flex: 1, paddingBottom: 160 }}>
+            }>
+            <View style={{flex: 1, paddingBottom: 160}}>
               {/* TAB TOGGLE */}
               <View
                 style={{
@@ -155,8 +144,7 @@ const AwarenessScreen = () => {
                   flexDirection: 'row',
                   gap: 15,
                   marginTop: 20,
-                }}
-              >
+                }}>
                 {Tabs.map(tab => {
                   const isActive = tab === activeTab;
                   return (
@@ -172,13 +160,11 @@ const AwarenessScreen = () => {
                         height: 45,
                         justifyContent: 'center',
                         alignItems: 'center',
-                      }}
-                    >
+                      }}>
                       <MyText
                         bold={isActive ? FONT_WEIGHT.bold : FONT_WEIGHT.normal}
                         center
-                        color={isActive ? COLORS.white : COLORS.grey}
-                      >
+                        color={isActive ? COLORS.white : COLORS.grey}>
                         {tab}
                       </MyText>
                     </TouchableOpacity>

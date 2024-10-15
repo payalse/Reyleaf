@@ -1,39 +1,42 @@
-import { Image, Platform, TouchableOpacity, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { MyText } from '../../../components/MyText';
-import { COLORS, FONT_SIZE } from '../../../styles';
+import {Image, Platform, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import {MyText} from '../../../components/MyText';
+import {COLORS, FONT_SIZE} from '../../../styles';
 import InputWrapper from '../../../components/inputs/InputWrapper';
 import MyInput from '../../../components/inputs/MyInput';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import PrimaryBtn from '../../../components/buttons/PrimaryBtn';
 import TextArea from '../../../components/inputs/TextArea';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ProfileEditStackParams, RootStackParams } from '../../../naviagtion/types';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {
+  ProfileEditStackParams,
+  RootStackParams,
+} from '../../../naviagtion/types';
 import MainLayout from '../../../components/layout/MainLayout';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
-import { Formik } from 'formik';
+import {Formik} from 'formik';
 import * as Yup from 'yup';
-import { api_completeProfile } from '../../../api/auth';
-import { logout, updateUser } from '../../../redux/features/auth/authSlice';
-import { ShowAlert } from '../../../utils/alert';
-import { ALERT_TYPE } from 'react-native-alert-notification';
+import {api_completeProfile} from '../../../api/auth';
+import {logout, updateUser} from '../../../redux/features/auth/authSlice';
+import {ShowAlert} from '../../../utils/alert';
+import {ALERT_TYPE} from 'react-native-alert-notification';
 import DatePicker from 'react-native-date-picker';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../../redux/store';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch, RootState} from '../../../redux/store';
 import InputErrorMsg from '../../../components/inputs/InputErrorMsg';
 import SelectInput from '../../../components/inputs/SelectInput';
-import { AvatarDefaultType } from '../../../utils/defaultAvatar';
-import { Asset } from 'react-native-image-picker';
+import {AvatarDefaultType} from '../../../utils/defaultAvatar';
+import {Asset} from 'react-native-image-picker';
 import moment from 'moment';
-import { SelectedImage } from '../../../types';
-import { SHEETS } from '../../../sheets/sheets';
-import { SheetManager } from 'react-native-actions-sheet';
-import { BUILD_IMAGE_URL } from '../../../api';
-import { CountryType } from '../../../utils/countryTable';
-import { api_deleteUserProfile } from '../../../api/user';
-import { setFirstLaunched } from '../../../redux/features/app/appSlice';
+import {SelectedImage} from '../../../types';
+import {SHEETS} from '../../../sheets/sheets';
+import {SheetManager} from 'react-native-actions-sheet';
+import {BUILD_IMAGE_URL} from '../../../api';
+import {CountryType} from '../../../utils/countryTable';
+import {api_deleteUserProfile} from '../../../api/user';
+import {setFirstLaunched} from '../../../redux/features/app/appSlice';
 
 type FormValues = {
   name: string;
@@ -43,15 +46,15 @@ type FormValues = {
 };
 const validationSchema = Yup.object().shape({
   name: Yup.string()
-    .min(4, ({ min }) => `Name must be at least ${min} characters`)
+    .min(4, ({min}) => `Name must be at least ${min} characters`)
     .required('Required')
     .required('Name is Required!'),
   bio: Yup.string()
-    .min(10, ({ min }) => `Bio must be at least ${min} characters`)
+    .min(10, ({min}) => `Bio must be at least ${min} characters`)
     .required('Bio is Required!'),
   phone: Yup.string()
-    .min(10, ({ min }) => `Phone must be at least ${min} characters`)
-    .max(12, ({ max }) => `Phone must not exceed ${max} characters`)
+    .min(10, ({min}) => `Phone must be at least ${min} characters`)
+    .max(12, ({max}) => `Phone must not exceed ${max} characters`)
     .required('Phone is Required!'),
   bAddress: Yup.string(),
 });
@@ -67,32 +70,32 @@ type VendorFormValues = {
 };
 const VendorValidationSchema = Yup.object().shape({
   name: Yup.string()
-    .min(4, ({ min }) => `Name must be at least ${min} characters`)
+    .min(4, ({min}) => `Name must be at least ${min} characters`)
     .required('Required')
     .required('Name is Required!'),
   bio: Yup.string()
-    .min(10, ({ min }) => `Bio must be at least ${min} characters`)
+    .min(10, ({min}) => `Bio must be at least ${min} characters`)
     .required('Bio is Required!'),
   phone: Yup.string()
-    .min(10, ({ min }) => `Phone must be at least ${min} characters`)
-    .max(12, ({ max }) => `Phone must not exceed ${max} characters`)
+    .min(10, ({min}) => `Phone must be at least ${min} characters`)
+    .max(12, ({max}) => `Phone must not exceed ${max} characters`)
     .required('Phone is Required!'),
   bAddress: Yup.string()
-    .min(10, ({ min }) => `Address must be at least ${min} characters`)
+    .min(10, ({min}) => `Address must be at least ${min} characters`)
     .required('Address is Required!'),
   city: Yup.string()
-    .min(4, ({ min }) => `City must be at least ${min} characters`)
+    .min(4, ({min}) => `City must be at least ${min} characters`)
     .required('City is Required!'),
   state: Yup.string()
-    .min(4, ({ min }) => `State must be at least ${min} characters`)
+    .min(4, ({min}) => `State must be at least ${min} characters`)
     .required('State is Required!'),
   zipcode: Yup.string()
-    .min(4, ({ min }) => `ZipCode must be at least ${min} characters`)
+    .min(4, ({min}) => `ZipCode must be at least ${min} characters`)
     .required('ZipCode is Required!'),
 });
 
 const EditProfileScreen = () => {
-  const { mode } = useSelector((s: RootState) => s.app);
+  const {mode} = useSelector((s: RootState) => s.app);
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileEditStackParams>>();
   const navigation1 =
@@ -100,7 +103,7 @@ const EditProfileScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [date, setDate] = useState<Date | null>(null);
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
-  const [extraError, setExtraError] = useState({ date: '' });
+  const [extraError, setExtraError] = useState({date: ''});
   const [pronoun, setPronoun] = useState('');
   const [loading, setLoading] = useState(false);
   const [loading1, setLoading1] = useState(false);
@@ -108,7 +111,7 @@ const EditProfileScreen = () => {
     SelectedImage | AvatarDefaultType | null
   >(null);
   const authUser = useSelector((s: RootState) => s.auth.user);
-  const { defaultAvatar } = useSelector((s: RootState) => s.app);
+  const {defaultAvatar} = useSelector((s: RootState) => s.app);
   const [country, setCoutry] = useState<null | CountryType>(null);
   const [extraErr, setExtraErr] = useState({
     country: '',
@@ -117,10 +120,10 @@ const EditProfileScreen = () => {
   const onSubmit = async (values: FormValues) => {
     let isValid = true;
     if (date === null) {
-      setExtraError(prev => ({ ...prev, date: 'Please Pick Date!' }));
+      setExtraError(prev => ({...prev, date: 'Please Pick Date!'}));
       isValid = false;
     } else {
-      setExtraError(prev => ({ ...prev, date: '' }));
+      setExtraError(prev => ({...prev, date: ''}));
     }
 
     if (isValid) {
@@ -152,11 +155,11 @@ const EditProfileScreen = () => {
           formData,
           authUser?.token!,
         )) as any;
-        ShowAlert({ textBody: res?.message, type: ALERT_TYPE.SUCCESS });
+        ShowAlert({textBody: res?.message, type: ALERT_TYPE.SUCCESS});
         dispatch(updateUser(res.data));
       } catch (error: any) {
         console.log(error);
-        ShowAlert({ textBody: error.message, type: ALERT_TYPE.DANGER });
+        ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
       } finally {
         setLoading(false);
       }
@@ -210,7 +213,7 @@ const EditProfileScreen = () => {
       dispatch(updateUser(res.data));
     } catch (error: any) {
       console.log(error);
-      ShowAlert({ textBody: error.message, type: ALERT_TYPE.DANGER });
+      ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
     } finally {
       setLoading(false);
     }
@@ -228,7 +231,7 @@ const EditProfileScreen = () => {
         type: ALERT_TYPE.SUCCESS,
       });
     } catch (error: any) {
-      ShowAlert({ textBody: error.message, type: ALERT_TYPE.DANGER });
+      ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
       console.log(error);
     } finally {
       setLoading1(false);
@@ -247,11 +250,10 @@ const EditProfileScreen = () => {
       headerComp={
         <SecondaryHeader
           onBack={navigation.goBack}
-          backBtnContainerStyle={{ left: 0 }}
+          backBtnContainerStyle={{left: 0}}
           title="Edit Profile"
         />
-      }
-    >
+      }>
       {mode == 'VENDOR' ? (
         <Formik
           validationSchema={VendorValidationSchema}
@@ -264,8 +266,7 @@ const EditProfileScreen = () => {
             state: authUser?.data?.state || '',
             zipcode: authUser?.data?.zipcode || '',
           }}
-          onSubmit={onVendorSubmit}
-        >
+          onSubmit={onVendorSubmit}>
           {({
             handleChange,
             handleBlur,
@@ -285,7 +286,7 @@ const EditProfileScreen = () => {
                   onConfirm={date => {
                     setDate(() => date);
                     setIsDateModalOpen(false);
-                    setExtraError(prev => ({ ...prev, date: '' }));
+                    setExtraError(prev => ({...prev, date: ''}));
                   }}
                   onCancel={() => setIsDateModalOpen(false)}
                 />
@@ -300,12 +301,11 @@ const EditProfileScreen = () => {
                     position: 'relative',
                     justifyContent: 'center',
                     alignItems: 'center',
-                  }}
-                >
+                  }}>
                   {selectedImage === null ? (
                     authUser?.picture ? (
                       <Image
-                        source={{ uri: BUILD_IMAGE_URL(authUser.picture) }}
+                        source={{uri: BUILD_IMAGE_URL(authUser.picture)}}
                         style={{
                           width: '100%',
                           height: '100%',
@@ -336,7 +336,7 @@ const EditProfileScreen = () => {
                     />
                   ) : (
                     <Image
-                      source={{ uri: selectedImage.path }}
+                      source={{uri: selectedImage.path}}
                       style={{
                         width: '100%',
                         height: '100%',
@@ -363,8 +363,7 @@ const EditProfileScreen = () => {
                       position: 'absolute',
                       bottom: 0,
                       right: 0,
-                    }}
-                  >
+                    }}>
                     <MaterialIcons size={15} name="edit" color={COLORS.white} />
                   </TouchableOpacity>
                 </View>
@@ -372,7 +371,7 @@ const EditProfileScreen = () => {
                   Upload Business Profile
                 </MyText>
               </View>
-              <View style={{ marginTop: 20 }}>
+              <View style={{marginTop: 20}}>
                 <InputWrapper title="Business Name">
                   <MyInput
                     hasError={Boolean(errors.name && touched.name)}
@@ -455,7 +454,7 @@ const EditProfileScreen = () => {
                         payload: {
                           onSelect: (e: CountryType) => {
                             setCoutry(e);
-                            setExtraErr(prev => ({ ...prev, country: '' }));
+                            setExtraErr(prev => ({...prev, country: ''}));
                           },
                         },
                       });
@@ -481,7 +480,7 @@ const EditProfileScreen = () => {
                   loading={loading}
                   onPress={handleSubmit}
                   text="Update"
-                  conatinerStyle={{ marginTop: 10, marginBottom: 20 }}
+                  conatinerStyle={{marginTop: 10, marginBottom: 20}}
                 />
               </View>
             </>
@@ -496,8 +495,7 @@ const EditProfileScreen = () => {
             phone: authUser?.phone || '',
             bAddress: authUser?.data?.address || '',
           }}
-          onSubmit={onSubmit}
-        >
+          onSubmit={onSubmit}>
           {({
             handleChange,
             handleBlur,
@@ -517,7 +515,7 @@ const EditProfileScreen = () => {
                   onConfirm={date => {
                     setDate(() => date);
                     setIsDateModalOpen(false);
-                    setExtraError(prev => ({ ...prev, date: '' }));
+                    setExtraError(prev => ({...prev, date: ''}));
                   }}
                   onCancel={() => setIsDateModalOpen(false)}
                 />
@@ -532,12 +530,11 @@ const EditProfileScreen = () => {
                     position: 'relative',
                     justifyContent: 'center',
                     alignItems: 'center',
-                  }}
-                >
+                  }}>
                   {selectedImage === null ? (
                     authUser?.picture ? (
                       <Image
-                        source={{ uri: BUILD_IMAGE_URL(authUser.picture) }}
+                        source={{uri: BUILD_IMAGE_URL(authUser.picture)}}
                         style={{
                           width: '100%',
                           height: '100%',
@@ -568,7 +565,7 @@ const EditProfileScreen = () => {
                     />
                   ) : (
                     <Image
-                      source={{ uri: selectedImage.path }}
+                      source={{uri: selectedImage.path}}
                       style={{
                         width: '100%',
                         height: '100%',
@@ -595,8 +592,7 @@ const EditProfileScreen = () => {
                       position: 'absolute',
                       bottom: 0,
                       right: 0,
-                    }}
-                  >
+                    }}>
                     <MaterialIcons size={15} name="edit" color={COLORS.white} />
                   </TouchableOpacity>
                 </View>
@@ -604,7 +600,7 @@ const EditProfileScreen = () => {
                   Upload profile or Choose avatar
                 </MyText>
               </View>
-              <View style={{ marginTop: 20 }}>
+              <View style={{marginTop: 20}}>
                 <InputWrapper title="Name">
                   <MyInput
                     hasError={Boolean(errors.name && touched.name)}
@@ -659,7 +655,7 @@ const EditProfileScreen = () => {
                   loading={loading}
                   onPress={handleSubmit}
                   text="Update"
-                  conatinerStyle={{ marginTop: 10, marginBottom: 20 }}
+                  conatinerStyle={{marginTop: 10, marginBottom: 20}}
                 />
               </View>
             </>
@@ -670,7 +666,7 @@ const EditProfileScreen = () => {
         loading={loading1}
         onPress={deleteProfile}
         text="Delete Account"
-        conatinerStyle={{ marginTop: 0, marginBottom: 20 }}
+        conatinerStyle={{marginTop: 0, marginBottom: 20}}
       />
     </MainLayout>
   );

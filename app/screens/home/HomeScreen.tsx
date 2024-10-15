@@ -78,6 +78,7 @@ const RenderProducts = () => {
 const HomeScreen = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<HomeStackParams>>();
+  const {isAuthenticated} = useSelector((s: RootState) => s.auth);
 
   const navi = () => {
     console.log('navi', navigation);
@@ -144,15 +145,18 @@ const HomeScreen = () => {
           Welcome, to our center for eco-friendly living 🛒
         </MyText>
         {/* Search */}
-        <SearchBox
-          onFilterBtnPress={() => {
-            navigation.navigate('SearchFilter');
-          }}
-          disabledOnPress={() => {
-            // @ts-ignore
-            navigation.navigate('SearchTab');
-          }}
-        />
+
+        {isAuthenticated && (
+          <SearchBox
+            onFilterBtnPress={() => {
+              navigation.navigate('SearchFilter');
+            }}
+            disabledOnPress={() => {
+              // @ts-ignore
+              navigation.navigate('SearchTab');
+            }}
+          />
+        )}
         {/* Options */}
         <OptionsList />
         <RenderProducts />

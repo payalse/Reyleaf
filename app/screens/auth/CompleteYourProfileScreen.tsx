@@ -55,8 +55,7 @@ const validationSchema = Yup.object().shape({
     .required('Bio is Required!'),
   phone: Yup.string()
     .min(10, ({min}) => `Phone must be at least ${min} characters`)
-    .max(12, ({max}) => `Phone must not exceed ${max} characters`)
-    .required('Phone is Required!'),
+    .max(12, ({max}) => `Phone must not exceed ${max} characters`),
   // pronouns: Yup.string(),
 });
 
@@ -112,7 +111,7 @@ const CompleteYourProfileScreen = () => {
         date,
         params,
       });
-      console.log(pronoun)
+      console.log(pronoun);
 
       try {
         setLoading(true);
@@ -265,7 +264,7 @@ const CompleteYourProfileScreen = () => {
                 />
               </InputWrapper>
               {errors.bio && touched.bio && <InputErrorMsg msg={errors.bio} />}
-              <InputWrapper title="Mobile no">
+              <InputWrapper title="Mobile no optional*">
                 <MyInput
                   keyboardType="number-pad"
                   hasError={Boolean(errors.phone && touched.phone)}
@@ -275,9 +274,6 @@ const CompleteYourProfileScreen = () => {
                   placeholder="Type here"
                 />
               </InputWrapper>
-              {errors.phone && touched.phone && (
-                <InputErrorMsg msg={errors.phone} />
-              )}
               <InputWrapper title="Date of Birth">
                 <SelectInput
                   value={date === null ? '' : moment(date).format('MM/DD/YYYY')}

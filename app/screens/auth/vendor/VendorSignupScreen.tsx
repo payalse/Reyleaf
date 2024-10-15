@@ -63,7 +63,10 @@ const VendorSignupScreen = () => {
       setLoading(true);
       const res = (await api_signup(payload)) as SignupResponse;
       console.log(res);
-      ShowAlert({textBody: 'OTP sent successfully, Please check your inbox!', type: ALERT_TYPE.SUCCESS});
+      ShowAlert({
+        textBody: 'OTP sent successfully, Please check your inbox!',
+        type: ALERT_TYPE.SUCCESS,
+      });
       dispatch(login({...res.data, token: res.token}));
       navigation.navigate('VendorOtpVerification', {
         verifyToken: res.data._id,

@@ -34,10 +34,13 @@ const SearchBox = ({
           borderRadius: 30,
           flexDirection: 'row',
           alignItems: 'center',
-          overflow: 'hidden'
+          overflow: 'hidden',
         }}>
         {disabledOnPress !== undefined ? (
-          <MyText size={FONT_SIZE.sml} color={COLORS.grey} style={{paddingLeft: 12}}>
+          <MyText
+            size={FONT_SIZE.sml}
+            color={COLORS.grey}
+            style={{paddingLeft: 12}}>
             Search by Product name, brand
           </MyText>
         ) : (

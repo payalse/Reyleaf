@@ -50,7 +50,7 @@ export type ProductType = {
   };
   description: string;
   discountedProce: number;
-  photos: { url: string }[];
+  photos: {url: string}[];
   price: any;
   status: 'active';
   title: string;
@@ -75,7 +75,7 @@ export type CartItemType = {
     discountedProce: number;
     description: string;
     status: string;
-    photos: { url: string }[];
+    photos: {url: string}[];
     updated_at: string;
   };
   quantity: number;
@@ -192,24 +192,23 @@ export type Friend = {
 };
 
 export type SupportTickets = {
-  _id: string,
-  user: string,
-  title: string,
-  description: string,
-  subject: string,
-  status: string,
-  createdAt: string,
-  updatedAt: string,
+  _id: string;
+  user: string;
+  title: string;
+  description: string;
+  subject: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type SupportTicketChat = {
-  _id: string,
-  sender: any,
-  receiver: any,
-  ticketId: any,
-  message: string,
-  status: string,
-  lastActive: string,
-  updatedAt: string,
+  _id: string;
+  sender: any;
+  receiver: any;
+  ticketId: any;
+  message: string;
+  status: string;
+  lastActive: string;
+  updatedAt: string;
 };
-

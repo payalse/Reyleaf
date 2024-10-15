@@ -7,21 +7,21 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
-import { COLORS, FONT_SIZE, FONT_WEIGHT, wp } from '../../../styles';
+import {COLORS, FONT_SIZE, FONT_WEIGHT, wp} from '../../../styles';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
-import { MyText } from '../../../components/MyText';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ChatStackParams } from '../../../naviagtion/types';
+import {MyText} from '../../../components/MyText';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {ChatStackParams} from '../../../naviagtion/types';
 import Tooltip from 'rn-tooltip';
-import { api_getAllRoom } from '../../../api/chat';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
+import {api_getAllRoom} from '../../../api/chat';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../../redux/store';
 import FullScreenLoader from '../../../components/FullScreenLoader';
-import { BUILD_IMAGE_URL } from '../../../api';
+import {BUILD_IMAGE_URL} from '../../../api';
 type ItemType = {
   badge: number;
   title: string;
@@ -31,17 +31,10 @@ type ItemType = {
   onPress?: () => void;
 };
 
-const Item = ({
-  badge = 0,
-  title,
-  message,
-  image,
-  time,
-  onPress,
-}: ItemType) => {
+const Item = ({badge = 0, title, message, image, time, onPress}: ItemType) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<ChatStackParams>>();
-  const { mode, defaultAvatar } = useSelector((s: RootState) => s.app);
+  const {mode, defaultAvatar} = useSelector((s: RootState) => s.app);
 
   return (
     <TouchableOpacity
@@ -53,8 +46,7 @@ const Item = ({
         borderColor: COLORS.lightgrey2,
         borderBottomWidth: 2,
         paddingBottom: 10,
-      }}
-    >
+      }}>
       <View
         style={{
           width: wp(15),
@@ -62,11 +54,10 @@ const Item = ({
           borderRadius: wp(15) / 2,
           justifyContent: 'center',
           alignItems: 'center',
-        }}
-      >
+        }}>
         {image ? (
           <Image
-            source={{ uri: BUILD_IMAGE_URL(image) }}
+            source={{uri: BUILD_IMAGE_URL(image)}}
             style={StyleSheet.absoluteFillObject}
           />
         ) : (
@@ -81,19 +72,17 @@ const Item = ({
           />
         )}
       </View>
-      <View style={{ flex: 1, gap: 5 }}>
+      <View style={{flex: 1, gap: 5}}>
         <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
             marginTop: 20,
-          }}
-        >
+          }}>
           <MyText
             size={FONT_SIZE.base}
             color={COLORS.black}
-            bold={FONT_WEIGHT.bold}
-          >
+            bold={FONT_WEIGHT.bold}>
             {title}
           </MyText>
         </View>
@@ -101,7 +90,7 @@ const Item = ({
           {message}
         </MyText>
       </View>
-      <View style={{ justifyContent: 'space-between' }}>
+      <View style={{justifyContent: 'space-between'}}>
         <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
           {time}
         </MyText>
@@ -115,13 +104,11 @@ const Item = ({
               justifyContent: 'center',
               alignItems: 'center',
               alignSelf: 'flex-end',
-            }}
-          >
+            }}>
             <MyText
               size={FONT_SIZE.sm}
               bold={FONT_WEIGHT.semibold}
-              color={COLORS.white}
-            >
+              color={COLORS.white}>
               {badge}
             </MyText>
           </View>
@@ -137,7 +124,7 @@ const MessagesScreen = () => {
   const [filteredData, setFilteredData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const [searchString, setSearchString] = useState('');
-  const { token, user } = useSelector((s: RootState) => s.auth);
+  const {token, user} = useSelector((s: RootState) => s.auth);
   const requestApi = async () => {
     try {
       setLoading(true);
@@ -155,8 +142,10 @@ const MessagesScreen = () => {
   const handleSearch = async (text: string) => {
     if (text) {
       setSearchString(text);
-      const newData = filteredData.filter((item: any) =>
-        item?.sender?.fullname.toLowerCase().includes(text.toLowerCase()) || item?.receiver?.fullname.toLowerCase().includes(text.toLowerCase()),
+      const newData = filteredData.filter(
+        (item: any) =>
+          item?.sender?.fullname.toLowerCase().includes(text.toLowerCase()) ||
+          item?.receiver?.fullname.toLowerCase().includes(text.toLowerCase()),
       );
       setFilteredData(newData);
     } else {
@@ -169,7 +158,7 @@ const MessagesScreen = () => {
     requestApi();
   }, []);
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       <SafeAreaView />
       {loading && <FullScreenLoader />}
       <SecondaryHeader
@@ -212,7 +201,13 @@ const MessagesScreen = () => {
         //   );
         // }}
       />
-      <View style={{width: '90%', alignSelf: 'center', marginTop: 40, marginBottom: -10}}>
+      <View
+        style={{
+          width: '90%',
+          alignSelf: 'center',
+          marginTop: 40,
+          marginBottom: -10,
+        }}>
         <View
           style={{
             backgroundColor: 'rgba(0,0,0,0.1)',
@@ -221,13 +216,12 @@ const MessagesScreen = () => {
             flexDirection: 'row',
             alignItems: 'center',
             overflow: 'hidden',
-          }}
-        >
+          }}>
           <AntDesign
             name="search1"
             size={FONT_SIZE.xl}
             color={COLORS.grey}
-            style={{ marginLeft: 15, marginRight: 5 }}
+            style={{marginLeft: 15, marginRight: 5}}
           />
 
           <TextInput
@@ -247,13 +241,13 @@ const MessagesScreen = () => {
         data={filteredData}
         ListEmptyComponent={() => {
           return (
-            <View style={{ marginTop: 200 }}>
+            <View style={{marginTop: 200}}>
               <MyText center>No Chat!</MyText>
             </View>
           );
         }}
-        contentContainerStyle={{ marginHorizontal: 20, marginVertical: 20 }}
-        renderItem={({ item }) => {
+        contentContainerStyle={{marginHorizontal: 20, marginVertical: 20}}
+        renderItem={({item}) => {
           let otherUserObj =
             item?.receiver?._id !== user?._id ? item?.receiver : item?.sender;
 

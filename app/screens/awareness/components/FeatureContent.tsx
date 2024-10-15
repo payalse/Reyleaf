@@ -1,12 +1,12 @@
-import { Image, StyleSheet, Text, View } from 'react-native';
+import {Image, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import { COLORS, FONT_SIZE, FONT_WEIGHT } from '../../../styles';
-import { MyText } from '../../../components/MyText';
+import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../../styles';
+import {MyText} from '../../../components/MyText';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import moment from 'moment';
-import { BUILD_IMAGE_URL } from '../../../api';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
+import {BUILD_IMAGE_URL} from '../../../api';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../../redux/store';
 
 type Props = {
   name: string;
@@ -15,8 +15,8 @@ type Props = {
   picture?: string;
 };
 
-const FeatureContent = ({ name, updated_at, status, picture }: Props) => {
-  const { defaultAvatar } = useSelector((s: RootState) => s.app);
+const FeatureContent = ({name, updated_at, status, picture}: Props) => {
+  const {defaultAvatar} = useSelector((s: RootState) => s.app);
   return (
     <View
       style={{
@@ -25,19 +25,17 @@ const FeatureContent = ({ name, updated_at, status, picture }: Props) => {
         borderRadius: 20,
         margin: 20,
         padding: 15,
-      }}
-    >
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+      }}>
+      <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
         <View
           style={{
             width: 50,
             height: 50,
             borderRadius: 10,
-          }}
-        >
+          }}>
           {picture ? (
             <Image
-              source={{ uri: BUILD_IMAGE_URL(picture) }}
+              source={{uri: BUILD_IMAGE_URL(picture)}}
               style={{
                 width: '100%',
                 height: '100%',
@@ -56,14 +54,14 @@ const FeatureContent = ({ name, updated_at, status, picture }: Props) => {
             />
           )}
         </View>
-        <View style={{ gap: 8 }}>
+        <View style={{gap: 8}}>
           <MyText size={FONT_SIZE.sm} bold={FONT_WEIGHT.bold}>
             {name}
           </MyText>
-          <View style={{ flexDirection: 'row', gap: 5 }}>
+          <View style={{flexDirection: 'row', gap: 5}}>
             <AntDesign name="clockcircle" size={15} color={COLORS.greenDark} />
             <MyText color={COLORS.greenDark} size={FONT_SIZE.xs}>
-            {moment(updated_at).fromNow()}
+              {moment(updated_at).fromNow()}
             </MyText>
           </View>
         </View>
@@ -72,8 +70,7 @@ const FeatureContent = ({ name, updated_at, status, picture }: Props) => {
       <MyText
         size={FONT_SIZE.xs}
         color={COLORS.grey}
-        style={{ marginVertical: 10, lineHeight: 18 }}
-      >
+        style={{marginVertical: 10, lineHeight: 18}}>
         {status}
       </MyText>
       {/* bottom */}

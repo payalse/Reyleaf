@@ -6,35 +6,35 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { useHideBottomBar } from '../../hook/useHideBottomBar';
+import React, {useEffect, useState} from 'react';
+import {useHideBottomBar} from '../../hook/useHideBottomBar';
 import MainLayout from '../../components/layout/MainLayout';
 import SecondaryHeader from '../../components/header/SecondaryHeader';
 import PrimaryBtn from '../../components/buttons/PrimaryBtn';
-import { MyText } from '../../components/MyText';
-import { COLORS, FONT_SIZE, FONT_WEIGHT, hp, wp } from '../../styles';
+import {MyText} from '../../components/MyText';
+import {COLORS, FONT_SIZE, FONT_WEIGHT, hp, wp} from '../../styles';
 import AntDesgin from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
-import { FlatList } from 'react-native';
+import {FlatList} from 'react-native';
 import ProductItem from '../../components/ProductItem';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import ProductShow from './components/ProductShow';
 import CartSvg from '../../../assets/svg/tab/icons/CartFill.svg';
 import HeartIconSvg from '../../../assets/svg/icons/heart.svg';
-import { ShowAlert } from '../../utils/alert';
-import { ALERT_TYPE } from 'react-native-alert-notification';
-import { api_addToCart } from '../../api/cart';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../redux/store';
-import { ProductType, Reviews } from '../../types';
+import {ShowAlert} from '../../utils/alert';
+import {ALERT_TYPE} from 'react-native-alert-notification';
+import {api_addToCart} from '../../api/cart';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch, RootState} from '../../redux/store';
+import {ProductType, Reviews} from '../../types';
 import {
   api_addProductToFavourite,
   api_getReviewList,
   api_productGetById,
   apiSimilarProductList,
 } from '../../api/product';
-import { HomeStackParams, ProductDetailParams } from '../../naviagtion/types';
-import { BASE_URL, BUILD_IMAGE_URL } from '../../api';
+import {HomeStackParams, ProductDetailParams} from '../../naviagtion/types';
+import {BASE_URL, BUILD_IMAGE_URL} from '../../api';
 import FullScreenLoader from '../../components/FullScreenLoader';
 import {
   GetHomeProductResponse,
@@ -47,15 +47,15 @@ import {
   setSimilarProduct,
   setProductReview,
 } from '../../redux/features/product/productSlice';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import Review from '../../components/Reviews';
-import { Rating } from 'react-native-ratings';
+import {Rating} from 'react-native-ratings';
 
-const SimilarList = ({ productList }: any) => {
+const SimilarList = ({productList}: any) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<HomeStackParams>>();
   return (
-    <View style={{ marginVertical: 20 }}>
+    <View style={{marginVertical: 20}}>
       <View
         style={{
           flexDirection: 'row',
@@ -63,24 +63,22 @@ const SimilarList = ({ productList }: any) => {
           justifyContent: 'space-between',
           marginBottom: 10,
           marginHorizontal: 20,
-        }}
-      >
+        }}>
         <MyText bold={FONT_WEIGHT.bold} size={FONT_SIZE.xl}>
           Similar Items
         </MyText>
         <TouchableOpacity
-          onPress={() => navigation.navigate('SimilarProducts')}
-        >
+          onPress={() => navigation.navigate('SimilarProducts')}>
           <MyText>View all</MyText>
         </TouchableOpacity>
       </View>
       <FlatList
         data={productList}
-        contentContainerStyle={{ gap: 25, marginLeft: 20 }}
+        contentContainerStyle={{gap: 25, marginLeft: 20}}
         showsHorizontalScrollIndicator={false}
         horizontal
         keyExtractor={item => item.id}
-        renderItem={({ item }) => {
+        renderItem={({item}) => {
           return (
             <ProductItem
               photos={item?.photos}
@@ -111,14 +109,20 @@ const ProductDetailScreen = () => {
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(false);
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(true);
-  const { token } = useSelector((s: RootState) => s.auth);
+  const {token} = useSelector((s: RootState) => s.auth);
   const navigation = useNavigation();
   const [productImages, setProductImages] = useState<string[]>([]);
   const navigation1 =
     useNavigation<NativeStackNavigationProp<ProductDetailParams>>();
+    const navigation2 =
+    useNavigation<NativeStackNavigationProp<HomeStackParams>>();
 
   const addToCartPress = async () => {
     try {
+      if (!token) {
+        navigation2.navigate('Welcome');
+        return;
+      }
       setLoading(true);
       const res = await api_addToCart(token!, {
         product: params.productId,
@@ -147,7 +151,7 @@ const ProductDetailScreen = () => {
         params.productId,
       )) as GetProductByIdResponse;
       setProduct(res?.data);
-      setLiked(res?.data?.isFavourite)
+      setLiked(res?.data?.isFavourite);
     } catch (error: any) {
       ShowAlert({
         textBody: error.message,
@@ -219,8 +223,15 @@ const ProductDetailScreen = () => {
   }
   const addToFavourite = async () => {
     try {
+      if (!token) {
+        navigation2.navigate('Welcome');
+        return;
+      }
       setLiked(!liked);
-      const res: any = await api_addProductToFavourite(token!, params.productId);
+      const res: any = await api_addProductToFavourite(
+        token!,
+        params.productId,
+      );
       console.log(res);
     } catch (error) {
       console.log(error);
@@ -233,14 +244,12 @@ const ProductDetailScreen = () => {
     <View
       style={{
         flex: 1,
-      }}
-    >
+      }}>
       <MainLayout
-        contentContainerStyle={{ marginHorizontal: 0 }}
+        contentContainerStyle={{marginHorizontal: 0}}
         headerComp={
           <SecondaryHeader onBack={navigation.goBack} title="Product Detail" />
-        }
-      >
+        }>
         <ProductShow images={productImages} />
         <View
           style={{
@@ -249,8 +258,7 @@ const ProductDetailScreen = () => {
             padding: 20,
             borderTopRightRadius: 20,
             borderTopLeftRadius: 20,
-          }}
-        >
+          }}>
           {/* Like Btn */}
           <TouchableOpacity
             onPress={() => addToFavourite()}
@@ -267,8 +275,7 @@ const ProductDetailScreen = () => {
               right: 50,
               justifyContent: 'center',
               alignItems: 'center',
-            }}
-          >
+            }}>
             <HeartIconSvg opacity={liked ? 1 : 0.4} />
           </TouchableOpacity>
           <View>
@@ -278,9 +285,8 @@ const ProductDetailScreen = () => {
                 justifyContent: 'space-between',
                 alignItems: 'flex-end',
                 marginBottom: 10,
-              }}
-            >
-              <View style={{ gap: 5 }}>
+              }}>
+              <View style={{gap: 5}}>
                 <MyText size={FONT_SIZE.lg} bold={FONT_WEIGHT.semibold}>
                   {product?.title || 'Product title'}
                 </MyText>
@@ -292,9 +298,14 @@ const ProductDetailScreen = () => {
                     gap: 10,
                     flexDirection: 'row',
                     alignItems: 'center',
-                  }}
-                >
-                 <Rating type="star" ratingCount={5} imageSize={15} readonly startingValue={product?.rating} />
+                  }}>
+                  <Rating
+                    type="star"
+                    ratingCount={5}
+                    imageSize={15}
+                    readonly
+                    startingValue={product?.rating}
+                  />
                   <MyText size={FONT_SIZE.sm}>{product?.rating || '0'}</MyText>
                 </View>
               </View>
@@ -302,16 +313,14 @@ const ProductDetailScreen = () => {
                 style={{
                   alignItems: 'flex-end',
                   justifyContent: 'flex-end',
-                }}
-              >
+                }}>
                 <MyText size={FONT_SIZE.lg} bold={FONT_WEIGHT.semibold}>
                   ${product?.discountedProce}
                 </MyText>
                 <MyText
                   size={FONT_SIZE.sm}
                   color={COLORS.grey}
-                  style={{ textDecorationLine: 'line-through' }}
-                >
+                  style={{textDecorationLine: 'line-through'}}>
                   ${product?.price}
                 </MyText>
               </View>
@@ -321,16 +330,13 @@ const ProductDetailScreen = () => {
                 alignItems: 'center',
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-              }}
-            >
+              }}>
               <MyText size={FONT_SIZE.sm}>Select Total Item</MyText>
               <View
-                style={{ alignItems: 'center', flexDirection: 'row', gap: 10 }}
-              >
+                style={{alignItems: 'center', flexDirection: 'row', gap: 10}}>
                 <TouchableOpacity
                   style={styles.countBtn}
-                  onPress={() => setQty(prev => prev + 1)}
-                >
+                  onPress={() => setQty(prev => prev + 1)}>
                   <AntDesgin
                     name="plus"
                     size={FONT_SIZE.sm}
@@ -344,8 +350,7 @@ const ProductDetailScreen = () => {
                     if (qty >= 2) {
                       return setQty(prev => prev - 1);
                     }
-                  }}
-                >
+                  }}>
                   <AntDesgin
                     name="minus"
                     size={FONT_SIZE.sm}
@@ -362,20 +367,16 @@ const ProductDetailScreen = () => {
               justifyContent: 'space-between',
               alignItems: 'center',
               marginBottom: 5,
-            }}
-          >
+            }}>
             <MyText>Description</MyText>
             <TouchableOpacity
-              onPress={() => setIsDescriptionOpen(!isDescriptionOpen)}
-            >
+              onPress={() => setIsDescriptionOpen(!isDescriptionOpen)}>
               <Entypo
                 color={COLORS.black}
                 name="chevron-down"
                 size={FONT_SIZE['xl']}
                 style={{
-                  transform: [
-                    { rotate: !isDescriptionOpen ? '180deg' : '0deg' },
-                  ],
+                  transform: [{rotate: !isDescriptionOpen ? '180deg' : '0deg'}],
                 }}
               />
             </TouchableOpacity>
@@ -383,9 +384,8 @@ const ProductDetailScreen = () => {
           {isDescriptionOpen ? (
             <MyText
               color={COLORS.grey}
-              style={{ lineHeight: 18 }}
-              size={FONT_SIZE.sm}
-            >
+              style={{lineHeight: 18}}
+              size={FONT_SIZE.sm}>
               {product?.description}
             </MyText>
           ) : null}
@@ -397,8 +397,7 @@ const ProductDetailScreen = () => {
               alignItems: 'center',
               marginBottom: 15,
               marginTop: 20,
-            }}
-          >
+            }}>
             <MyText>Rating & Reviews</MyText>
             <TouchableOpacity onPress={() => navigation1.navigate('Reviews')}>
               <MyText size={FONT_SIZE.sm}>View all</MyText>

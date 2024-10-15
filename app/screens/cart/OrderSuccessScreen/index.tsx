@@ -19,7 +19,8 @@ const OrderSuccessScreen = () => {
             Your Order Has been Placed Successfully
           </MyText>
           <MyText style={{marginHorizontal: 20}} center color={COLORS.grey}>
-          Your order has been confirmed. You will receive a confirmation email shortly with the details of your purchase.
+            Your order has been confirmed. You will receive a confirmation email
+            shortly with the details of your purchase.
           </MyText>
         </View>
       </View>

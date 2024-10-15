@@ -10,9 +10,9 @@ import {MyText} from '../../../components/MyText';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FullScreenLoader from '../../../components/FullScreenLoader';
-import { api_getFAQ } from '../../../api/feedback';
-import { FAQ } from '../../../types';
-import { GetMyFAQResponse } from '../../../types/apiResponse';
+import {api_getFAQ} from '../../../api/feedback';
+import {FAQ} from '../../../types';
+import {GetMyFAQResponse} from '../../../types/apiResponse';
 
 const FAQScreen = () => {
   const navigation =
@@ -101,7 +101,7 @@ const FAQScreen = () => {
                   paddingVertical: 20,
                   display: isOpen ? 'flex' : 'none',
                 }}>
-                 {item.description}
+                {item.description}
               </MyText>
             </TouchableOpacity>
           );
@@ -124,7 +124,8 @@ const FAQScreen = () => {
             Contact Support
           </MyText>
           <MyText style={{flex: 1}} color={COLORS.white} size={FONT_SIZE.xs}>
-          Need help or have a question? Check out our FAQ or reach out to our support team. We're here to assist you!
+            Need help or have a question? Check out our FAQ or reach out to our
+            support team. We're here to assist you!
           </MyText>
         </View>
         <View

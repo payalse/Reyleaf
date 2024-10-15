@@ -1,27 +1,27 @@
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import MainLayout from '../../../components/layout/MainLayout';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
-import { MyText } from '../../../components/MyText';
-import { COLORS, FONT_SIZE, FONT_WEIGHT } from '../../../styles';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { FlatList } from 'react-native-gesture-handler';
+import {MyText} from '../../../components/MyText';
+import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../../styles';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {FlatList} from 'react-native-gesture-handler';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { OrderStackParams } from '../../../naviagtion/DrawerNavigator';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {OrderStackParams} from '../../../naviagtion/DrawerNavigator';
 import IconOrderSvg from '../../../../assets/svg/icons/orderCompleted.svg';
-import { api_getInvoice, api_getMyOrders } from '../../../api/order';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
+import {api_getInvoice, api_getMyOrders} from '../../../api/order';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../../redux/store';
 import FullScreenLoader from '../../../components/FullScreenLoader';
-import { GetMyOrderResponse } from '../../../types/apiResponse';
-import { OrderType } from '../../../types';
+import {GetMyOrderResponse} from '../../../types/apiResponse';
+import {OrderType} from '../../../types';
 import moment from 'moment';
-import { Rating } from 'react-native-ratings';
+import {Rating} from 'react-native-ratings';
 import RNFS from 'react-native-fs';
 import FileViewer from 'react-native-file-viewer';
 
-const PendingList = ({ data }: any) => {
+const PendingList = ({data}: any) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<OrderStackParams>>();
 
@@ -33,22 +33,20 @@ const PendingList = ({ data }: any) => {
         marginTop: 30,
         paddingBottom: 50,
       }}
-      renderItem={({ item }: any) => {
+      renderItem={({item}: any) => {
         return (
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate('OrderDetail', { orderId: item?.orderId })
+              navigation.navigate('OrderDetail', {orderId: item?.orderId})
             }
             style={{
               backgroundColor: COLORS.white,
               padding: 20,
               borderRadius: 20,
               gap: 10,
-            }}
-          >
+            }}>
             <View
-              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-            >
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <MyText size={FONT_SIZE.base} bold={FONT_WEIGHT.semibold}>
                 Order ID - {item?.orderId}
               </MyText>
@@ -58,19 +56,17 @@ const PendingList = ({ data }: any) => {
                   paddingHorizontal: 10,
                   paddingVertical: 5,
                   borderRadius: 20,
-                }}
-              >
+                }}>
                 <MyText
                   size={FONT_SIZE.sm}
                   bold={FONT_WEIGHT.semibold}
-                  color={COLORS.white}
-                >
+                  color={COLORS.white}>
                   {item?.items.length} Order Items
                 </MyText>
               </View>
             </View>
 
-            <View style={{ flexDirection: 'row', gap: 5 }}>
+            <View style={{flexDirection: 'row', gap: 5}}>
               <AntDesign
                 name="clockcircle"
                 size={FONT_SIZE.base}
@@ -82,16 +78,14 @@ const PendingList = ({ data }: any) => {
               </MyText>
             </View>
             <View
-              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-            >
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <MyText size={FONT_SIZE.sm}>Order total</MyText>
               <MyText size={FONT_SIZE.sm} bold={FONT_WEIGHT.semibold}>
                 ${item?.totalAmount}
               </MyText>
             </View>
             <View
-              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-            >
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <MyText size={FONT_SIZE.sm}>Status</MyText>
               <MyText size={FONT_SIZE.sm} bold={FONT_WEIGHT.semibold}>
                 {/* Order Dispatch */}
@@ -109,7 +103,7 @@ type Props = {
   productList?: any;
   downloadInvoice: (id: string) => void;
 };
-const CompletedList = ({ productList, downloadInvoice }: Props) => {
+const CompletedList = ({productList, downloadInvoice}: Props) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<OrderStackParams>>();
 
@@ -121,7 +115,7 @@ const CompletedList = ({ productList, downloadInvoice }: Props) => {
         marginTop: 30,
         paddingBottom: 50,
       }}
-      renderItem={({ item }: any) => {
+      renderItem={({item}: any) => {
         const hasReview = item?.rating;
         return (
           <View
@@ -130,11 +124,9 @@ const CompletedList = ({ productList, downloadInvoice }: Props) => {
               padding: 20,
               borderRadius: 20,
               gap: 10,
-            }}
-          >
+            }}>
             <View
-              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-            >
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <MyText size={FONT_SIZE.base} bold={FONT_WEIGHT.semibold}>
                 Order ID - {item?.orderId}
               </MyText>
@@ -144,19 +136,17 @@ const CompletedList = ({ productList, downloadInvoice }: Props) => {
                   paddingHorizontal: 10,
                   paddingVertical: 5,
                   borderRadius: 20,
-                }}
-              >
+                }}>
                 <MyText
                   size={FONT_SIZE.sm}
                   bold={FONT_WEIGHT.semibold}
-                  color={COLORS.white}
-                >
+                  color={COLORS.white}>
                   {item?.items.length} Order Items
                 </MyText>
               </View>
             </View>
 
-            <View style={{ flexDirection: 'row', gap: 5 }}>
+            <View style={{flexDirection: 'row', gap: 5}}>
               <AntDesign
                 name="clockcircle"
                 size={FONT_SIZE.base}
@@ -167,24 +157,21 @@ const CompletedList = ({ productList, downloadInvoice }: Props) => {
               </MyText>
             </View>
             <View
-              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-            >
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <MyText size={FONT_SIZE.sm}>Order total</MyText>
               <MyText size={FONT_SIZE.sm} bold={FONT_WEIGHT.semibold}>
                 $ {item?.totalAmount}
               </MyText>
             </View>
             <View
-              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-            >
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <MyText size={FONT_SIZE.sm}>Status</MyText>
               <MyText size={FONT_SIZE.sm} bold={FONT_WEIGHT.semibold}>
                 {item?.status}
               </MyText>
             </View>
             <View
-              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-            >
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               {hasReview ? (
                 <View>
                   <MyText size={FONT_SIZE.sm}>Order Review & Rating</MyText>
@@ -195,8 +182,7 @@ const CompletedList = ({ productList, downloadInvoice }: Props) => {
                       alignItems: 'center',
                       gap: 5,
                       marginTop: 5,
-                    }}
-                  >
+                    }}>
                     <Rating
                       type="star"
                       ratingCount={item?.rating}
@@ -209,7 +195,7 @@ const CompletedList = ({ productList, downloadInvoice }: Props) => {
               ) : (
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate('OrderReview', { orderId: item?._id });
+                    navigation.navigate('OrderReview', {orderId: item?._id});
                   }}
                   style={{
                     backgroundColor: 'rgba(6, 95, 70, 0.15)',
@@ -223,8 +209,7 @@ const CompletedList = ({ productList, downloadInvoice }: Props) => {
                     gap: 10,
                     borderWidth: 2,
                     borderColor: COLORS.greenDark,
-                  }}
-                >
+                  }}>
                   <AntDesign
                     name="star"
                     size={FONT_SIZE.base}
@@ -243,9 +228,8 @@ const CompletedList = ({ productList, downloadInvoice }: Props) => {
                   borderRadius: 15,
                   justifyContent: 'center',
                   alignItems: 'center',
-                }}
-              >
-                 <TouchableOpacity onPress={() => downloadInvoice(item?._id)}>
+                }}>
+                <TouchableOpacity onPress={() => downloadInvoice(item?._id)}>
                   <IconOrderSvg />
                 </TouchableOpacity>
                 {/* <Entypo
@@ -267,7 +251,7 @@ const MyOrdersScreen = () => {
   const isFocused = useIsFocused();
   const navigation =
     useNavigation<NativeStackNavigationProp<OrderStackParams>>();
-  const { token } = useSelector((s: RootState) => s.auth);
+  const {token} = useSelector((s: RootState) => s.auth);
   const [activeTab, setActiveTab] = useState(Tabs[0]);
   const [pendingOrders, setPendingOrders] = useState<OrderType[]>([]);
   const [completedOrders, setCompletedOrders] = useState<OrderType[]>([]);
@@ -323,16 +307,15 @@ const MyOrdersScreen = () => {
   }
   return (
     <MainLayout
-      contentContainerStyle={{ flex: 1 }}
+      contentContainerStyle={{flex: 1}}
       scrollEnabled={false}
       headerComp={
         <SecondaryHeader
           onBack={navigation.goBack}
-          backBtnContainerStyle={{ left: 0 }}
+          backBtnContainerStyle={{left: 0}}
           title="My Orders"
         />
-      }
-    >
+      }>
       <View
         style={{
           backgroundColor: COLORS.white,
@@ -342,8 +325,7 @@ const MyOrdersScreen = () => {
           flexDirection: 'row',
           gap: 15,
           marginTop: 20,
-        }}
-      >
+        }}>
         {Tabs.map(tab => {
           const isActive = tab === activeTab;
           return (
@@ -357,13 +339,11 @@ const MyOrdersScreen = () => {
                 height: 45,
                 justifyContent: 'center',
                 alignItems: 'center',
-              }}
-            >
+              }}>
               <MyText
                 bold={isActive ? FONT_WEIGHT.bold : FONT_WEIGHT.normal}
                 center
-                color={isActive ? COLORS.white : COLORS.grey}
-              >
+                color={isActive ? COLORS.white : COLORS.grey}>
                 {tab}
               </MyText>
             </TouchableOpacity>

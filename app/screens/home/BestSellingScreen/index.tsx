@@ -1,24 +1,24 @@
-import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import ProductItem2 from '../../../components/ProductItem2';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import SearchBox from '../../../components/SearchBox';
-import { useHideBottomBar } from '../../../hook/useHideBottomBar';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
+import {useHideBottomBar} from '../../../hook/useHideBottomBar';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../../redux/store';
 import ProductItem from '../../../components/ProductItem';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { HomeStackParams } from '../../../naviagtion/types';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {HomeStackParams} from '../../../naviagtion/types';
 
 const BestSellingScreen = () => {
   useHideBottomBar({});
   const navigation = useNavigation();
 
   const navigationHome =
-  useNavigation<NativeStackNavigationProp<HomeStackParams>>();
-
-  const { bestSellingProducts } = useSelector((s: RootState) => s.product);
+    useNavigation<NativeStackNavigationProp<HomeStackParams>>();
+    const {isAuthenticated} = useSelector((s: RootState) => s.auth);
+  const {bestSellingProducts} = useSelector((s: RootState) => s.product);
 
   return (
     <FlatList
@@ -27,10 +27,11 @@ const BestSellingScreen = () => {
           <View>
             <SafeAreaView />
             <SecondaryHeader
-              backBtnContainerStyle={{ left: 0 }}
+              backBtnContainerStyle={{left: 0}}
               onBack={navigation.goBack}
               title="Best Sellers"
             />
+            {isAuthenticated ? (
             <SearchBox
               onFilterBtnPress={() => {
                 navigationHome.navigate('SearchFilter');
@@ -40,13 +41,16 @@ const BestSellingScreen = () => {
                 navigationHome.navigate('SearchTab');
               }}
             />
+            ): (
+              <View style={{height: 20}} />
+            )}
           </View>
         );
       }}
-      contentContainerStyle={{ marginHorizontal: 20 }}
-      ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
+      contentContainerStyle={{marginHorizontal: 20}}
+      ItemSeparatorComponent={() => <View style={{height: 20}} />}
       data={bestSellingProducts}
-      renderItem={({ item }) => {
+      renderItem={({item}) => {
         return (
           <ProductItem2
             photos={item?.photos}

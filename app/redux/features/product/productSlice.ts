@@ -1,5 +1,5 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { ProductType, Reviews } from '../../../types';
+import {PayloadAction, createSlice} from '@reduxjs/toolkit';
+import {ProductType, Reviews} from '../../../types';
 
 interface StateType {
   trendingProducts: ProductType[];
@@ -56,7 +56,7 @@ export const {
   setRecentlyViewedProduct,
   setFavouriteProduct,
   setSimilarProduct,
-  setProductReview
+  setProductReview,
 } = productSlice.actions;
 
 export default productSlice.reducer;

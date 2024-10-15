@@ -23,7 +23,7 @@ import {ShowAlert} from '../../../utils/alert';
 import {ALERT_TYPE} from 'react-native-alert-notification';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../redux/store';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 type Values = {
   description: string;
@@ -101,7 +101,8 @@ const CreateFeedScreen = () => {
             />
           }>
           <View style={{flex: 1}}>
-            <TouchableOpacity  onPress={openPicker}
+            <TouchableOpacity
+              onPress={openPicker}
               style={{
                 backgroundColor: COLORS.white,
                 width: 100,

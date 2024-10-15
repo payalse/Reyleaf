@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   GestureResponderEvent,
 } from 'react-native';
-import { FONT_SIZE } from '../styles';
+import {FONT_SIZE} from '../styles';
 
 interface TextProp extends TextProps {
   children: string | React.ReactNode;
@@ -41,8 +41,7 @@ export const MyText = ({
           textAlign: center ? 'center' : 'auto',
         },
         style,
-      ]}
-    >
+      ]}>
       {children}
     </Text>
   );

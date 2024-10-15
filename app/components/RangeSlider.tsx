@@ -1,7 +1,7 @@
-import { useCallback, useState, useEffect } from 'react';
-import { View } from 'react-native';
+import {useCallback, useState, useEffect} from 'react';
+import {View} from 'react-native';
 import RnRangeSlider from 'rn-range-slider';
-import { COLORS } from '../styles';
+import {COLORS} from '../styles';
 import ThumbSvg from '../../assets/svg/icons/filterThumb.svg';
 
 interface SliderData {
@@ -10,7 +10,7 @@ interface SliderData {
   onValueChange: (low: number, high: number) => void;
 }
 
-const RangeSlider = ({ min, max, onValueChange }: SliderData) => {
+const RangeSlider = ({min, max, onValueChange}: SliderData) => {
   const [low, setLow] = useState(min);
   const [high, setHigh] = useState(max);
 
@@ -31,8 +31,7 @@ const RangeSlider = ({ min, max, onValueChange }: SliderData) => {
           backgroundColor: COLORS.greenDark,
           justifyContent: 'center',
           alignItems: 'center',
-        }}
-      >
+        }}>
         <ThumbSvg />
       </View>
     ),
@@ -77,7 +76,7 @@ const RangeSlider = ({ min, max, onValueChange }: SliderData) => {
 
   return (
     <RnRangeSlider
-      min={0}  // Set these to fixed values or the required range
+      min={0} // Set these to fixed values or the required range
       max={500}
       low={low}
       high={high}

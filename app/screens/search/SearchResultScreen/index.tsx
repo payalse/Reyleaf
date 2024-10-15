@@ -1,16 +1,16 @@
-import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import ProductItem2 from '../../../components/ProductItem2';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import SearchBox from '../../../components/SearchBox';
-import { useHideBottomBar } from '../../../hook/useHideBottomBar';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { SearchStackParams } from '../../../naviagtion/types';
-import { ProductType } from '../../../types';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
-import { api_searchProductWithFilters } from '../../../api/product';
+import {useHideBottomBar} from '../../../hook/useHideBottomBar';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {SearchStackParams} from '../../../naviagtion/types';
+import {ProductType} from '../../../types';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../../redux/store';
+import {api_searchProductWithFilters} from '../../../api/product';
 import FullScreenLoader from '../../../components/FullScreenLoader';
 import styles from 'rn-range-slider/styles';
 
@@ -23,7 +23,7 @@ const SearchResultScreen = () => {
   const [resultProduct, setResultProduct] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(false);
   const [text, setText] = useState('');
-  const { token } = useSelector((s: RootState) => s.auth);
+  const {token} = useSelector((s: RootState) => s.auth);
 
   const handleSearch = async () => {
     try {
@@ -58,7 +58,7 @@ const SearchResultScreen = () => {
       <SafeAreaView />
       <View style={{width: '90%', marginLeft: 22}}>
         <SecondaryHeader
-          backBtnContainerStyle={{ left: 0 }}
+          backBtnContainerStyle={{left: 0}}
           onBack={navigation.goBack}
           title="Search Result"
         />
@@ -70,10 +70,10 @@ const SearchResultScreen = () => {
         />
       </View>
       <FlatList
-        contentContainerStyle={{ marginHorizontal: 20 }}
-        ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
+        contentContainerStyle={{marginHorizontal: 20}}
+        ItemSeparatorComponent={() => <View style={{height: 20}} />}
         data={resultProduct}
-        renderItem={({ item }) => {
+        renderItem={({item}) => {
           return (
             <ProductItem2
               id={item._id}

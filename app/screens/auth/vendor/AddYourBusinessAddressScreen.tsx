@@ -81,7 +81,7 @@ const AddYourBusinessAddressScreen = () => {
         params.authToken,
       )) as any;
       dispatch(updateUser(res));
-      navigation.navigate('AccountCreatedSuccess')
+      navigation.navigate('AccountCreatedSuccess');
     } catch (error: any) {
       ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
     } finally {
@@ -117,7 +117,7 @@ const AddYourBusinessAddressScreen = () => {
                 Add your Business Address
               </MyText>
               <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
-              Enter your business address to help customers find you easily.
+                Enter your business address to help customers find you easily.
               </MyText>
             </View>
             <View style={{marginTop: 20}}>

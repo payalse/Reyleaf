@@ -6,13 +6,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { COLORS, FONT_SIZE, FONT_WEIGHT } from '../../../styles';
-import { MyText } from '../../../components/MyText';
+import React, {useEffect, useState} from 'react';
+import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../../styles';
+import {MyText} from '../../../components/MyText';
 import AcceptSvg from '../../../../assets/svg/icons/reqAccept.svg';
-import { FriendSearch } from '.';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../../redux/store';
+import {FriendSearch} from '.';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch, RootState} from '../../../redux/store';
 import FullScreenLoader from '../../../components/FullScreenLoader';
 import {
   api_cancelRequest,
@@ -23,10 +23,10 @@ import {
   api_reportOrBlock,
   api_searchSuggessions,
 } from '../../../api/friends';
-import { useAppAlert } from '../../../context/AppAlertContext';
-import { useIsFocused, useNavigationState } from '@react-navigation/native';
-import { BUILD_IMAGE_URL } from '../../../api';
-import { Friend } from '../../../types';
+import {useAppAlert} from '../../../context/AppAlertContext';
+import {useIsFocused, useNavigationState} from '@react-navigation/native';
+import {BUILD_IMAGE_URL} from '../../../api';
+import {Friend} from '../../../types';
 import {
   blockedList,
   myFriendsList,
@@ -41,10 +41,10 @@ const SuggestedList = () => {
   const [loading, setLoading] = useState(false);
   const isFocused = useIsFocused();
   const dispatch = useDispatch<AppDispatch>();
-  const { token } = useSelector((s: RootState) => s.auth);
-  const { suggested } = useSelector((s: RootState) => s.friend);
+  const {token} = useSelector((s: RootState) => s.auth);
+  const {suggested} = useSelector((s: RootState) => s.friend);
 
-  const { showModal } = useAppAlert()!;
+  const {showModal} = useAppAlert()!;
 
   const requestApi = async () => {
     try {
@@ -63,7 +63,7 @@ const SuggestedList = () => {
       setLoading(true);
       item.status = 'pending';
       const res: any = await api_friendfollowUnfollow(token!, item?._id);
-      showModal({ text: res?.message });
+      showModal({text: res?.message});
     } catch (error) {
       console.log(error);
     } finally {
@@ -167,11 +167,15 @@ const SuggestedList = () => {
   return (
     <React.Fragment>
       {loading && <FullScreenLoader />}
-      <FriendSearch value={searchString} onChangeText={handleSearch} onFocus={handleSearch} />
+      <FriendSearch
+        value={searchString}
+        onChangeText={handleSearch}
+        onFocus={handleSearch}
+      />
       <FlatList
         showsVerticalScrollIndicator={false}
         data={filterUser}
-        renderItem={({ item }) => {
+        renderItem={({item}) => {
           // @ts-ignore
           const status = item?.status || '';
 
@@ -184,8 +188,7 @@ const SuggestedList = () => {
                 borderRadius: 10,
                 flexDirection: 'row',
                 gap: 10,
-              }}
-            >
+              }}>
               <View
                 style={{
                   width: 50,
@@ -193,11 +196,10 @@ const SuggestedList = () => {
                   borderRadius: 10,
                   // backgroundColor: COLORS.grey,
                   overflow: 'hidden',
-                }}
-              >
+                }}>
                 {item?.picture ? (
                   <Image
-                    source={{ uri: BUILD_IMAGE_URL(item?.picture) }}
+                    source={{uri: BUILD_IMAGE_URL(item?.picture)}}
                     style={StyleSheet.absoluteFillObject}
                   />
                 ) : (
@@ -210,7 +212,7 @@ const SuggestedList = () => {
                 )}
               </View>
 
-              <View style={{ flex: 1, justifyContent: 'space-evenly' }}>
+              <View style={{flex: 1, justifyContent: 'space-evenly'}}>
                 <MyText size={FONT_SIZE.base} bold={FONT_WEIGHT.bold}>
                   {item?.fullname || ''}
                 </MyText>
@@ -231,8 +233,7 @@ const SuggestedList = () => {
                     gap: 5,
                     width: 80,
                     alignSelf: 'center',
-                  }}
-                >
+                  }}>
                   <AcceptSvg />
                   <MyText color={COLORS.white} size={FONT_SIZE.sm}>
                     Follow
@@ -254,8 +255,7 @@ const SuggestedList = () => {
                     gap: 5,
                     width: 80,
                     alignSelf: 'center',
-                  }}
-                >
+                  }}>
                   <AcceptSvg />
                   <MyText color={COLORS.white} size={FONT_SIZE.sm}>
                     Block
@@ -275,8 +275,7 @@ const SuggestedList = () => {
                       gap: 5,
                       width: 80,
                       alignSelf: 'center',
-                    }}
-                  >
+                    }}>
                     {/* <AcceptSvg /> */}
                     <MyText color={COLORS.black} size={FONT_SIZE.sm}>
                       Pending
@@ -297,8 +296,7 @@ const SuggestedList = () => {
                       width: 80,
                       alignSelf: 'center',
                       marginTop: 10,
-                    }}
-                  >
+                    }}>
                     {/* <AcceptSvg /> */}
                     <MyText color={COLORS.white} size={FONT_SIZE.sm}>
                       Cancel
@@ -321,8 +319,7 @@ const SuggestedList = () => {
                     gap: 5,
                     width: 80,
                     alignSelf: 'center',
-                  }}
-                >
+                  }}>
                   <AcceptSvg />
                   <MyText color={COLORS.white} size={FONT_SIZE.sm}>
                     UnBlock

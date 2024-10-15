@@ -5,29 +5,29 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { COLORS, FONT_SIZE, FONT_WEIGHT, hp, wp } from '../../../styles';
-import { MyText } from '../../../components/MyText';
+import React, {useEffect, useState} from 'react';
+import {COLORS, FONT_SIZE, FONT_WEIGHT, hp, wp} from '../../../styles';
+import {MyText} from '../../../components/MyText';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { FriendSearch } from '.';
+import {FriendSearch} from '.';
 import Tooltip from 'react-native-walkthrough-tooltip';
 import FullScreenLoader from '../../../components/FullScreenLoader';
-import { AppDispatch, RootState } from '../../../redux/store';
-import { useDispatch, useSelector } from 'react-redux';
+import {AppDispatch, RootState} from '../../../redux/store';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   api_getBlocked,
   api_getMyfiends,
   api_reportOrBlock,
 } from '../../../api/friends';
-import { BUILD_IMAGE_URL } from '../../../api';
+import {BUILD_IMAGE_URL} from '../../../api';
 import {
   useIsFocused,
   useNavigation,
   useNavigationState,
 } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { FeedStackParams } from '../../../naviagtion/types';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {FeedStackParams} from '../../../naviagtion/types';
 import {
   blockedList,
   myFriendsList,
@@ -51,12 +51,12 @@ const Item = ({
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const navigation =
     useNavigation<NativeStackNavigationProp<FeedStackParams>>();
-  const { mode, defaultAvatar } = useSelector((s: RootState) => s.app);
+  const {mode, defaultAvatar} = useSelector((s: RootState) => s.app);
   const handleChatPress = async () => {
     // @ts-ignore
     navigation.navigate('ChatStack', {
       screen: 'Chat',
-      params: { otherUserId: userId, fullname: name },
+      params: {otherUserId: userId, fullname: name},
     });
   };
   return (
@@ -68,18 +68,16 @@ const Item = ({
         borderRadius: 10,
         flexDirection: 'row',
         gap: 10,
-      }}
-    >
+      }}>
       <View
         style={{
           width: 50,
           height: 50,
           borderRadius: 10,
-        }}
-      >
+        }}>
         {picture ? (
           <Image
-            source={{ uri: BUILD_IMAGE_URL(picture) }}
+            source={{uri: BUILD_IMAGE_URL(picture)}}
             style={StyleSheet.absoluteFillObject}
           />
         ) : (
@@ -95,7 +93,7 @@ const Item = ({
         )}
       </View>
 
-      <View style={{ flex: 1, justifyContent: 'space-evenly' }}>
+      <View style={{flex: 1, justifyContent: 'space-evenly'}}>
         <MyText size={FONT_SIZE.base} bold={FONT_WEIGHT.bold}>
           {name}
         </MyText>
@@ -116,8 +114,7 @@ const Item = ({
           width: 40,
           borderRadius: 10,
           alignSelf: 'center',
-        }}
-      >
+        }}>
         <AntDesign name="message1" size={18} color={COLORS.white} />
       </TouchableOpacity>
       <View
@@ -130,11 +127,10 @@ const Item = ({
           width: 40,
           borderRadius: 10,
           alignSelf: 'center',
-        }}
-      >
+        }}>
         <Tooltip
           backgroundColor={COLORS.transparent}
-          arrowStyle={{ backgroundColor: 'red', display: 'none', opacity: 0 }}
+          arrowStyle={{backgroundColor: 'red', display: 'none', opacity: 0}}
           placement="bottom"
           isVisible={isTooltipOpen}
           contentStyle={{
@@ -143,7 +139,7 @@ const Item = ({
             height: hp(10),
             shadowColor: '#000',
             width: wp(20),
-            transform: [{ translateX: wp(-5) }],
+            transform: [{translateX: wp(-5)}],
             shadowOffset: {
               width: 0,
               height: 2,
@@ -155,26 +151,23 @@ const Item = ({
             zIndex: 1000,
           }}
           content={
-            <View style={{ justifyContent: 'space-evenly', flex: 1 }}>
+            <View style={{justifyContent: 'space-evenly', flex: 1}}>
               <TouchableOpacity
                 onPress={() => {
                   handleReportOrBlockPress('block', userId);
-                }}
-              >
+                }}>
                 <MyText size={FONT_SIZE.sm}>Block</MyText>
               </TouchableOpacity>
 
               <TouchableOpacity
-                onPress={() => handleReportOrBlockPress('report', userId)}
-              >
+                onPress={() => handleReportOrBlockPress('report', userId)}>
                 <MyText size={FONT_SIZE.sm} color={COLORS.red}>
                   Report
                 </MyText>
               </TouchableOpacity>
             </View>
           }
-          onClose={() => setIsTooltipOpen(false)}
-        >
+          onClose={() => setIsTooltipOpen(false)}>
           <TouchableOpacity
             onPress={() => setIsTooltipOpen(true)}
             style={{
@@ -182,8 +175,7 @@ const Item = ({
               width: 40,
               justifyContent: 'center',
               alignItems: 'center',
-            }}
-          >
+            }}>
             <Entypo
               name="dots-three-horizontal"
               size={18}
@@ -202,10 +194,10 @@ const MyFriendList = () => {
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [searchString, setSearchString] = useState('');
   const [loading, setLoading] = useState(false);
-  const { token } = useSelector((s: RootState) => s.auth);
+  const {token} = useSelector((s: RootState) => s.auth);
   const isFocused = useIsFocused();
   const dispatch = useDispatch<AppDispatch>();
-  const { myFriends } = useSelector((s: RootState) => s.friend);
+  const {myFriends} = useSelector((s: RootState) => s.friend);
 
   console.log(token);
   const requestApi = async () => {
@@ -286,7 +278,7 @@ const MyFriendList = () => {
         <FlatList
           showsVerticalScrollIndicator={false}
           data={filteredData}
-          renderItem={({ item }) => {
+          renderItem={({item}) => {
             return (
               <Item
                 // userId={item?.followingId?._id}

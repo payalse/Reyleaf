@@ -6,16 +6,16 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { COLORS, FONT_SIZE, FONT_WEIGHT } from '../../../styles';
-import { MyText } from '../../../components/MyText';
+import React, {useEffect, useState} from 'react';
+import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../../styles';
+import {MyText} from '../../../components/MyText';
 import UnblockSvg from '../../../../assets/svg/icons/reqReject.svg';
-import { FriendSearch } from '.';
-import { string } from 'yup';
-import { AppDispatch, RootState } from '../../../redux/store';
-import { useDispatch, useSelector } from 'react-redux';
+import {FriendSearch} from '.';
+import {string} from 'yup';
+import {AppDispatch, RootState} from '../../../redux/store';
+import {useDispatch, useSelector} from 'react-redux';
 import FullScreenLoader from '../../../components/FullScreenLoader';
-import { useIsFocused, useNavigationState } from '@react-navigation/native';
+import {useIsFocused, useNavigationState} from '@react-navigation/native';
 import {
   api_fiendSuggessions,
   api_getBlocked,
@@ -27,7 +27,7 @@ import {
   myFriendsList,
   suggestedList,
 } from '../../../redux/features/friends/friendsSlice';
-import { BUILD_IMAGE_URL } from '../../../api';
+import {BUILD_IMAGE_URL} from '../../../api';
 
 const BlockedList = () => {
   const navigationState = useNavigationState(state => state);
@@ -35,10 +35,10 @@ const BlockedList = () => {
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [searchString, setSearchString] = useState('');
   const [loading, setLoading] = useState(false);
-  const { token } = useSelector((s: RootState) => s.auth);
+  const {token} = useSelector((s: RootState) => s.auth);
   const isFocused = useIsFocused();
   const dispatch = useDispatch<AppDispatch>();
-  const { blocked } = useSelector((s: RootState) => s.friend);
+  const {blocked} = useSelector((s: RootState) => s.friend);
 
   const requestApi = async () => {
     try {
@@ -130,21 +130,20 @@ const BlockedList = () => {
       <FlatList
         showsVerticalScrollIndicator={false}
         data={filteredData}
-        renderItem={({ item }) => {
+        renderItem={({item}) => {
           return (
             <View style={styles.wrapper}>
-               <View
+              <View
                 style={{
                   width: 60,
                   height: 60,
                   borderRadius: 10,
                   alignSelf: 'center',
                   // backgroundColor: COLORS.grey,
-                }}
-              >
+                }}>
                 {item?.picture ? (
                   <Image
-                    source={{ uri: BUILD_IMAGE_URL(item?.picture) }}
+                    source={{uri: BUILD_IMAGE_URL(item?.picture)}}
                     style={StyleSheet.absoluteFillObject}
                   />
                 ) : (
@@ -156,7 +155,7 @@ const BlockedList = () => {
                   />
                 )}
               </View>
-              <View style={{ flex: 1, justifyContent: 'space-evenly' }}>
+              <View style={{flex: 1, justifyContent: 'space-evenly'}}>
                 <MyText size={FONT_SIZE.base} bold={FONT_WEIGHT.bold}>
                   {item?.fullname}
                 </MyText>
@@ -168,8 +167,7 @@ const BlockedList = () => {
                 style={styles.unblockView}
                 onPress={() => {
                   handleReportOrBlockPress('unblock', item?._id);
-                }}
-              >
+                }}>
                 <UnblockSvg />
                 <MyText color={COLORS.white} size={FONT_SIZE.sm}>
                   Unblock

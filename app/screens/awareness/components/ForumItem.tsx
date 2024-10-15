@@ -1,9 +1,9 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
+import {Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React from 'react';  
 import {MyText} from '../../../components/MyText';
 import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../../styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { BUILD_IMAGE_URL } from '../../../api';
+import {BUILD_IMAGE_URL} from '../../../api';
 type Props = {
   id: string;
   title: string;
@@ -42,7 +42,7 @@ const ForumItem = ({id, title, noOfMembers, des, picture, onPress}: Props) => {
           <Ionicons name="document-text" color={COLORS.greenDark} size={30} />
         )}
       </View>
-      <View style={{gap: 5, flex: 1, padding: 5, marginHorizontal: 10}}>
+      <View style={{gap: 5, flex: 1, padding: 5, marginHorizontal: 10}}>  
         <MyText bold={FONT_WEIGHT.bold} size={FONT_SIZE.xl}>
           {title}
         </MyText>
@@ -62,7 +62,7 @@ const ForumItem = ({id, title, noOfMembers, des, picture, onPress}: Props) => {
             size={FONT_SIZE.sm}>{`${noOfMembers} Members`}</MyText>
         </View>
         <MyText size={FONT_SIZE.xs} color={COLORS.grey}>
-        {des.length > 90 ? `${des.substring(0, 100)}...` : des}
+          {des.length > 90 ? `${des.substring(0, 100)}...` : des}
         </MyText>
       </View>
     </TouchableOpacity>

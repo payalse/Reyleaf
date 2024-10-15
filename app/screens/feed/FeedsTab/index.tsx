@@ -1,16 +1,20 @@
-import { FlatList, Pressable, StyleSheet, TextInput, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import {FlatList, Pressable, StyleSheet, TextInput, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import FeedItem from '../components/FeedItem';
-import { COLORS, FONT_SIZE, wp } from '../../../styles';
+import {COLORS, FONT_SIZE, wp} from '../../../styles';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { MyText } from '../../../components/MyText';
+import {MyText} from '../../../components/MyText';
 import FullScreenLoader from '../../../components/FullScreenLoader';
-import { api_getFeeds, api_getFeedsByZipCode, api_reportPost } from '../../../api/feeds';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../../redux/store';
-import { FeedType } from '../../../types';
-import { addFeed } from '../../../redux/features/feed/feedSlice';
+import {
+  api_getFeeds,
+  api_getFeedsByZipCode,
+  api_reportPost,
+} from '../../../api/feeds';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch, RootState} from '../../../redux/store';
+import {FeedType} from '../../../types';
+import {addFeed} from '../../../redux/features/feed/feedSlice';
 
 type Props = {
   onLocationPress: () => void;
@@ -19,14 +23,9 @@ type Props = {
   zipCode: string;
 };
 
-const FeedsTab = ({
-  onLocationPress,
-  isFocused,
-  modalView,
-  zipCode,
-}: Props) => {
-  const { token, user } = useSelector((s: RootState) => s.auth);
-  const { feed } = useSelector((s: RootState) => s.feed);
+const FeedsTab = ({onLocationPress, isFocused, modalView, zipCode}: Props) => {
+  const {token, user} = useSelector((s: RootState) => s.auth);
+  const {feed} = useSelector((s: RootState) => s.feed);
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
@@ -55,7 +54,7 @@ const FeedsTab = ({
     } catch (error) {
       console.log(error);
     } finally {
-      requestApi()
+      requestApi();
     }
   };
 
@@ -69,7 +68,7 @@ const FeedsTab = ({
             onChangeText={text => {
               setDescription(text);
             }}
-            style={{ paddingVertical: 15, color: COLORS.black }}
+            style={{paddingVertical: 15, color: COLORS.black}}
             placeholder="Search by here"
             placeholderTextColor={COLORS.grey}
           />
@@ -106,7 +105,7 @@ const FeedsTab = ({
         data={feed}
         keyExtractor={item => item._id}
         ItemSeparatorComponent={() => <View style={styles.seprator} />}
-        renderItem={({ item }) => {
+        renderItem={({item}) => {
           return (
             <FeedItem
               showThreeDots={item?.userId?._id === user?._id ? false : true}

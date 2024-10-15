@@ -6,7 +6,7 @@ import {
   View,
   FlatList,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import MainLayout from '../../../components/layout/MainLayout';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
 import ThreeDotSvg from '../../../../assets/svg/icons/threeDot.svg';
@@ -16,24 +16,24 @@ import {
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
-import { COLORS, FONT_SIZE, hp, wp } from '../../../styles';
+import {COLORS, FONT_SIZE, hp, wp} from '../../../styles';
 import {
   ChatMessageDisplay,
   ChatMessageSendInput,
   MessageType,
 } from '../../message/ChatScreen';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { SupportStackParams } from '../../../naviagtion/DrawerNavigator';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {SupportStackParams} from '../../../naviagtion/DrawerNavigator';
 import Tooltip from 'react-native-walkthrough-tooltip';
-import { MyText } from '../../../components/MyText';
-import { AppDispatch, RootState } from '../../../redux/store';
-import { useDispatch, useSelector } from 'react-redux';
+import {MyText} from '../../../components/MyText';
+import {AppDispatch, RootState} from '../../../redux/store';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   api_getSupportTicketsChats,
   api_sendSupportTicketChat,
   api_updateSupportTicket,
 } from '../../../api/support';
-import { setSupportTicketChat } from '../../../redux/features/support/supportSlice';
+import {setSupportTicketChat} from '../../../redux/features/support/supportSlice';
 
 const SupportChatScreen = () => {
   const navigation =
@@ -42,10 +42,10 @@ const SupportChatScreen = () => {
     useRoute<RouteProp<SupportStackParams, 'SupportChat'>>().params;
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { token, user } = useSelector((s: RootState) => s.auth);
+  const {token, user} = useSelector((s: RootState) => s.auth);
   const isFocused = useIsFocused();
   const dispatch = useDispatch<AppDispatch>();
-  const { supportTicketChatList } = useSelector((s: RootState) => s.support);
+  const {supportTicketChatList} = useSelector((s: RootState) => s.support);
 
   const requestApi = async () => {
     try {
@@ -103,7 +103,7 @@ const SupportChatScreen = () => {
   }, [isFocused]);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       <SafeAreaView />
       {/* Header */}
       <SecondaryHeader
@@ -126,7 +126,7 @@ const SupportChatScreen = () => {
                 height: hp(10),
                 shadowColor: '#000',
                 width: wp(30),
-                transform: [{ translateX: wp(-4) }],
+                transform: [{translateX: wp(-4)}],
                 shadowOffset: {
                   width: 0,
                   height: 2,
@@ -139,30 +139,27 @@ const SupportChatScreen = () => {
                 gap: 10,
               }}
               content={
-                <View style={{ justifyContent: 'space-evenly', flex: 1 }}>
+                <View style={{justifyContent: 'space-evenly', flex: 1}}>
                   <TouchableOpacity
                     onPress={() => {
                       setIsTooltipOpen(false);
                       navigation.navigate('TicketDetail', {
                         item: params.item,
                       });
-                    }}
-                  >
+                    }}>
                     <MyText size={FONT_SIZE.base}>Ticket Details</MyText>
                   </TouchableOpacity>
                   {params.item?.status === 'Open' && (
                     <MyText
                       size={FONT_SIZE.base}
                       color={COLORS.red}
-                      onPress={reportSupportTicket}
-                    >
+                      onPress={reportSupportTicket}>
                       Report
                     </MyText>
                   )}
                 </View>
               }
-              onClose={() => setIsTooltipOpen(false)}
-            >
+              onClose={() => setIsTooltipOpen(false)}>
               <TouchableOpacity
                 onPress={() => setIsTooltipOpen(true)}
                 style={{
@@ -170,8 +167,7 @@ const SupportChatScreen = () => {
                   height: wp(6),
                   justifyContent: 'center',
                   alignItems: 'center',
-                }}
-              >
+                }}>
                 <ThreeDotSvg />
               </TouchableOpacity>
             </Tooltip>
@@ -182,15 +178,14 @@ const SupportChatScreen = () => {
         <MyText
           size={FONT_SIZE.sml}
           color={COLORS.red}
-          style={{ textAlign: 'center', marginTop: 20 }}
-        >
+          style={{textAlign: 'center', marginTop: 20}}>
           You have reported this support ticket!
         </MyText>
       )}
       <FlatList
         data={supportTicketChatList}
-        contentContainerStyle={{ marginHorizontal: 20, marginVertical: 20 }}
-        renderItem={({ item }) => {
+        contentContainerStyle={{marginHorizontal: 20, marginVertical: 20}}
+        renderItem={({item}) => {
           return (
             <ChatMessageDisplay
               isMyMessage={item?.sender?._id === user?._id ? true : false}

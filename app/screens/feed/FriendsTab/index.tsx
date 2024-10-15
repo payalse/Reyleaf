@@ -35,7 +35,7 @@ const topTabConfig = [
 export const FriendSearch = ({
   value,
   onChangeText,
-  onFocus
+  onFocus,
 }: {
   onChangeText?: (s: string) => void;
   value?: string;

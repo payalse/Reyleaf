@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { Alert, ScrollView, TouchableOpacity, View } from 'react-native';
-import { COLORS, FONT_SIZE, FONT_WEIGHT } from '../../styles';
-import { useNavigation } from '@react-navigation/native';
+import React, {useState} from 'react';
+import {Alert, ScrollView, TouchableOpacity, View} from 'react-native';
+import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../styles';
+import {useNavigation} from '@react-navigation/native';
 
 // COMPONENTS
-import { MyText } from '../../components/MyText';
+import {MyText} from '../../components/MyText';
 import PrimaryBtn from '../../components/buttons/PrimaryBtn';
 import MyInput from '../../components/inputs/MyInput';
 import InputWrapper from '../../components/inputs/InputWrapper';
@@ -15,20 +15,20 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import BackBtn from '../../components/buttons/BackBtn';
 import APPLOGO from '../../../assets/svg/icons/icon.svg';
 import LayoutBG from '../../components/layout/LayoutBG';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParams } from '../../naviagtion/types';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParams} from '../../naviagtion/types';
 
-import { Formik } from 'formik';
+import {Formik} from 'formik';
 import * as Yup from 'yup';
 import InputErrorMsg from '../../components/inputs/InputErrorMsg';
-import { api_signup } from '../../api/auth';
-import { SignupResponse } from '../../types/apiResponse';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../redux/store';
-import { login } from '../../redux/features/auth/authSlice';
-import { ALERT_TYPE } from 'react-native-alert-notification';
-import { ShowAlert } from '../../utils/alert';
-import { fetchFcmTokenFromLocal } from '../../utils/fetchFcmTokenFromLocal';
+import {api_signup} from '../../api/auth';
+import {SignupResponse} from '../../types/apiResponse';
+import {useDispatch} from 'react-redux';
+import {AppDispatch} from '../../redux/store';
+import {login} from '../../redux/features/auth/authSlice';
+import {ALERT_TYPE} from 'react-native-alert-notification';
+import {ShowAlert} from '../../utils/alert';
+import {fetchFcmTokenFromLocal} from '../../utils/fetchFcmTokenFromLocal';
 
 type FormValues = {
   email: string;
@@ -41,7 +41,7 @@ const validationSchema = Yup.object().shape({
     .required('Required')
     .required('Email is Required!'),
   password: Yup.string()
-    .min(8, ({ min }) => `Password must be at least ${min} characters`)
+    .min(8, ({min}) => `Password must be at least ${min} characters`)
     .required('Password is Required!'),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref('password')], 'Passwords must match')
@@ -67,14 +67,17 @@ const SignupScreen = () => {
       setLoading(true);
 
       const res = (await api_signup(payload)) as SignupResponse;
-      ShowAlert({ textBody: 'OTP sent successfully, Please check your inbox!', type: ALERT_TYPE.SUCCESS });
-      dispatch(login({ ...res.data, token: res.token }));
+      ShowAlert({
+        textBody: 'OTP sent successfully, Please check your inbox!',
+        type: ALERT_TYPE.SUCCESS,
+      });
+      dispatch(login({...res.data, token: res.token}));
       navigation.navigate('OtpVerification', {
         verifyToken: res.data._id,
         authToken: res.token,
       });
     } catch (error: any) {
-      ShowAlert({ textBody: error.message, type: ALERT_TYPE.DANGER });
+      ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
     } finally {
       setLoading(false);
     }
@@ -88,8 +91,7 @@ const SignupScreen = () => {
           password: '',
           confirmPassword: '',
         }}
-        onSubmit={onSubmit}
-      >
+        onSubmit={onSubmit}>
         {({
           handleChange,
           handleBlur,
@@ -100,23 +102,21 @@ const SignupScreen = () => {
         }) => (
           <ScrollView
             showsVerticalScrollIndicator={false}
-            style={{ flex: 1, marginHorizontal: 20 }}
-          >
+            style={{flex: 1, marginHorizontal: 20}}>
             <View>
               <BackBtn onPress={navigation.goBack} />
-              <View style={{ alignItems: 'center' }}>
+              <View style={{alignItems: 'center'}}>
                 <APPLOGO width={100} height={200} />
               </View>
             </View>
 
-            <View style={{ width: '100%' }}>
+            <View style={{width: '100%'}}>
               <MyText
                 style={{
                   fontSize: FONT_SIZE['2xl'],
                   fontWeight: FONT_WEIGHT.bold,
                   marginVertical: 5,
-                }}
-              >
+                }}>
                 Let’s Open your Account
               </MyText>
               <MyText size={FONT_SIZE.sm} color={'grey'}>
@@ -126,8 +126,7 @@ const SignupScreen = () => {
             <View
               style={{
                 marginTop: 20,
-              }}
-            >
+              }}>
               <InputWrapper title="Email">
                 <MyInput
                   hasError={Boolean(errors.email && touched.email)}
@@ -195,8 +194,7 @@ const SignupScreen = () => {
               style={{
                 paddingVertical: 20,
                 gap: 20,
-              }}
-            >
+              }}>
               <PrimaryBtn
                 loading={loading}
                 onPress={handleSubmit}
@@ -210,17 +208,15 @@ const SignupScreen = () => {
                 flexDirection: 'row',
                 gap: 6,
                 marginTop: 'auto',
-              }}
-            >
-              <MyText center size={FONT_SIZE.sm} style={{ color: 'grey' }}>
+              }}>
+              <MyText center size={FONT_SIZE.sm} style={{color: 'grey'}}>
                 Already have an account?
               </MyText>
               <TouchableOpacity onPress={navigation.goBack}>
                 <MyText
                   bold={FONT_WEIGHT.medium}
                   size={FONT_SIZE.sm}
-                  style={{ color: COLORS.greenDark }}
-                >
+                  style={{color: COLORS.greenDark}}>
                   Signin
                 </MyText>
               </TouchableOpacity>

@@ -1,18 +1,20 @@
-import { View, TouchableOpacity, Image, StyleSheet } from 'react-native';
-import React, { useCallback, useState } from 'react';
-import { COLORS, FONT_SIZE, FONT_WEIGHT } from '../styles';
-import { MyText } from './MyText';
+import {View, TouchableOpacity, Image, StyleSheet} from 'react-native';
+import React, {useCallback, useState} from 'react';
+import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../styles';
+import {MyText} from './MyText';
 import GradientBox from './GradientBox';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { BUILD_IMAGE_URL } from '../api';
+import {BUILD_IMAGE_URL} from '../api';
 
 import DummyProductImage from '../../assets/img/productPlaceholder.jpeg';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
-import { useSelector } from 'react-redux';
-import { RootState } from '../redux/store';
-import { api_addProductToFavourite } from '../api/product';
-import { Rating } from 'react-native-ratings';
+import {useSelector} from 'react-redux';
+import {RootState} from '../redux/store';
+import {api_addProductToFavourite} from '../api/product';
+import {Rating} from 'react-native-ratings';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { HomeStackParams } from 'app/naviagtion/types';
 
 type Props = {
   id: string;
@@ -22,7 +24,7 @@ type Props = {
   oldPrice: string;
   price: string;
   category: string;
-  photos: { url: string }[] | undefined;
+  photos: {url: string}[] | undefined;
   onValueChange?: (productId: any) => void;
 };
 
@@ -38,12 +40,18 @@ const ProductItem2 = ({
   onValueChange,
 }: Props) => {
   const [isLiked, setIsLiked] = useState(isFav);
-  const { token } = useSelector((s: RootState) => s.auth);
+  const {token} = useSelector((s: RootState) => s.auth);
   const photo = photos ? photos[0]?.url || '' : '';
   const navigation = useNavigation();
+  const navigation1 =
+  useNavigation<NativeStackNavigationProp<HomeStackParams>>();
 
   const addToFavourite = async (productId: any) => {
     try {
+      if (!token) {
+        navigation1.navigate('Welcome');
+        return;
+      }
       setIsLiked(!isLiked);
       const res: any = await api_addProductToFavourite(token!, productId);
       handleValueChange(productId);
@@ -80,8 +88,7 @@ const ProductItem2 = ({
         borderRadius: 25,
         padding: 10,
         flexDirection: 'row',
-      }}
-    >
+      }}>
       <View
         style={{
           position: 'relative',
@@ -90,11 +97,10 @@ const ProductItem2 = ({
           borderRadius: 20,
           width: 100,
           overflow: 'hidden',
-        }}
-      >
+        }}>
         <Image
-          source={photo ? { uri: BUILD_IMAGE_URL(photo) } : DummyProductImage}
-          style={{ width: '100%', height: 107, borderRadius: 10 }}
+          source={photo ? {uri: BUILD_IMAGE_URL(photo)} : DummyProductImage}
+          style={{width: '100%', height: 107, borderRadius: 10}}
           resizeMode="cover"
         />
       </View>
@@ -106,9 +112,8 @@ const ProductItem2 = ({
           gap: 3,
           margin: 5,
           marginLeft: 10,
-        }}
-      >
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        }}>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <View>
             <MyText size={FONT_SIZE.lg} bold={FONT_WEIGHT.semibold}>
               {title}
@@ -125,11 +130,10 @@ const ProductItem2 = ({
                 borderRadius: 10,
                 justifyContent: 'center',
                 alignItems: 'center',
-              }}
-            >
+              }}>
               <AntDesign
                 color={COLORS.white}
-                style={{ opacity: isLiked ? 1 : 0.3 }}
+                style={{opacity: isLiked ? 1 : 0.3}}
                 name="heart"
                 size={14}
               />
@@ -144,24 +148,25 @@ const ProductItem2 = ({
               alignItems: 'center',
               flexDirection: 'row',
               gap: 2,
-            }}
-          >
-            <Rating type="star" startingValue={rating} ratingCount={5} imageSize={15}/>
+            }}>
+            <Rating
+              type="star"
+              startingValue={rating}
+              ratingCount={5}
+              imageSize={15}
+            />
             <MyText size={FONT_SIZE.xs}>
               {'   '} {rating} Reviews
             </MyText>
           </View>
-          <View
-            style={{ flexDirection: 'row', alignItems: 'baseline', gap: 5 }}
-          >
+          <View style={{flexDirection: 'row', alignItems: 'baseline', gap: 5}}>
             <MyText size={FONT_SIZE.lg} bold={FONT_WEIGHT.semibold}>
               ${price}
             </MyText>
             <MyText
               size={FONT_SIZE.sm}
               color={COLORS.grey}
-              style={{ textDecorationLine: 'line-through' }}
-            >
+              style={{textDecorationLine: 'line-through'}}>
               ${oldPrice}
             </MyText>
           </View>

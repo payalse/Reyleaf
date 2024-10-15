@@ -1,4 +1,4 @@
-import { BASE_URL } from './index';
+import {BASE_URL} from './index';
 
 export const api_chnagePassword = (
   paylaod: {
@@ -59,7 +59,6 @@ export const api_getAddress = (token: string) => {
       });
   });
 };
-
 
 export const api_getNotifications = (token: string) => {
   const uri = `${BASE_URL}/api/v1/user/notification`;

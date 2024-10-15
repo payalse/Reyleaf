@@ -5,24 +5,24 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { COLORS, FONT_SIZE, FONT_WEIGHT } from '../../../styles';
-import { MyText } from '../../../components/MyText';
+import React, {useEffect, useState} from 'react';
+import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../../styles';
+import {MyText} from '../../../components/MyText';
 import UnblockSvg from '../../../../assets/svg/icons/reqReject.svg';
 import AcceptSvg from '../../../../assets/svg/icons/reqAccept.svg';
-import { FriendSearch } from '.';
+import {FriendSearch} from '.';
 import FullScreenLoader from '../../../components/FullScreenLoader';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../../redux/store';
-import { useIsFocused, useNavigationState } from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch, RootState} from '../../../redux/store';
+import {useIsFocused, useNavigationState} from '@react-navigation/native';
 import {
   api_fiendSuggessions,
   api_getMyfiends,
   api_RecivedRequested,
   api_requestAcceptReject,
 } from '../../../api/friends';
-import { Touchable } from 'react-native';
-import { BUILD_IMAGE_URL } from '../../../api';
+import {Touchable} from 'react-native';
+import {BUILD_IMAGE_URL} from '../../../api';
 import {
   blockedList,
   myFriendsList,
@@ -37,10 +37,10 @@ const RequestedList = () => {
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [searchString, setSearchString] = useState('');
   const [loading, setLoading] = useState(false);
-  const { token } = useSelector((s: RootState) => s.auth);
+  const {token} = useSelector((s: RootState) => s.auth);
   const isFocused = useIsFocused();
   const dispatch = useDispatch<AppDispatch>();
-  const { requested } = useSelector((s: RootState) => s.friend);
+  const {requested} = useSelector((s: RootState) => s.friend);
 
   const requestApi = async () => {
     try {
@@ -131,7 +131,7 @@ const RequestedList = () => {
       <FlatList
         showsVerticalScrollIndicator={false}
         data={filteredData}
-        renderItem={({ item }) => {
+        renderItem={({item}) => {
           return (
             <View
               style={{
@@ -141,8 +141,7 @@ const RequestedList = () => {
                 borderRadius: 10,
                 flexDirection: 'row',
                 gap: 10,
-              }}
-            >
+              }}>
               <View
                 style={{
                   width: 60,
@@ -150,11 +149,10 @@ const RequestedList = () => {
                   borderRadius: 10,
                   alignSelf: 'center',
                   // backgroundColor: COLORS.grey,
-                }}
-              >
+                }}>
                 {item?.picture ? (
                   <Image
-                    source={{ uri: BUILD_IMAGE_URL(item?.picture) }}
+                    source={{uri: BUILD_IMAGE_URL(item?.picture)}}
                     style={StyleSheet.absoluteFillObject}
                   />
                 ) : (
@@ -167,7 +165,7 @@ const RequestedList = () => {
                 )}
               </View>
 
-              <View style={{ flex: 1, justifyContent: 'space-evenly' }}>
+              <View style={{flex: 1, justifyContent: 'space-evenly'}}>
                 <MyText size={FONT_SIZE.base} bold={FONT_WEIGHT.bold}>
                   {item?.userId?.fullname}
                 </MyText>
@@ -175,7 +173,7 @@ const RequestedList = () => {
                   {item?.userId?.email}
                 </MyText>
               </View>
-              <View style={{ gap: 5 }}>
+              <View style={{gap: 5}}>
                 <TouchableOpacity
                   onPress={() =>
                     handleFollowUnfollow(item?.userId?._id, 'accept')
@@ -190,8 +188,7 @@ const RequestedList = () => {
                     gap: 5,
                     width: 90,
                     alignSelf: 'center',
-                  }}
-                >
+                  }}>
                   <AcceptSvg />
                   <MyText color={COLORS.white} size={FONT_SIZE.sm}>
                     Accept
@@ -211,8 +208,7 @@ const RequestedList = () => {
                     gap: 5,
                     width: 90,
                     alignSelf: 'center',
-                  }}
-                >
+                  }}>
                   <UnblockSvg />
                   <MyText color={COLORS.white} size={FONT_SIZE.sm}>
                     Reject

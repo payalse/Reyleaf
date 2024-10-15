@@ -25,7 +25,7 @@ import firebase from '@react-native-firebase/app';
 import database from '@react-native-firebase/database';
 import {string} from 'yup';
 import moment from 'moment';
-import { api_updateSupportTicket } from '../../../api/support';
+import {api_updateSupportTicket} from '../../../api/support';
 
 if (!firebase.apps.length) {
   const firebaseConfig = {
@@ -49,7 +49,6 @@ export type MessageType = {
   type: 'message' | 'timeChip';
 };
 
-
 export const ChatMessageDisplay = ({
   isMyMessage,
   time,
@@ -69,7 +68,7 @@ export const ChatMessageDisplay = ({
           borderRadius: 20,
         }}>
         <MyText color={COLORS.grey} size={FONT_SIZE.xs}>
-        {moment(time).fromNow()}
+          {moment(time).fromNow()}
         </MyText>
       </View>
     );
@@ -90,7 +89,7 @@ export const ChatMessageDisplay = ({
           </MyText>
         </GradientBox>
         <MyText color={COLORS.grey} size={FONT_SIZE.xs * 0.8}>
-        {moment(time).fromNow()}
+          {moment(time).fromNow()}
         </MyText>
       </View>
     );
@@ -110,7 +109,7 @@ export const ChatMessageDisplay = ({
           </MyText>
         </View>
         <MyText color={COLORS.grey} size={FONT_SIZE.xs}>
-        {moment(time).fromNow()}
+          {moment(time).fromNow()}
         </MyText>
       </View>
     );

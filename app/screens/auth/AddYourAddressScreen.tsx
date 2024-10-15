@@ -119,7 +119,7 @@ const AddYourAddressScreen = () => {
                 Add your Address
               </MyText>
               <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
-              Please enter your address to ensure accurate delivery.
+                Please enter your address to ensure accurate delivery.
               </MyText>
             </View>
             <View style={{marginTop: 20}}>

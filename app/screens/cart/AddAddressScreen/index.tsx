@@ -1,20 +1,20 @@
-import { SafeAreaView, ScrollView, View } from 'react-native';
+import {SafeAreaView, ScrollView, View} from 'react-native';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
 import PrimaryBtn from '../../../components/buttons/PrimaryBtn';
 import InputWrapper from '../../../components/inputs/InputWrapper';
 import MyInput from '../../../components/inputs/MyInput';
 import SelectInput from '../../../components/inputs/SelectInput';
-import { useNavigation } from '@react-navigation/native';
-import { Formik } from 'formik';
+import {useNavigation} from '@react-navigation/native';
+import {Formik} from 'formik';
 import * as Yup from 'yup';
-import React, { useState } from 'react';
-import { CountryType } from '../../../utils/countryTable';
+import React, {useState} from 'react';
+import {CountryType} from '../../../utils/countryTable';
 import InputErrorMsg from '../../../components/inputs/InputErrorMsg';
-import { SheetManager } from 'react-native-actions-sheet';
-import { SHEETS } from '../../../sheets/sheets';
-import { api_addUpdateAddress } from '../../../api/auth';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
+import {SheetManager} from 'react-native-actions-sheet';
+import {SHEETS} from '../../../sheets/sheets';
+import {api_addUpdateAddress} from '../../../api/auth';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../../redux/store';
 
 type FormValues = {
   address: string;
@@ -26,27 +26,27 @@ type FormValues = {
 
 const validationSchema = Yup.object().shape({
   address: Yup.string()
-    .min(10, ({ min }) => `Address must be at least ${min} characters`)
+    .min(10, ({min}) => `Address must be at least ${min} characters`)
     .required('Address is Required!'),
   city: Yup.string()
-    .min(4, ({ min }) => `City must be at least ${min} characters`)
+    .min(4, ({min}) => `City must be at least ${min} characters`)
     .required('City is Required!'),
   state: Yup.string()
-    .min(4, ({ min }) => `State must be at least ${min} characters`)
+    .min(4, ({min}) => `State must be at least ${min} characters`)
     .required('State is Required!'),
   zipcode: Yup.string()
-    .min(4, ({ min }) => `ZipCode must be at least ${min} characters`)
-    .max(10, ({ max }) => `ZipCode must not exceed ${max} characters`)
+    .min(4, ({min}) => `ZipCode must be at least ${min} characters`)
+    .max(10, ({max}) => `ZipCode must not exceed ${max} characters`)
     .required('ZipCode is Required!'),
   title: Yup.string().min(
     4,
-    ({ min }) => `Location title must be at least ${min} characters`,
+    ({min}) => `Location title must be at least ${min} characters`,
   ),
 });
 const AddAddressScreen = () => {
   const navigation = useNavigation();
 
-  const { token } = useSelector((s: RootState) => s.auth);
+  const {token} = useSelector((s: RootState) => s.auth);
   const [loading, setLoading] = useState(false);
   const [country, setCoutry] = useState<null | CountryType>(null);
   const [extraErr, setExtraErr] = useState({
@@ -56,7 +56,7 @@ const AddAddressScreen = () => {
   const onSubmit = async (values: FormValues) => {
     let isValid = true;
     if (country === null) {
-      setExtraErr(e => ({ ...e, country: 'Please Choose Country!' }));
+      setExtraErr(e => ({...e, country: 'Please Choose Country!'}));
       isValid = false;
     }
 
@@ -92,21 +92,13 @@ const AddAddressScreen = () => {
         zipcode: '',
         title: '',
       }}
-      onSubmit={onSubmit}
-    >
-      {({
-        handleChange,
-        handleBlur,
-        handleSubmit,
-        values,
-        errors,
-        touched,
-      }) => (
-        <View style={{ flex: 1 }}>
+      onSubmit={onSubmit}>
+      {({handleChange, handleBlur, handleSubmit, values, errors, touched}) => (
+        <View style={{flex: 1}}>
           <SafeAreaView />
           <SecondaryHeader onBack={navigation.goBack} title="Add New Address" />
 
-          <ScrollView contentContainerStyle={{ padding: 20, marginTop: 10 }}>
+          <ScrollView contentContainerStyle={{padding: 20, marginTop: 10}}>
             <InputWrapper title="Address">
               <MyInput
                 hasError={Boolean(errors.address && touched.address)}
@@ -160,7 +152,7 @@ const AddAddressScreen = () => {
                     payload: {
                       onSelect: (e: CountryType) => {
                         setCoutry(e);
-                        setExtraErr(prev => ({ ...prev, country: '' }));
+                        setExtraErr(prev => ({...prev, country: ''}));
                       },
                     },
                   });
@@ -184,7 +176,7 @@ const AddAddressScreen = () => {
             )}
           </ScrollView>
 
-          <View style={{ marginBottom: 30, marginHorizontal: 20 }}>
+          <View style={{marginBottom: 30, marginHorizontal: 20}}>
             <PrimaryBtn loading={loading} text="Save" onPress={handleSubmit} />
           </View>
         </View>

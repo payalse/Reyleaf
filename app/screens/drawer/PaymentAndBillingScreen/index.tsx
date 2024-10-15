@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { useHideBottomBar } from '../../../hook/useHideBottomBar';
+import React, {useEffect, useState} from 'react';
+import {useHideBottomBar} from '../../../hook/useHideBottomBar';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
-import { MyText } from '../../../components/MyText';
-import { Pressable, SafeAreaView, TouchableOpacity, View } from 'react-native';
-import { COLORS, FONT_SIZE, FONT_WEIGHT } from '../../../styles';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { CartStackParams } from '../../../naviagtion/types';
-import { FlatList } from 'react-native';
+import {MyText} from '../../../components/MyText';
+import {Pressable, SafeAreaView, TouchableOpacity, View} from 'react-native';
+import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../../styles';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {CartStackParams} from '../../../naviagtion/types';
+import {FlatList} from 'react-native';
 import VisaSvg from '../../../../assets/svg/icons/Visa.svg';
-import { api_getAllTransactions, api_getCard } from '../../../api/payment';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
+import {api_getAllTransactions, api_getCard} from '../../../api/payment';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../../redux/store';
 import FullScreenLoader from '../../../components/FullScreenLoader';
 export const OptionBox = ({
   leftIcon,
@@ -35,31 +35,28 @@ export const OptionBox = ({
         flexDirection: 'row',
         alignItems: 'center',
         paddingVertical: 10,
-      }}
-    >
+      }}>
       <View
         style={{
           marginHorizontal: 8,
           width: 50,
           justifyContent: 'center',
           alignItems: 'center',
-        }}
-      >
+        }}>
         {leftIcon}
       </View>
-      <View style={{ flex: 1, gap: 5 }}>
+      <View style={{flex: 1, gap: 5}}>
         <MyText size={FONT_SIZE.base} color={COLORS.grey}>
           {text}
         </MyText>
         <MyText
           numberOfLines={1}
           size={FONT_SIZE.base}
-          bold={FONT_WEIGHT.semibold}
-        >
+          bold={FONT_WEIGHT.semibold}>
           {subText}
         </MyText>
       </View>
-      <View style={{ marginHorizontal: 18 }}>
+      <View style={{marginHorizontal: 18}}>
         {/* <EditSvg /> */}
         {/* <Entypo name="edit" size={FONT_SIZE['xl']} color={COLORS.greenDark} /> */}
       </View>
@@ -72,7 +69,7 @@ const PaymentAndBillingScreen = () => {
     useNavigation<NativeStackNavigationProp<CartStackParams>>();
   useHideBottomBar({});
   const isFocused = useIsFocused();
-  const { token, user } = useSelector((s: RootState) => s.auth);
+  const {token, user} = useSelector((s: RootState) => s.auth);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<any>([]);
   const [transactions, setAllTransaction] = useState<any>([]);
@@ -113,7 +110,7 @@ const PaymentAndBillingScreen = () => {
               <SafeAreaView />
               <SecondaryHeader
                 onBack={navigation.goBack}
-                backBtnContainerStyle={{ left: 0 }}
+                backBtnContainerStyle={{left: 0}}
                 title="Payment & Billing"
               />
 
@@ -123,8 +120,7 @@ const PaymentAndBillingScreen = () => {
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   marginTop: 20,
-                }}
-              >
+                }}>
                 <MyText size={FONT_SIZE.xl} bold={FONT_WEIGHT.bold}>
                   Payment Method
                 </MyText>
@@ -138,14 +134,13 @@ const PaymentAndBillingScreen = () => {
                     borderRadius: 20,
                     justifyContent: 'center',
                     alignItems: 'center',
-                  }}
-                >
+                  }}>
                   <MyText size={FONT_SIZE.sm} color={COLORS.white}>
                     Add
                   </MyText>
                 </Pressable>
               </View>
-              <View style={{ gap: 20, marginVertical: 20 }}>
+              <View style={{gap: 20, marginVertical: 20}}>
                 {data?.map((item: any) => {
                   return (
                     <OptionBox
@@ -182,7 +177,7 @@ const PaymentAndBillingScreen = () => {
             </View>
           );
         }}
-        renderItem={({ item }) => {
+        renderItem={({item}) => {
           return (
             <View
               style={{
@@ -193,15 +188,13 @@ const PaymentAndBillingScreen = () => {
                 padding: 15,
                 borderRadius: 20,
                 marginVertical: 10,
-              }}
-            >
-              <View style={{ gap: 5 }}>
+              }}>
+              <View style={{gap: 5}}>
                 <MyText bold={FONT_WEIGHT.bold}>Transaction ID</MyText>
                 <MyText
                   bold={FONT_WEIGHT.normal}
                   size={FONT_SIZE.sm}
-                  color={COLORS.grey}
-                >
+                  color={COLORS.grey}>
                   {item.paymentIntentId}
                 </MyText>
               </View>

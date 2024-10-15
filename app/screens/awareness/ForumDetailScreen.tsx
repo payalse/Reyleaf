@@ -16,7 +16,7 @@ import FullScreenLoader from '../../components/FullScreenLoader';
 import {api_joinLeaveForm} from '../../api/awareness';
 import MyButton from '../../components/buttons/MyButton';
 import {useAppAlert} from '../../context/AppAlertContext';
-import { BUILD_IMAGE_URL } from '../../api';
+import {BUILD_IMAGE_URL} from '../../api';
 
 const ForumDetailScreen = () => {
   useHideBottomBar({});

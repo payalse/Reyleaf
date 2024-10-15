@@ -29,7 +29,7 @@ const AddActionButton = ({onPress, containerStyle}: Props) => {
           width: wp(100),
           bottom: 0,
           alignItems: 'flex-end',
-          zIndex: 1
+          zIndex: 1,
         },
         containerStyle,
       ]}>

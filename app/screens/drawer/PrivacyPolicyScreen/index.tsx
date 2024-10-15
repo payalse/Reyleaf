@@ -1,12 +1,12 @@
-import { SafeAreaView, Text, StyleSheet } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
-import { MyText } from '../../../components/MyText';
+import {SafeAreaView, Text, StyleSheet} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
+import {MyText} from '../../../components/MyText';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
-import { COLORS } from '../../../styles';
+import {COLORS} from '../../../styles';
 import LayoutBG from '../../../components/layout/LayoutBG';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AboutUsStackParams } from '../../../naviagtion/DrawerNavigator';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {AboutUsStackParams} from '../../../naviagtion/DrawerNavigator';
 
 const PrivacyPolicyScreen = () => {
   const navigation =
@@ -21,8 +21,7 @@ const PrivacyPolicyScreen = () => {
           alignItems: 'center',
           padding: 20,
           gap: 50,
-        }}
-      >
+        }}>
         <Text style={styles.text}>
           At Reynette, we are committed to protecting your privacy and ensuring
           the security of your personal information. This Privacy Policy
@@ -138,7 +137,7 @@ const styles = StyleSheet.create({
   listItem: {
     fontSize: 16,
     lineHeight: 24,
-    marginBottom: 8
+    marginBottom: 8,
   },
   link: {
     color: 'blue',

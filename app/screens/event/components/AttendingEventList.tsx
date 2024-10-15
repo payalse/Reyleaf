@@ -10,7 +10,6 @@ import {useSelector} from 'react-redux';
 import FullScreenLoader from '../../../components/FullScreenLoader';
 import moment from 'moment';
 
-
 const AttendingEventList = ({isFocused}: {isFocused: boolean}) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<EventStackParams>>();

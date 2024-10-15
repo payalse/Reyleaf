@@ -10,11 +10,11 @@ const OrderChart = (props: Props) => {
   const pieData = [
     {
       value: props.totalOrders,
-      color: COLORS.lightgrey2
+      color: COLORS.lightgrey2,
     },
     {
       value: props.completedOrders,
-      color: COLORS.greenDark
+      color: COLORS.greenDark,
     },
   ];
 

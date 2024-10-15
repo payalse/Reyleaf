@@ -1,22 +1,22 @@
-import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import ProductItem2 from '../../../components/ProductItem2';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import SearchBox from '../../../components/SearchBox';
-import { useHideBottomBar } from '../../../hook/useHideBottomBar';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
+import {useHideBottomBar} from '../../../hook/useHideBottomBar';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../../redux/store';
 import ProductItem from '../../../components/ProductItem';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { HomeStackParams } from '../../../naviagtion/types';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {HomeStackParams} from '../../../naviagtion/types';
 
 const SimilarProductScreen = () => {
   useHideBottomBar({});
   const navigation = useNavigation();
   const navigationHome =
-  useNavigation<NativeStackNavigationProp<HomeStackParams>>();
-  const { similarProducts } = useSelector((s: RootState) => s.product);
+    useNavigation<NativeStackNavigationProp<HomeStackParams>>();
+  const {similarProducts} = useSelector((s: RootState) => s.product);
   return (
     <FlatList
       ListHeaderComponent={() => {
@@ -24,11 +24,11 @@ const SimilarProductScreen = () => {
           <View>
             <SafeAreaView />
             <SecondaryHeader
-              backBtnContainerStyle={{ left: 0 }}
+              backBtnContainerStyle={{left: 0}}
               onBack={navigation.goBack}
               title="Similar Products"
             />
-          <SearchBox
+            <SearchBox
               onFilterBtnPress={() => {
                 navigationHome.navigate('SearchFilter');
               }}
@@ -40,21 +40,21 @@ const SimilarProductScreen = () => {
           </View>
         );
       }}
-      contentContainerStyle={{ marginHorizontal: 20 }}
-      ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
+      contentContainerStyle={{marginHorizontal: 20}}
+      ItemSeparatorComponent={() => <View style={{height: 20}} />}
       data={similarProducts}
-      renderItem={({ item }) => {
+      renderItem={({item}) => {
         return (
           <ProductItem2
-              photos={item?.photos}
-              id={item?._id}
-              title={item?.title}
-              rating={item?.rating}
-              price={String(item?.discountedProce)}
-              oldPrice={String(item?.price)}
-              category={item.categoryId?.name}
-              isFav={item.isFavourite}
-            />
+            photos={item?.photos}
+            id={item?._id}
+            title={item?.title}
+            rating={item?.rating}
+            price={String(item?.discountedProce)}
+            oldPrice={String(item?.price)}
+            category={item.categoryId?.name}
+            isFav={item.isFavourite}
+          />
         );
       }}
     />

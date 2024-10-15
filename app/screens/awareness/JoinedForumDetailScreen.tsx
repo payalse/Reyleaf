@@ -19,7 +19,7 @@ import {RootState} from '../../redux/store';
 import {useSelector} from 'react-redux';
 import FullScreenLoader from '../../components/FullScreenLoader';
 import {api_joinLeaveForm} from '../../api/awareness';
-import { BUILD_IMAGE_URL } from '../../api';
+import {BUILD_IMAGE_URL} from '../../api';
 
 const JoinedForumDetailScreen = () => {
   useHideBottomBar({});
@@ -33,7 +33,7 @@ const JoinedForumDetailScreen = () => {
   const [forumContent, setForumContent] = useState<[]>([]);
   const {token} = useSelector((s: RootState) => s.auth);
   const {showModal} = useAppAlert()!;
-  
+
   const requestApi = async () => {
     try {
       setLoading(true);
@@ -91,9 +91,11 @@ const JoinedForumDetailScreen = () => {
           pointerEvents: 'box-none',
         }}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('AddContent',  {
-            id: params.id,
-          })}
+          onPress={() =>
+            navigation.navigate('AddContent', {
+              id: params.id,
+            })
+          }
           style={{
             position: 'absolute',
             bottom: hp(5),
@@ -212,9 +214,18 @@ const JoinedForumDetailScreen = () => {
           </MyText>
         </View>
 
-        {forumContent.length > 0 && forumContent.map((data: any, index: any) => {
-          return <FeatureContent key={index} name={data?.userId?.fullname} updated_at={data?.updated_at} status={data?.status} picture={data?.userId?.picture} />
-        })}
+        {forumContent.length > 0 &&
+          forumContent.map((data: any, index: any) => {
+            return (
+              <FeatureContent
+                key={index}
+                name={data?.userId?.fullname}
+                updated_at={data?.updated_at}
+                status={data?.status}
+                picture={data?.userId?.picture}
+              />
+            );
+          })}
       </ScrollView>
     </View>
   );

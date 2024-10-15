@@ -1,16 +1,16 @@
-import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import ProductItem2 from '../../../components/ProductItem2';
-import { ScrollView } from 'react-native-gesture-handler';
-import { MyText } from '../../../components/MyText';
+import {ScrollView} from 'react-native-gesture-handler';
+import {MyText} from '../../../components/MyText';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParams } from '../../../naviagtion/types';
-import { ProductType } from '../../../types';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
-import { api_getFavouriteList } from '../../../api/product';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParams} from '../../../naviagtion/types';
+import {ProductType} from '../../../types';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../../redux/store';
+import {api_getFavouriteList} from '../../../api/product';
 import FullScreenLoader from '../../../components/FullScreenLoader';
 
 const FavouriteScreen = () => {
@@ -20,7 +20,7 @@ const FavouriteScreen = () => {
   const isFocused = useIsFocused();
 
   const [resultProduct, setResultProduct] = useState<ProductType[]>([]);
-  const { token } = useSelector((s: RootState) => s.auth);
+  const {token} = useSelector((s: RootState) => s.auth);
   const [loading, setLoading] = useState(false);
 
   const getData = async () => {
@@ -48,18 +48,18 @@ const FavouriteScreen = () => {
     <React.Fragment>
       {loading && <FullScreenLoader />}
       <SafeAreaView />
-      <View style={{ width: '90%', marginLeft: 22 }}>
+      <View style={{width: '90%', marginLeft: 22}}>
         <SecondaryHeader
-          backBtnContainerStyle={{ left: 0 }}
+          backBtnContainerStyle={{left: 0}}
           onBack={navigation.goBack}
           title="Favourite Product"
         />
       </View>
       <FlatList
-        contentContainerStyle={{ marginHorizontal: 20, marginTop: 50 }}
-        ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
+        contentContainerStyle={{marginHorizontal: 20, marginTop: 50}}
+        ItemSeparatorComponent={() => <View style={{height: 20}} />}
         data={resultProduct}
-        renderItem={({ item }) => {
+        renderItem={({item}) => {
           return (
             <ProductItem2
               id={item._id}
