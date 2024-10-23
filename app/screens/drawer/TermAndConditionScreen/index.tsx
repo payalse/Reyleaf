@@ -174,20 +174,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 6,
+    color: 'black',
   },
   heading: {
     fontSize: 16,
     fontWeight: 'bold',
     marginTop: 6,
+    color: 'black',
   },
   text: {
     fontSize: 12,
     lineHeight: 24,
+    color: 'black',
   },
   listItem: {
     fontSize: 16,
     lineHeight: 24,
     marginBottom: 8,
+    color: 'black',
   },
   link: {
     color: 'blue',

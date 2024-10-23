@@ -28,6 +28,7 @@ const SwitchComp = ({
         width: 60,
         borderRadius: 20,
         height: 35,
+        marginLeft: -50,
         justifyContent: 'center',
         alignItems: value ? 'flex-end' : 'flex-start',
       }}>
@@ -91,7 +92,7 @@ const NotificationScreen = () => {
           borderBottomWidth: 2,
         }}>
         <MyText bold={FONT_WEIGHT.bold}>All Notification</MyText>
-        <MyText color={COLORS.grey}>
+        <MyText color={COLORS.grey} >
           Manage your notifications! Choose how you'd like to stay
           updated—enable or disable alerts for updates, promotions, and more.
         </MyText>
@@ -105,7 +106,7 @@ const NotificationScreen = () => {
           }}>
           <View style={{gap: 5}}>
             <MyText bold={FONT_WEIGHT.semibold}>Order Notification</MyText>
-            <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
+            <MyText size={FONT_SIZE.sm} color={COLORS.grey} style={{width: '80%'}}>
               Adjust your settings to manage order notification preferences.
             </MyText>
           </View>
@@ -125,7 +126,7 @@ const NotificationScreen = () => {
           }}>
           <View style={{gap: 5}}>
             <MyText bold={FONT_WEIGHT.semibold}>Event Notification</MyText>
-            <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
+            <MyText size={FONT_SIZE.sm} color={COLORS.grey} style={{width: '80%'}}>
               Customize your preferences to receive event notifications easily.
             </MyText>
           </View>
@@ -145,7 +146,7 @@ const NotificationScreen = () => {
           }}>
           <View style={{gap: 5}}>
             <MyText bold={FONT_WEIGHT.semibold}>Message Notification</MyText>
-            <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
+            <MyText size={FONT_SIZE.sm} color={COLORS.grey} style={{width: '80%'}}>
               Update your preferences to manage your message notifications.
             </MyText>
           </View>

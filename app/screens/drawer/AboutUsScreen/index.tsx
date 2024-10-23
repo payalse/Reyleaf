@@ -24,10 +24,10 @@ import {AboutUsStackParams} from '../../../naviagtion/DrawerNavigator';
 
 const des =
   "“Reyleaf is committed to keeping its promise to the environment by helping to better human behavior, that directly impacts nature. We believe that changing small habits in our everyday lives, also without compromising an individual's identity, can have a great impact on planet earth. Every person has a responsibility towards Mother Nature, to keep Her and every creature She is hosting, safe with pollution free habitats. Reyleaf is the App that will assist communities to be kinder to the environment. Reyleaf will provide the convenience to all to be better at implementing habits that are less damaging to nature. Reyleaf will help revive ecosystems. Reyleaf is the one stop shop App, where you can support local Eco-Friendly merchants. Also, a social media platform, where friendships are rooted in the shared love of preserving nature. Together we can change for the Better!”";
-const googleAppUrl = 'google://';
-const googleWebUrl = 'https://www.google.com';
-const facebookAppUrl = 'fb://';
-const facebookWebUrl = 'https://www.facebook.com';
+const googleAppUrl = 'https://reyleaf.com/';
+const googleWebUrl = 'https://reyleaf.com/';
+const facebookAppUrl = 'https://www.facebook.com/profile.php?id=61560957692219&mibextid=ZbWKwL';
+const facebookWebUrl = 'https://www.facebook.com/profile.php?id=61560957692219&mibextid=ZbWKwL';
 const AboutUsScreen = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<AboutUsStackParams>>();
