@@ -13,11 +13,10 @@ export const api_getHomeProducts = (
   }
 
   return new Promise((resolve, reject) => {
-    console.log(token);
+    console.log(uri);
     fetch(uri, {
       method: 'GET',
       headers: {
-        Authorization: token,
         'Content-Type': 'application/json',
       },
     })
@@ -30,6 +29,7 @@ export const api_getHomeProducts = (
         resolve(data);
       })
       .catch(err => {
+        console.log(err, 'hhhhh');
         reject(err);
       });
   });

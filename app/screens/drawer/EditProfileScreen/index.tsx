@@ -54,8 +54,7 @@ const validationSchema = Yup.object().shape({
     .required('Bio is Required!'),
   phone: Yup.string()
     .min(10, ({min}) => `Phone must be at least ${min} characters`)
-    .max(12, ({max}) => `Phone must not exceed ${max} characters`)
-    .required('Phone is Required!'),
+    .max(12, ({max}) => `Phone must not exceed ${max} characters`),
   bAddress: Yup.string(),
 });
 
@@ -78,8 +77,7 @@ const VendorValidationSchema = Yup.object().shape({
     .required('Bio is Required!'),
   phone: Yup.string()
     .min(10, ({min}) => `Phone must be at least ${min} characters`)
-    .max(12, ({max}) => `Phone must not exceed ${max} characters`)
-    .required('Phone is Required!'),
+    .max(12, ({max}) => `Phone must not exceed ${max} characters`),
   bAddress: Yup.string()
     .min(10, ({min}) => `Address must be at least ${min} characters`)
     .required('Address is Required!'),
@@ -119,12 +117,12 @@ const EditProfileScreen = () => {
   console.log(authUser);
   const onSubmit = async (values: FormValues) => {
     let isValid = true;
-    if (date === null) {
-      setExtraError(prev => ({...prev, date: 'Please Pick Date!'}));
-      isValid = false;
-    } else {
-      setExtraError(prev => ({...prev, date: ''}));
-    }
+    // if (date === null) {
+    //   setExtraError(prev => ({...prev, date: 'Please Pick Date!'}));
+    //   isValid = false;
+    // } else {
+    //   setExtraError(prev => ({...prev, date: ''}));
+    // }
 
     if (isValid) {
       const formData = new FormData();
@@ -240,8 +238,9 @@ const EditProfileScreen = () => {
 
   useEffect(() => {
     setCoutry(authUser?.data?.country);
-    if (authUser?.dob) {
-      setDate(new Date(authUser.dob));
+    if (authUser?.dob && authUser?.dob != 'undefined') {
+      console.log(authUser?.dob);
+      setDate(new Date(authUser?.dob));
       // setPronoun(authUser?.pronouns)
     }
   }, []);
@@ -397,7 +396,7 @@ const EditProfileScreen = () => {
                   <InputErrorMsg msg={errors.bio} />
                 )}
 
-                <InputWrapper title="Mobile no">
+                <InputWrapper title="Mobile no optional*">
                   <MyInput
                     keyboardType="number-pad"
                     hasError={Boolean(errors.phone && touched.phone)}
@@ -407,9 +406,6 @@ const EditProfileScreen = () => {
                     placeholder="Type here"
                   />
                 </InputWrapper>
-                {errors.phone && touched.phone && (
-                  <InputErrorMsg msg={errors.phone} />
-                )}
                 <InputWrapper title="Business Address">
                   <MyInput
                     hasError={Boolean(errors.bAddress && touched.bAddress)}
@@ -625,7 +621,7 @@ const EditProfileScreen = () => {
                 {errors.bio && touched.bio && (
                   <InputErrorMsg msg={errors.bio} />
                 )}
-                <InputWrapper title="Mobile no">
+                <InputWrapper title="Mobile no optional*">
                   <MyInput
                     keyboardType="number-pad"
                     hasError={Boolean(errors.phone && touched.phone)}
@@ -635,10 +631,7 @@ const EditProfileScreen = () => {
                     placeholder="Type here"
                   />
                 </InputWrapper>
-                {errors.phone && touched.phone && (
-                  <InputErrorMsg msg={errors.phone} />
-                )}
-                <InputWrapper title="Date of Birth">
+                <InputWrapper title="Date of Birth optional*">
                   <SelectInput
                     value={
                       date === null ? '' : moment(date).format('MM/DD/YYYY')
@@ -649,7 +642,6 @@ const EditProfileScreen = () => {
                     placeholder="Choose Date"
                   />
                 </InputWrapper>
-                {extraError.date && <InputErrorMsg msg={extraError.date} />}
 
                 <PrimaryBtn
                   loading={loading}

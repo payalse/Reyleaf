@@ -156,7 +156,7 @@ const ProductItem2 = ({
               imageSize={15}
             />
             <MyText size={FONT_SIZE.xs}>
-              {'   '} {rating} Reviews
+              {'   '}  {Math.round(rating? rating: 0) } Reviews
             </MyText>
           </View>
           <View style={{flexDirection: 'row', alignItems: 'baseline', gap: 5}}>

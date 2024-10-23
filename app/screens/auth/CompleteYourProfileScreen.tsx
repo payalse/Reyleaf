@@ -77,12 +77,12 @@ const CompleteYourProfileScreen = () => {
   const onSubmit = async (values: FormValues) => {
     let isValid = true;
 
-    if (date === null) {
-      setExtraError(prev => ({...prev, date: 'Please Pick Date!'}));
-      isValid = false;
-    } else {
-      setExtraError(prev => ({...prev, date: ''}));
-    }
+    // if (date === null) {
+    //   setExtraError(prev => ({...prev, date: 'Please Pick Date!'}));
+    //   isValid = false;
+    // } else {
+    //   setExtraError(prev => ({...prev, date: ''}));
+    // }
 
     if (isValid) {
       const formData = new FormData();
@@ -274,7 +274,7 @@ const CompleteYourProfileScreen = () => {
                   placeholder="Type here"
                 />
               </InputWrapper>
-              <InputWrapper title="Date of Birth">
+              <InputWrapper title="Date of Birth optional*">
                 <SelectInput
                   value={date === null ? '' : moment(date).format('MM/DD/YYYY')}
                   onPress={() => setIsDateModalOpen(true)}
@@ -283,7 +283,6 @@ const CompleteYourProfileScreen = () => {
                   placeholder="Choose Date"
                 />
               </InputWrapper>
-              {extraError.date && <InputErrorMsg msg={extraError.date} />}
               {/* <InputWrapper title="Your Pronouns">
                 <SelectInput
                   value={pronoun}

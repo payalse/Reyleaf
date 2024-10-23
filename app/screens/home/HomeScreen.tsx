@@ -32,6 +32,7 @@ const RenderProducts = () => {
   const {token} = useSelector((s: RootState) => s.auth);
   const dispatch = useDispatch<AppDispatch>();
   const requestApi = useCallback(async () => {
+    console.log(token, 'hghh');
     let categoryId = null;
     if (homeActiveCategory._id !== DEFAULT_ALL_CATEGORY._id) {
       categoryId = homeActiveCategory._id;

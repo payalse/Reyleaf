@@ -97,7 +97,7 @@ const ProductItem = ({
           }}>
           <AntDesign size={15} name="star" color={'#FFC700'} />
           <MyText size={FONT_SIZE.xs} bold={FONT_WEIGHT.bold}>
-            {rating}
+            {Math.round(rating) }
           </MyText>
         </View>
         {/* liked */}
