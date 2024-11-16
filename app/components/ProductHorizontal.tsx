@@ -1,5 +1,5 @@
 import {View, TouchableOpacity, Image, StyleSheet} from 'react-native';
-import React, {useCallback, useState} from 'react';
+import {useCallback, useState} from 'react';
 import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../styles';
 import {MyText} from './MyText';
 import GradientBox from './GradientBox';
@@ -13,8 +13,8 @@ import {useSelector} from 'react-redux';
 import {RootState} from '../redux/store';
 import {api_addProductToFavourite} from '../api/product';
 import {Rating} from 'react-native-ratings';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { HomeStackParams } from 'app/naviagtion/types';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {HomeStackParams} from 'app/naviagtion/types';
 
 type Props = {
   id: string;
@@ -28,7 +28,7 @@ type Props = {
   onValueChange?: (productId: any) => void;
 };
 
-const ProductItem2 = ({
+const ProductHorizontal = ({
   isFav = false,
   title,
   oldPrice,
@@ -44,7 +44,7 @@ const ProductItem2 = ({
   const photo = photos ? photos[0]?.url || '' : '';
   const navigation = useNavigation();
   const navigation1 =
-  useNavigation<NativeStackNavigationProp<HomeStackParams>>();
+    useNavigation<NativeStackNavigationProp<HomeStackParams>>();
 
   const addToFavourite = async (productId: any) => {
     try {
@@ -156,7 +156,7 @@ const ProductItem2 = ({
               imageSize={15}
             />
             <MyText size={FONT_SIZE.xs}>
-              {'   '}  {Math.round(rating? rating: 0) } Reviews
+              {'   '} {Math.round(rating ? rating : 0)} Reviews
             </MyText>
           </View>
           <View style={{flexDirection: 'row', alignItems: 'baseline', gap: 5}}>
@@ -176,4 +176,4 @@ const ProductItem2 = ({
   );
 };
 
-export default ProductItem2;
+export default ProductHorizontal;

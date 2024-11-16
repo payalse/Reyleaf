@@ -1,6 +1,6 @@
 import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import ProductItem2 from '../../../components/ProductItem2';
+import ProductHorizontal from '../../../components/ProductHorizontal';
 import {ScrollView} from 'react-native-gesture-handler';
 import {MyText} from '../../../components/MyText';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
@@ -61,7 +61,7 @@ const FavouriteScreen = () => {
         data={resultProduct}
         renderItem={({item}) => {
           return (
-            <ProductItem2
+            <ProductHorizontal
               id={item._id}
               photos={item.photos}
               title={item.title}

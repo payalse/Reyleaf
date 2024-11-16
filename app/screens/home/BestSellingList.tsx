@@ -1,5 +1,4 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
 import {MyText} from '../../components/MyText';
 import {FONT_SIZE, FONT_WEIGHT} from '../../styles';
 import {FlatList} from 'react-native';

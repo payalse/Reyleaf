@@ -1,5 +1,5 @@
 import {View, TouchableOpacity, Image} from 'react-native';
-import React, {useState} from 'react';
+import {useState} from 'react';
 import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../styles';
 import {MyText} from './MyText';
 import GradientBox from './GradientBox';
@@ -97,7 +97,7 @@ const ProductItem = ({
           }}>
           <AntDesign size={15} name="star" color={'#FFC700'} />
           <MyText size={FONT_SIZE.xs} bold={FONT_WEIGHT.bold}>
-            {Math.round(rating) }
+            {Math.round(rating)}
           </MyText>
         </View>
         {/* liked */}

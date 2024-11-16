@@ -1,6 +1,5 @@
 import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
-import ProductItem2 from '../../../components/ProductItem2';
+import ProductHorizontal from '../../../components/ProductHorizontal';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
 import {useNavigation} from '@react-navigation/native';
 import SearchBox from '../../../components/SearchBox';
@@ -46,7 +45,7 @@ const RecentlyViewedScreen = () => {
       data={recentlyViewedProducts}
       renderItem={({item}) => {
         return (
-          <ProductItem2
+          <ProductHorizontal
             photos={item?.photos}
             id={item?._id}
             title={item?.title}

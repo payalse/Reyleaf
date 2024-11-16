@@ -19,7 +19,7 @@ import {api_searchProduct} from '../../api/product';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/store';
 import FullScreenLoader from '../../components/FullScreenLoader';
-import ProductItem2 from '../../components/ProductItem2';
+import ProductHorizontal from '../../components/ProductHorizontal';
 import ProductItem from '../../components/ProductItem';
 import {ProductType} from '../../types';
 import {TAB_BAR_BG_HEIGHT} from '../../naviagtion/MainTab';
@@ -162,7 +162,7 @@ const SearchScreen = () => {
         renderItem={({item}) => {
           return (
             <View style={{marginBottom: 10}}>
-              <ProductItem2
+              <ProductHorizontal
                 id={item._id}
                 photos={item.photos}
                 title={item.title}

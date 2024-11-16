@@ -1,6 +1,5 @@
 import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
-import ProductItem2 from '../../../components/ProductItem2';
+import ProductHorizontal from '../../../components/ProductHorizontal';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
 import {useNavigation} from '@react-navigation/native';
 import SearchBox from '../../../components/SearchBox';
@@ -10,6 +9,8 @@ import {RootState} from '../../../redux/store';
 import ProductItem from '../../../components/ProductItem';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {HomeStackParams} from '../../../naviagtion/types';
+import Product from '../../../components/Product';
+import {Product as IProduct} from '../../../types/index';
 
 const NewlyArrivalScreen = () => {
   useHideBottomBar({});
@@ -17,6 +18,7 @@ const NewlyArrivalScreen = () => {
   const navigationHome =
     useNavigation<NativeStackNavigationProp<HomeStackParams>>();
   const {newlyProducts} = useSelector((s: RootState) => s.product);
+
   return (
     <FlatList
       ListHeaderComponent={() => {
@@ -45,7 +47,7 @@ const NewlyArrivalScreen = () => {
       data={newlyProducts}
       renderItem={({item}) => {
         return (
-          <ProductItem2
+          <ProductHorizontal
             photos={item?.photos}
             id={item?._id}
             title={item?.title}
