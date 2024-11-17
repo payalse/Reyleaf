@@ -101,7 +101,7 @@ const AboutUsScreen = () => {
             </View>
           </TouchableOpacity>
         </View>
-        <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
+        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
           <TouchableOpacity>
             <MyText
               style={{
@@ -110,7 +110,7 @@ const AboutUsScreen = () => {
                 textDecorationLine: 'underline',
               }}
               onPress={() => navigation.navigate('PrivacyPolicy')}>
-              Privacy Policy
+              Privacy Policy & 
             </MyText>
           </TouchableOpacity>
           <TouchableOpacity

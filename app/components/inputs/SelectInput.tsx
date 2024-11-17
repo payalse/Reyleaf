@@ -31,7 +31,9 @@ const SelectInput = ({
           backgroundColor: 'transparent',
         }}>
         {value ? (
-          <MyText color={COLORS.black}>{value}</MyText>
+          <MyText color={COLORS.black}>
+          {value.length > 35 ? `${value.slice(0, 35)}...` : value}
+        </MyText>
         ) : (
           <MyText color={COLORS.grey}>{placeholder}</MyText>
         )}

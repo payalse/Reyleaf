@@ -107,8 +107,8 @@ const SupportChatScreen = () => {
       <SafeAreaView />
       {/* Header */}
       <SecondaryHeader
-        onBack={navigation.goBack}
-        title={params?.item?.title}
+        onBack={() => navigation.navigate('SupportTicket')}
+        title={params?.item?.title.length > 34 ? `${params?.item?.title.slice(0, 34)}...` : params?.item?.title}
         RightComp={() => {
           return (
             <Tooltip

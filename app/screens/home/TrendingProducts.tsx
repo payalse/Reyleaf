@@ -2,12 +2,12 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {MyText} from '../../components/MyText';
 import {FONT_SIZE, FONT_WEIGHT} from '../../styles';
 import {FlatList} from 'react-native';
-import ProductItem from '../../components/ProductItem';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {HomeStackParams} from '../../naviagtion/types';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/store';
+import Product from '../../components/Product';
 
 const TrendingProducts = () => {
   const navigation =
@@ -31,7 +31,10 @@ const TrendingProducts = () => {
         </MyText>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('TrendingProduct');
+            navigation.navigate('AllProductList', {
+              title: 'Trending',
+              productData: trendingProducts,
+            });
           }}>
           <MyText>View all</MyText>
         </TouchableOpacity>
@@ -44,7 +47,7 @@ const TrendingProducts = () => {
         keyExtractor={item => item?._id}
         renderItem={({item}) => {
           return (
-            <ProductItem
+            <Product
               id={item?._id}
               title={item?.title}
               rating={item?.rating}

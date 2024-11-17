@@ -16,7 +16,7 @@ import {COLORS, FONT_SIZE, FONT_WEIGHT, hp, wp} from '../../styles';
 import AntDesgin from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {FlatList} from 'react-native';
-import ProductItem from '../../components/ProductItem';
+import Product from '../../components/Product';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import ProductShow from './components/ProductShow';
 import CartSvg from '../../../assets/svg/tab/icons/CartFill.svg';
@@ -68,7 +68,12 @@ const SimilarList = ({productList}: any) => {
           Similar Items
         </MyText>
         <TouchableOpacity
-          onPress={() => navigation.navigate('SimilarProducts')}>
+          onPress={() =>
+            navigation.navigate('AllProductList', {
+              title: 'Similar Items',
+              productData: productList,
+            })
+          }>
           <MyText>View all</MyText>
         </TouchableOpacity>
       </View>
@@ -80,7 +85,7 @@ const SimilarList = ({productList}: any) => {
         keyExtractor={item => item.id}
         renderItem={({item}) => {
           return (
-            <ProductItem
+            <Product
               photos={item?.photos}
               id={item?._id}
               title={item?.title}

@@ -33,8 +33,8 @@ const validationSchema = yup.object().shape({
       message: 'expiry date must be in: MM/YY',
     })
     .required('expirydate is Required!'),
-  cardName: yup.string().required('cardName is Required!'),
-  name: yup.string().required('name is Required!'),
+  cardName: yup.string().min(5, ({min}) => `Number must be at least ${min} characters`).required('cardName is Required!'),
+  name: yup.string().min(5, ({min}) => `Number must be at least ${min} characters`).required('name is Required!'),
   number: yup
     .string()
     .min(16, ({min}) => `Number must be at least ${min} characters`)

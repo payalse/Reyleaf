@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import SecondaryHeader from '../../components/header/SecondaryHeader';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {COLORS, D, FONT_SIZE, FONT_WEIGHT, hp} from '../../styles';
@@ -20,6 +20,11 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useHideBottomBar} from '../../hook/useHideBottomBar';
 import {BUILD_IMAGE_URL} from '../../api';
 import moment from 'moment';
+import {RootState} from '../../redux/store';
+import {useSelector} from 'react-redux';
+import {api_deleteResource} from '../../api/awareness';
+import FullScreenLoader from '../../components/FullScreenLoader';
+import {useAppAlert} from '../../context/AppAlertContext';
 const IMAGE_URI =
   'https://media.istockphoto.com/id/1421993924/photo/creative-writing-at-home-by-female-hands-enjoying-a-calm-peaceful-day-off-indoors-woman.webp?b=1&s=170667a&w=0&k=20&c=GstM6PeYECR0ftSIk-60TIO2b6JUhkMG3tlUhFDpR8k=';
 
@@ -29,9 +34,28 @@ const ResourceDetailScreen = () => {
     useNavigation<NativeStackNavigationProp<AwarenessStackParams>>();
   const {isReadOnly, data} =
     useRoute<RouteProp<AwarenessStackParams, 'ResourceDetail'>>().params;
+  const {token} = useSelector((s: RootState) => s.auth);
+  const [loading, setLoading] = useState(false);
+  const {showModal} = useAppAlert()!;
+
+  const requestApi = async () => {
+    try {
+      setLoading(true);
+      const res = await api_deleteResource(token!, data?.id);
+      showModal({text: 'Resource deleted!'});
+      navigation.goBack();
+    } catch (error: any) {
+      showModal({text: error.message, isError: true});
+      navigation.goBack();
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={{flex: 1, backgroundColor: COLORS.white}}>
+      {loading && <FullScreenLoader />}
       <ScrollView
         bounces={false}
         contentContainerStyle={{
@@ -43,8 +67,8 @@ const ResourceDetailScreen = () => {
             <SecondaryHeader
               title="Resource Detail"
               onBack={navigation.goBack}
-              backIconColor={COLORS.black}
-              backIconBgColor={COLORS.white}
+              backIconColor={COLORS.white}
+              backIconBgColor={COLORS.black}
               backTextColor={COLORS.white}
               titleColor={COLORS.white}
             />
@@ -111,7 +135,10 @@ const ResourceDetailScreen = () => {
                   alignItems: 'center',
                   justifyContent: 'space-between',
                 }}>
-                <MyText size={FONT_SIZE.xl} bold={FONT_WEIGHT.bold}>
+                <MyText
+                  size={FONT_SIZE.xl}
+                  bold={FONT_WEIGHT.bold}
+                  style={{width: '60%', marginBottom: 20}}>
                   {data?.title}
                 </MyText>
                 <View
@@ -139,6 +166,7 @@ const ResourceDetailScreen = () => {
                     <MaterialIcons name="edit" color={COLORS.white} size={20} />
                   </TouchableOpacity>
                   <TouchableOpacity
+                    onPress={requestApi}
                     style={{
                       backgroundColor: COLORS.red,
                       width: 45,

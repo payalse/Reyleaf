@@ -72,7 +72,7 @@ const SecondaryHeader = ({
       </TouchableOpacity>
       <MyText
         style={{
-          width: '60%',
+          width: '50%',
           textAlign: 'center',
           margin: 'auto',
           alignSelf: 'center',

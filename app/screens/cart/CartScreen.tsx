@@ -113,7 +113,7 @@ const CartScreen = () => {
               size={FONT_SIZE.lg}
               color={COLORS.black}
               bold={FONT_WEIGHT.bold}>
-              Sub Total
+              Total
             </MyText>
             <MyText
               size={FONT_SIZE.lg}

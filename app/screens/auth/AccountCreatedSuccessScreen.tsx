@@ -79,7 +79,7 @@ const AccountCreatedSuccessScreen = () => {
           }}
           text="Let's get Started"
         />
-        <TouchableOpacity onPress={openAppStore}>
+        {/* <TouchableOpacity onPress={openAppStore}>
           <GradientBox
             conatinerStyle={{
               width: 50,
@@ -93,7 +93,7 @@ const AccountCreatedSuccessScreen = () => {
               style={{width: 20, height: 20, resizeMode: 'contain'}}
             />
           </GradientBox>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </LayoutBG>
   );

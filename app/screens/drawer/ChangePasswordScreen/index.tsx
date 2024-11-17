@@ -108,7 +108,7 @@ const ChangePasswordScreen = () => {
             {errors.newPassword && touched.newPassword && (
               <InputErrorMsg msg={errors.newPassword} />
             )}
-            <InputWrapper title="New Password Confirm">
+            <InputWrapper title="Confirm Password">
               <MyInput
                 placeholder="Type here"
                 hasError={Boolean(

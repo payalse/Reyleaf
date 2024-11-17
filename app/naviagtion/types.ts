@@ -64,10 +64,10 @@ export type DrawerParams = {
 };
 export type HomeStackParams = {
   Home: undefined;
-  TrendingProduct: undefined;
-  NewlyArrival: undefined;
-  RecentlyViewed: undefined;
-  BestSelling: undefined;
+  AllProductList: {
+    productData: any;
+    title: string;
+  };
   SimilarProducts: undefined;
   Reviews: undefined;
   ProductDetail: {

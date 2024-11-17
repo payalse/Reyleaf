@@ -1,6 +1,6 @@
 import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import ProductHorizontal from '../../../components/ProductHorizontal';
+import Product from '../../../components/Product';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import SearchBox from '../../../components/SearchBox';
@@ -75,7 +75,7 @@ const SearchResultScreen = () => {
         data={resultProduct}
         renderItem={({item}) => {
           return (
-            <ProductHorizontal
+            <Product
               id={item._id}
               photos={item.photos}
               title={item.title}
@@ -84,6 +84,7 @@ const SearchResultScreen = () => {
               oldPrice={item.price}
               category={item.categoryId.name}
               isFav={item.isFavourite}
+              layout="horizontal"
             />
           );
         }}

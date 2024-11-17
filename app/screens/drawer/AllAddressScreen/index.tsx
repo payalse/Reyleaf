@@ -1,4 +1,4 @@
-import {ScrollView, View} from 'react-native';
+import {Image, ScrollView, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {MyText} from '../../../components/MyText';
@@ -62,6 +62,12 @@ const AllAddressScreen = () => {
                 <OptionBox
                   key={item?._id}
                   active
+                  goToEdit={() =>
+                    navigation.navigate('EditAddress', {
+                      raw: item,
+                      addressId: item?._id,
+                    })
+                  }
                   onPress={() =>
                     navigation.navigate('EditAddress', {
                       raw: item,
@@ -72,10 +78,9 @@ const AllAddressScreen = () => {
                   textBold
                   subText={`${item?.address}, ${item?.city}, ${item?.state}, ${item?.country}`}
                   leftIcon={
-                    <Entypo
-                      name="home"
-                      size={FONT_SIZE['xl']}
-                      color={COLORS.greenDark}
+                    <Image
+                      style={{width: 20, height: 20, resizeMode: 'cover'}}
+                      source={require('../../../../assets/img/icons/addresshome.png')}
                     />
                   }
                 />

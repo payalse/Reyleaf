@@ -81,7 +81,7 @@ const SupportTicketsScreen = () => {
                   justifyContent: 'space-between',
                   marginBottom: 10,
                 }}>
-                <MyText size={FONT_SIZE.base} bold={FONT_WEIGHT.bold}>
+                <MyText size={FONT_SIZE.base} bold={FONT_WEIGHT.bold} style={{width: '80%'}}>
                   {item?.title}
                 </MyText>
                 <View

@@ -1,160 +1,173 @@
-import {View, TouchableOpacity, Image, StyleSheet} from 'react-native';
-import {useState, useCallback} from 'react';
+import React, {useState, useCallback} from 'react';
+import {
+  View,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  StyleProp,
+  ViewStyle,
+} from 'react-native';
 import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../styles';
 import {MyText} from './MyText';
 import GradientBox from './GradientBox';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {BUILD_IMAGE_URL} from '../api';
-import DummyProductImage from '../../assets/img/productPlaceholder.jpeg';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {HomeStackParams} from '../naviagtion/types';
+import {HomeStackParams} from '../navigation/types';
+import {BUILD_IMAGE_URL} from '../api';
+import DummyProductImage from '../../assets/img/productPlaceholder.jpeg';
 import {useSelector} from 'react-redux';
 import {RootState} from '../redux/store';
 import {api_addProductToFavourite} from '../api/product';
 import {Rating} from 'react-native-ratings';
-import {Product as IProduct} from '../types/index';
 
-export interface ProductProps {
-  product: IProduct;
-  type?: 'Horizontal' | 'Vertical';
-  onValueChange?: (productId: any) => void;
-}
-// type Props = {
-//   id: string;
-//   showFav?: boolean;
-//   isFav?: boolean;
-//   title: string;
-//   rating?: number;
-//   oldPrice: string;
-//   price: string;
-//   category: string;
-//   photos?: {url: string}[];
-// };
+type Props = {
+  id: string;
+  isFav?: boolean;
+  title: string;
+  rating?: number;
+  oldPrice: string;
+  price: string;
+  category: string;
+  photos?: {url: string}[];
+  layout?: 'vertical' | 'horizontal';
+  onValueChange?: (productId: string) => void;
+};
 
-// {
-//   id,
-//   isFav = false,
-//   title,
-//   price,
-//   rating = 0,
-//   oldPrice,
-//   category,
-//   photos,
-//   onValueChange,
-// }
-const Product = (props: ProductProps) => {
-  const {type = 'Vertical', product, onValueChange} = props;
-  const {
-    _id,
-    title,
-    photos,
-    isFavourite,
-    categoryId,
-    rating = 0,
-    price,
-    discountedPrice,
-  } = product;
-  const [isLiked, setIsLiked] = useState(isFavourite);
+const Product = ({
+  id,
+  isFav = false,
+  title,
+  rating = 0,
+  oldPrice,
+  price,
+  category,
+  photos,
+  layout = 'vertical',
+  onValueChange,
+}: Props) => {
+  const [isLiked, setIsLiked] = useState(isFav);
   const {token} = useSelector((state: RootState) => state.auth);
   const navigation =
     useNavigation<NativeStackNavigationProp<HomeStackParams>>();
+  const photo = photos?.[0]?.url ? BUILD_IMAGE_URL(photos[0].url) : '';
 
-  const photoUrl = photos?.[0]?.url ? BUILD_IMAGE_URL(photos[0].url) : '';
-  const handleAddToFavourite = useCallback(async () => {
-    if (!token) {
-      navigation.navigate('Welcome');
-      return;
-    }
-    setIsLiked(prev => !prev);
+  const addToFavourite = async () => {
     try {
-      await api_addProductToFavourite(token!, _id);
-      onValueChange?.(_id);
+      if (!token) {
+        navigation.navigate('Welcome');
+        return;
+      }
+      setIsLiked(!isLiked);
+      const res = await api_addProductToFavourite(token, id);
+      if (onValueChange) onValueChange(id);
+      console.log(res);
     } catch (error) {
       console.error(error);
     }
-  }, [token, _id, onValueChange, navigation]);
+  };
+
+  const containerStyle =
+    layout === 'vertical'
+      ? styles.verticalContainer
+      : styles.horizontalContainer;
+
+  const imageStyle =
+    layout === 'vertical' ? styles.verticalImage : styles.horizontalImage;
 
   return (
     <TouchableOpacity
       onPress={() =>
-        navigation.navigate('ProductDetail', {productId: _id, photos, title})
+        navigation.navigate('ProductDetail', {
+          productId: id,
+          photos,
+          title,
+        })
       }
-      style={[
-        styles.container,
-        {flexDirection: type === 'Horizontal' ? 'row' : 'column'},
-      ]}>
+      style={[styles.container, containerStyle]}>
       <View
         style={[
           styles.imageContainer,
-          type === 'Horizontal' && styles.imageHorizontal,
-          type === 'Vertical' && styles.imageVertical,
+          layout === 'horizontal' && {width: 100},
         ]}>
         <Image
-          source={photoUrl ? {uri: photoUrl} : DummyProductImage}
+          source={photo ? {uri: photo} : DummyProductImage}
+          style={[styles.image, imageStyle]}
           resizeMode="cover"
-          style={{
-            width: '100%',
-            borderRadius: type === 'Horizontal' ? 10 : 20,
-            height: type === 'Horizontal' ? 107 : 137,
-          }}
         />
-        {/* rating */}
+        {layout === 'vertical' && (
+          <TouchableOpacity onPress={addToFavourite} style={styles.likeButton}>
+            <GradientBox conatinerStyle={styles.likeButtonContainer}>
+              <AntDesign
+                color={COLORS.white}
+                style={{opacity: isLiked ? 1 : 0.3}}
+                name="heart"
+                size={18}
+              />
+            </GradientBox>
+          </TouchableOpacity>
+        )}
+      </View>
+      {layout === 'vertical' && (
+        <View
+          style={{
+            height: 28,
+            backgroundColor: COLORS.white,
+            width: 42,
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 10,
+            flexDirection: 'row',
+            gap: 2,
+            margin: 10,
+            position: 'absolute',
+            top: 10,
+            left: 10,
+          }}>
+          <AntDesign size={15} name="star" color={'#FFC700'} />
+          <MyText size={FONT_SIZE.xs} bold={FONT_WEIGHT.bold}>
+            {Math.round(rating)}
+          </MyText>
+        </View>
+      )}
+
+      <View style={styles.details}>
+        <View style={styles.header}>
+          <View>
+            <MyText size={FONT_SIZE.lg} bold={FONT_WEIGHT.semibold}>
+              {title}
+            </MyText>
+            <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
+              {category}
+            </MyText>
+          </View>
+          {layout === 'horizontal' && (
+            <TouchableOpacity onPress={addToFavourite}>
+              <GradientBox conatinerStyle={styles.likeButtonContainer}>
+                <AntDesign
+                  color={COLORS.white}
+                  style={{opacity: isLiked ? 1 : 0.3}}
+                  name="heart"
+                  size={14}
+                />
+              </GradientBox>
+            </TouchableOpacity>
+          )}
+        </View>
+
         {rating > 0 && (
-          <View
-            style={{
-              height: 28,
-              backgroundColor: COLORS.white,
-              width: 42,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 10,
-              flexDirection: 'row',
-              gap: 2,
-              margin: 10,
-              position: 'absolute',
-            }}>
-            <AntDesign size={15} name="star" color={'#FFC700'} />
-            <MyText size={FONT_SIZE.xs} bold={FONT_WEIGHT.bold}>
-              {Math.round(rating)}
+          <View style={styles.rating}>
+            <Rating
+              type="star"
+              startingValue={rating}
+              ratingCount={5}
+              imageSize={15}
+            />
+            <MyText size={FONT_SIZE.xs}>
+              {'   '} {Math.round(rating)} Reviews
             </MyText>
           </View>
         )}
-        {/* Like button */}
-        <TouchableOpacity
-          onPress={handleAddToFavourite}
-          style={styles.likeButton}>
-          <GradientBox conatinerStyle={styles.gradientBox}>
-            <AntDesign
-              color={COLORS.white}
-              style={{opacity: isLiked ? 1 : 0.3}}
-              name="heart"
-              size={18}
-            />
-          </GradientBox>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.infoContainer}>
-        <View style={styles.titleContainer}>
-          <MyText size={FONT_SIZE.lg} bold={FONT_WEIGHT.semibold}>
-            {title}
-          </MyText>
-          <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
-            {categoryId.name}
-          </MyText>
-        </View>
-        {/* Rating */}
-        <View style={styles.ratingContainer}>
-          <Rating
-            type="star"
-            startingValue={rating}
-            ratingCount={5}
-            imageSize={15}
-          />
-          <MyText size={FONT_SIZE.xs}>{Math.round(rating || 0)} Reviews</MyText>
-        </View>
-        {/* Price */}
         <View style={styles.priceContainer}>
           <MyText size={FONT_SIZE.lg} bold={FONT_WEIGHT.semibold}>
             ${price}
@@ -162,8 +175,8 @@ const Product = (props: ProductProps) => {
           <MyText
             size={FONT_SIZE.sm}
             color={COLORS.grey}
-            style={styles.strikethrough}>
-            ${discountedPrice}
+            style={{textDecorationLine: 'line-through'}}>
+            ${oldPrice}
           </MyText>
         </View>
       </View>
@@ -171,83 +184,67 @@ const Product = (props: ProductProps) => {
   );
 };
 
+export default Product;
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.white,
     borderRadius: 25,
     padding: 10,
+    position: 'relative',
   },
-  // Common Image Container
+  verticalContainer: {
+    width: 210,
+  },
+  horizontalContainer: {
+    flexDirection: 'row',
+  },
   imageContainer: {
     position: 'relative',
     backgroundColor: COLORS.grey,
     borderRadius: 20,
   },
-  // Vertical Image Style
-  imageVertical: {
+  verticalImage: {
     height: 137,
-    width: '100%',
   },
-  // Horizontal Image Style
-  imageHorizontal: {
+  horizontalImage: {
     height: 100,
-    width: 100,
-    overflow: 'hidden',
   },
-  thumbnail: {},
+  image: {
+    width: '100%',
+    borderRadius: 20,
+  },
   likeButton: {
     position: 'absolute',
     bottom: -10,
     right: 10,
+    zIndex: 4,
   },
-  gradientBox: {
+  likeButtonContainer: {
     width: 39,
     height: 38,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  infoContainer: {
-    backgroundColor: 'white',
+  details: {
     flex: 1,
     gap: 3,
     margin: 5,
+    marginLeft: 10,
   },
-  // Title container to adapt to the direction
-  titleContainer: {
+  header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  // Rating container (flexible direction)
-  ratingContainer: {
-    height: 29,
-    alignItems: 'center',
+  rating: {
     flexDirection: 'row',
-    gap: 2,
+    alignItems: 'center',
+    gap: 5,
   },
-  // Price container
   priceContainer: {
     flexDirection: 'row',
     alignItems: 'baseline',
     gap: 5,
   },
-  strikethrough: {
-    textDecorationLine: 'line-through',
-  },
-  // Horizontal layout specific styles
-  horizontalContainer: {
-    flexDirection: 'row',
-  },
-  horizontalInfoContainer: {
-    marginLeft: 10,
-  },
-  // Vertical layout specific styles
-  verticalContainer: {
-    width: 210,
-  },
-  verticalInfoContainer: {
-    marginTop: 10,
-  },
 });
-
-export default Product;
