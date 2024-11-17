@@ -32,11 +32,7 @@ import {useEffect, useState} from 'react';
 import ConnectWithCalendarScreen from '../screens/auth/ConnectWithCalendarScreen';
 import {requestNotificationPermission} from '../permissions/notification';
 import HomeScreen from '../screens/home/HomeScreen';
-import TrendingProductsScreen from '../screens/home/TrendingProductsScreen';
-import RecentlyViewedScreen from '../screens/home/RecentlyViewedScreen';
-import BestSellingScreen from '../screens/home/BestSellingScreen';
 import ProductDetailScreen from '../screens/ProductDetailScreen';
-import SimilarProductScreen from '../screens/home/SimilarProductScreen';
 import ReviewsScreen from '../screens/ProductDetailScreen/Reviews';
 import NewlyArrival from '../screens/home/NewlyArrivalList';
 
@@ -107,22 +103,8 @@ const RootStack = () => {
             />
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen
-              name="TrendingProduct"
-              component={TrendingProductsScreen}
-            />
-            <Stack.Screen name="NewlyArrival" component={NewlyArrival} />
-            <Stack.Screen
-              name="RecentlyViewed"
-              component={RecentlyViewedScreen}
-            />
-            <Stack.Screen name="BestSelling" component={BestSellingScreen} />
-            <Stack.Screen
               name="ProductDetail"
               component={ProductDetailScreen}
-            />
-            <Stack.Screen
-              name="SimilarProducts"
-              component={SimilarProductScreen}
             />
             <Stack.Screen name="Reviews" component={ReviewsScreen} />
           </Stack.Group>
