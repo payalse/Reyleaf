@@ -8,10 +8,10 @@ const BoardOne = () => {
   return (
     <RenderBody
       heading={
-        'Shop with Reynette, Elevate Your Lifestyle with Earth-Friendly Finds'
+        'Shop with Reyleaf, Elevate Your Lifestyle with Earth-Friendly Finds'
       }
       subHeading={
-        'Welcome to Reynette, your exclusive gateway to a conscious and sustainable shopping experience'
+        'Welcome to Reyleaf, your exclusive gateway to a conscious and sustainable shopping experience'
       }
       stripeComp={
         <StripeOne

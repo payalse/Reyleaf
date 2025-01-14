@@ -26,22 +26,36 @@ type Values = {
 };
 
 const expirydateRegx = /^\d{2}\/\d{2}$/;
+const cvvRegx = /^\d{3}$/;
+
 const validationSchema = yup.object().shape({
   expirydate: yup
     .string()
     .matches(expirydateRegx, {
-      message: 'expiry date must be in: MM/YY',
+      message: 'Expiry date must be in: MM/YY',
     })
-    .required('expirydate is Required!'),
-  cardName: yup.string().min(5, ({min}) => `Number must be at least ${min} characters`).required('cardName is Required!'),
-  name: yup.string().min(5, ({min}) => `Number must be at least ${min} characters`).required('name is Required!'),
+    .required('Expiry Date is Required!'),
+  cardName: yup
+    .string()
+    .min(5, ({ min }) => `Number must be at least ${min} characters`)
+    .required('Card name is Required!'),
+  name: yup
+    .string()
+    .min(5, ({ min }) => `Name must be at least ${min} characters`)
+    .required('Card holder Name is Required!'),
   number: yup
     .string()
-    .min(16, ({min}) => `Number must be at least ${min} characters`)
-    .max(16, ({min}) => `Number must be not be  longer than ${min} characters`)
-    .required('number is Required!'),
-  CVV: yup.number().required('CVV is Required!'),
+    .min(16, ({ min }) => `Card number must be at least ${min} characters`)
+    .max(16, ({ min }) => `Card number must not be longer than ${min} characters`)
+    .required('Card number is required!'),
+  CVV: yup
+    .string()
+    .matches(cvvRegx, {
+      message: 'CVV must be exactly 3 digits',
+    })
+    .required('CVV is Required!'),
 });
+
 
 const AddCardScreen = () => {
   const {user: auth, token: authToken} = useSelector((s: RootState) => s.auth);

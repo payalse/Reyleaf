@@ -1,6 +1,6 @@
 import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import ProductHorizontal from '../../../components/ProductHorizontal';
+import Product from '../../../components/Product';
 import {ScrollView} from 'react-native-gesture-handler';
 import {MyText} from '../../../components/MyText';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
@@ -61,7 +61,7 @@ const FavouriteScreen = () => {
         data={resultProduct}
         renderItem={({item}) => {
           return (
-            <ProductHorizontal
+            <Product
               id={item._id}
               photos={item.photos}
               title={item.title}
@@ -70,6 +70,7 @@ const FavouriteScreen = () => {
               oldPrice={item.price}
               category={item.categoryId.name}
               isFav={item.isFavourite}
+              layout='horizontal'
               onValueChange={(productId: any) => {
                 if (productId) {
                   getData();
