@@ -46,7 +46,7 @@ const WelcomeScreen = () => {
           size={FONT_SIZE.sm}
           style={{marginTop: 5}}
           color={COLORS.grey}>
-          Welcome back to Reyleaf - your eco- friendly heaven!
+          Welcome back to Reyleaf - your eco-friendly heaven!
         </MyText>
 
         <View style={{width: '90%', paddingVertical: 20, gap: 20}}>

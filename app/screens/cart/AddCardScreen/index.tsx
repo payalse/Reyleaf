@@ -123,7 +123,7 @@ const AddCardScreen = () => {
           <SafeAreaView />
           <SecondaryHeader onBack={navigation.goBack} title="Add New Card" />
           <ScrollView contentContainerStyle={{padding: 20, marginTop: 10}}>
-            <InputWrapper title="Card Name">
+            <InputWrapper title="Bank Name">
               <MyInput
                 placeholder="Type Here"
                 // value={cardName}

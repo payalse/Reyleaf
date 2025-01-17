@@ -119,7 +119,7 @@ const ProductDetailScreen = () => {
   const [productImages, setProductImages] = useState<string[]>([]);
   const navigation1 =
     useNavigation<NativeStackNavigationProp<ProductDetailParams>>();
-    const navigation2 =
+  const navigation2 =
     useNavigation<NativeStackNavigationProp<HomeStackParams>>();
 
   const addToCartPress = async () => {
@@ -341,16 +341,6 @@ const ProductDetailScreen = () => {
                 style={{alignItems: 'center', flexDirection: 'row', gap: 10}}>
                 <TouchableOpacity
                   style={styles.countBtn}
-                  onPress={() => setQty(prev => prev + 1)}>
-                  <AntDesgin
-                    name="plus"
-                    size={FONT_SIZE.sm}
-                    color={COLORS.white}
-                  />
-                </TouchableOpacity>
-                <MyText size={FONT_SIZE['xl']}>{qty}</MyText>
-                <TouchableOpacity
-                  style={styles.countBtn}
                   onPress={() => {
                     if (qty >= 2) {
                       return setQty(prev => prev - 1);
@@ -358,6 +348,17 @@ const ProductDetailScreen = () => {
                   }}>
                   <AntDesgin
                     name="minus"
+                    size={FONT_SIZE.sm}
+                    color={COLORS.white}
+                  />
+                </TouchableOpacity>
+                <MyText size={FONT_SIZE['xl']}>{qty}</MyText>
+
+                <TouchableOpacity
+                  style={styles.countBtn}
+                  onPress={() => setQty(prev => prev + 1)}>
+                  <AntDesgin
+                    name="plus"
                     size={FONT_SIZE.sm}
                     color={COLORS.white}
                   />

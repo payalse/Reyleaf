@@ -198,7 +198,7 @@ const SignupScreen = () => {
               <PrimaryBtn
                 loading={loading}
                 onPress={handleSubmit}
-                text="Sign Up"
+                text="Signup"
               />
             </View>
             <View
