@@ -1,5 +1,4 @@
 import {TouchableOpacity, View, Platform, Linking, Image} from 'react-native';
-import React from 'react';
 import LayoutBG from '../../components/layout/LayoutBG';
 import PrimaryBtn from '../../components/buttons/PrimaryBtn';
 import GradientBox from '../../components/GradientBox';
@@ -53,7 +52,7 @@ const AccountCreatedSuccessScreen = () => {
           style={{textAlign: 'center'}}>
           {user?.role == 2
             ? 'Business Account has been created Successfully'
-            : 'Your Account Created Successfully'}
+            : 'Your account is created successfully!'}
         </MyText>
         <MyText
           center

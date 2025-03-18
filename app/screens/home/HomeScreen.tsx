@@ -43,6 +43,7 @@ const RenderProducts = () => {
         token!,
         categoryId,
       )) as GetHomeProductResponse;
+      console.warn(res,"res api_getHomeProducts")
       if ('bestSeller' in res.data) {
         dispatch(setBestSellingProduct(res.data.bestSeller));
       }
