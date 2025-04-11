@@ -1,28 +1,27 @@
-import React, {useEffect, useState} from 'react';
-import {NavigationContainer, useNavigation} from '@react-navigation/native';
+import { useEffect, useState } from 'react';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import RootStack from './app/naviagtion/RootStack';
 import LoadingScreen from './app/screens/Loading/LoadingScreen';
-import {Provider, useDispatch} from 'react-redux';
-import store, {AppDispatch} from './app/redux/store';
-import {StorageHelper} from './app/utils/storage';
+import { Provider, useDispatch } from 'react-redux';
+import store, { AppDispatch } from './app/redux/store';
+import { StorageHelper } from './app/utils/storage';
 import {
   changeAppMode,
   setFirstLaunched,
   updateDefaultAvatar,
 } from './app/redux/features/app/appSlice';
-import {getUserFromLocal} from './app/redux/features/auth/helper';
-import {login, setIsAuthenticated} from './app/redux/features/auth/authSlice';
-import {SheetProvider} from 'react-native-actions-sheet';
+import { getUserFromLocal } from './app/redux/features/auth/helper';
+import { login, setIsAuthenticated } from './app/redux/features/auth/authSlice';
+import { SheetProvider } from 'react-native-actions-sheet';
 import './app/sheets/sheets';
-import {AlertNotificationRoot} from 'react-native-alert-notification';
-import {DefaultAvatar} from './app/utils/defaultAvatar';
-import {StripeProvider} from '@stripe/stripe-react-native';
-import {AppAlertProvider} from './app/context/AppAlertContext';
+import { AlertNotificationRoot } from 'react-native-alert-notification';
+import { DefaultAvatar } from './app/utils/defaultAvatar';
+import { StripeProvider } from '@stripe/stripe-react-native';
+import { AppAlertProvider } from './app/context/AppAlertContext';
 import requestUserPermission from './app/utils/notifiactionService';
-import {Alert} from 'react-native';
 
-export const STRIPE_PK =
-  'pk_live_51OcfYUEJs3bbNiucZZXsDHvPXnXUVit1gAOv6VRJ7JAS6IVU40DjPqmW8Ea5MHLJMsqUDn2qDtZhtrROqwRzK1dQ0022i5oY5k';
+export const STRIPE_PK = "pk_test_51OcfYUEJs3bbNiuc0gCyyArVknf1IsZQbxXRWFHEFGmbflpPGPIHf2kAOIcdlc6bdmc1aicyV7VPjfe50IJn6VDi00coecLuIo"
+// 'pk_live_51OcfYUEJs3bbNiucZZXsDHvPXnXUVit1gAOv6VRJ7JAS6IVU40DjPqmW8Ea5MHLJMsqUDn2qDtZhtrROqwRzK1dQ0022i5oY5k';
 
 const AppInit = () => {
   const navigation = useNavigation();

@@ -1,5 +1,5 @@
 import {SafeAreaView, ScrollView, View} from 'react-native';
-import React, {useState} from 'react';
+import {useState} from 'react';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
 import PrimaryBtn from '../../../components/buttons/PrimaryBtn';
 import InputWrapper from '../../../components/inputs/InputWrapper';
@@ -37,16 +37,16 @@ const validationSchema = yup.object().shape({
     .required('Expiry Date is Required!'),
   cardName: yup
     .string()
-    .min(5, ({ min }) => `Number must be at least ${min} characters`)
+    .min(5, ({min}) => `Number must be at least ${min} characters`)
     .required('Card name is Required!'),
   name: yup
     .string()
-    .min(5, ({ min }) => `Name must be at least ${min} characters`)
+    .min(5, ({min}) => `Name must be at least ${min} characters`)
     .required('Card holder Name is Required!'),
   number: yup
     .string()
-    .min(16, ({ min }) => `Card number must be at least ${min} characters`)
-    .max(16, ({ min }) => `Card number must not be longer than ${min} characters`)
+    .min(16, ({min}) => `Card number must be at least ${min} characters`)
+    .max(16, ({max}) => `Card number must not be longer than ${max} characters`)
     .required('Card number is required!'),
   CVV: yup
     .string()
@@ -55,7 +55,6 @@ const validationSchema = yup.object().shape({
     })
     .required('CVV is Required!'),
 });
-
 
 const AddCardScreen = () => {
   const {user: auth, token: authToken} = useSelector((s: RootState) => s.auth);

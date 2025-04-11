@@ -1,6 +1,4 @@
 import {TouchableOpacity, View} from 'react-native';
-import React from 'react';
-
 // ICONS x Images
 import MenuSvg from '../../../assets/svg/icons/menu.svg';
 import AppIcon from '../../../assets/svg/icons/icon.svg';

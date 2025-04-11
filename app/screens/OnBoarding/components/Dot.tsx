@@ -1,10 +1,10 @@
 import {View} from 'react-native';
-import React from 'react';
 import {COLORS} from '../../../styles';
 
 type Props = {
   active?: boolean;
 };
+
 const Dot = ({active}: Props) => {
   const SIZE = active ? 15 : 10;
   return (
