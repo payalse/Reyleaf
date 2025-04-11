@@ -24,7 +24,7 @@ export const STRIPE_PK = "pk_test_51OcfYUEJs3bbNiuc0gCyyArVknf1IsZQbxXRWFHEFGmbf
 // 'pk_live_51OcfYUEJs3bbNiucZZXsDHvPXnXUVit1gAOv6VRJ7JAS6IVU40DjPqmW8Ea5MHLJMsqUDn2qDtZhtrROqwRzK1dQ0022i5oY5k';
 
 const AppInit = () => {
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
   const [isReady, setIsReady] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const run = async () => {
