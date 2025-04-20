@@ -1,32 +1,26 @@
 import {
   ActivityIndicator,
   FlatList,
-  Modal,
   StyleSheet,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
-import {COLORS, FONT_SIZE, FONT_WEIGHT, hp, wp} from '../../../styles';
-import {MyText} from '../../../components/MyText';
+import { useState } from 'react';
+import { COLORS, FONT_SIZE, FONT_WEIGHT, hp, wp } from '../../../styles';
+import { MyText } from '../../../components/MyText';
 import AntDesgin from 'react-native-vector-icons/AntDesign';
-import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {FeedStackParams} from '../../../naviagtion/types';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {useNavigation} from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useNavigation } from '@react-navigation/native';
 import Tooltip from 'react-native-walkthrough-tooltip';
-import {Image} from 'react-native';
-import {BUILD_IMAGE_URL} from '../../../api';
-import {
-  api_getFeeds,
-  api_likeDislikeFeed,
-  api_reportPost,
-} from '../../../api/feeds';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../../redux/store';
-import {CommentType} from '../../../types';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import { Image } from 'react-native';
+import { BUILD_IMAGE_URL } from '../../../api';
+import { api_likeDislikeFeed } from '../../../api/feeds';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
+import { CommentType } from '../../../types';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import moment from 'moment';
+
 type Props = {
   id: string;
   name: string;
@@ -44,6 +38,7 @@ type Props = {
   onReporting: (id: any) => void;
   userId: any;
 };
+
 const FeedItem = ({
   id,
   name,
@@ -58,14 +53,14 @@ const FeedItem = ({
   userId,
   onReporting,
 }: Props) => {
-  const {token} = useSelector((s: RootState) => s.auth);
+  const { token } = useSelector((s: RootState) => s.auth);
   const navigation =
-    useNavigation<NativeStackNavigationProp<FeedStackParams>>();
+    useNavigation<NativeStackNavigationProp<any>>();
   const [isOpen, setIsOpen] = useState(false);
   const [liked, setLiked] = useState(!!isLiked);
   const [loading, setLoading] = useState(false);
   const [localLikeCount, setLocalLikeCount] = useState(likeCount);
-  const {mode, defaultAvatar} = useSelector((s: RootState) => s.app);
+  const { mode, defaultAvatar } = useSelector((s: RootState) => s.app);
 
   const handleLikeDisLike = async () => {
     try {
@@ -88,14 +83,14 @@ const FeedItem = ({
   const handleChatPress = () => {
     navigation.navigate('ChatStack', {
       screen: 'Chat',
-      params: {otherUserId: userId, fullname: name},
+      params: { otherUserId: userId, fullname: name },
     });
   };
 
   return (
     <View>
       <View style={styles.row1}>
-        <View style={[styles.prifileWrapper, {overflow: 'hidden'}]}>
+        <View style={[styles.prifileWrapper, { overflow: 'hidden' }]}>
           <View style={styles.imgContainer}>
             <View
               style={{
@@ -105,7 +100,7 @@ const FeedItem = ({
               }}>
               {avatar ? (
                 <Image
-                  source={{uri: BUILD_IMAGE_URL(avatar)}}
+                  source={{ uri: BUILD_IMAGE_URL(avatar) }}
                   style={{
                     width: '100%',
                     height: '100%',
@@ -128,7 +123,7 @@ const FeedItem = ({
         </View>
         <View style={styles.profileInfo}>
           <MyText bold={FONT_WEIGHT.bold}>{name}</MyText>
-          <View style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
             <AntDesgin name="clockcircle" color={COLORS.greenDark} size={15} />
             <MyText size={FONT_SIZE.xs} color={COLORS.greenDark}>
               {moment(date).format('DD-MM-YYYY')}
@@ -137,16 +132,16 @@ const FeedItem = ({
         </View>
       </View>
       <FlatList
-        style={{marginLeft: 15}}
+        style={{ marginLeft: 15 }}
         showsHorizontalScrollIndicator={false}
         horizontal
         data={images}
-        renderItem={({item}) => {
+        renderItem={({ item }) => {
           return (
             <View style={styles.imgContainer}>
               <Image
-                source={{uri: BUILD_IMAGE_URL(item.url)}}
-                style={{width: '100%', height: '100%', resizeMode: 'cover'}}
+                source={{ uri: BUILD_IMAGE_URL(item.url) }}
+                style={{ width: '100%', height: '100%', resizeMode: 'cover' }}
               />
             </View>
           );
@@ -163,9 +158,9 @@ const FeedItem = ({
             justifyContent: 'space-between',
             marginTop: 10,
           }}>
-          <View style={{flexDirection: 'row', gap: 10}}>
+          <View style={{ flexDirection: 'row', gap: 10 }}>
             <TouchableOpacity
-              style={{flexDirection: 'row', gap: 5}}
+              style={{ flexDirection: 'row', gap: 5 }}
               onPress={handleLikeDisLike}>
               {loading ? (
                 <ActivityIndicator />
@@ -175,13 +170,13 @@ const FeedItem = ({
                   name={liked ? 'heart' : 'hearto'}
                   size={15}
                   color={liked ? COLORS.red : COLORS.black}
-                  // onPress={() => navigation.navigate('LikeScreen')}
+                // onPress={() => navigation.navigate('LikeScreen')}
                 />
               )}
               <MyText size={FONT_SIZE.sm}>{localLikeCount} Likes</MyText>
             </TouchableOpacity>
             <TouchableOpacity
-              style={{flexDirection: 'row', gap: 5}}
+              style={{ flexDirection: 'row', gap: 5 }}
               onPress={() =>
                 navigation.navigate('CommentScreen', {
                   feedId: id,
@@ -191,7 +186,7 @@ const FeedItem = ({
               <MaterialCommunityIcons
                 name="comment-processing"
                 size={18}
-                style={{transform: [{rotateY: '180deg'}]}}
+                style={{ transform: [{ rotateY: '180deg' }] }}
                 color={COLORS.greenDark}
               />
               <MyText size={FONT_SIZE.sm}>{comments.length} Comments</MyText>
@@ -214,7 +209,7 @@ const FeedItem = ({
                 height: hp(15),
                 shadowColor: '#000',
                 width: wp(28),
-                transform: [{translateX: wp(-5)}],
+                transform: [{ translateX: wp(-5) }],
                 shadowOffset: {
                   width: 0,
                   height: 2,
@@ -227,7 +222,7 @@ const FeedItem = ({
                 gap: 5,
               }}
               content={
-                <View style={{justifyContent: 'space-evenly', flex: 1}}>
+                <View style={{ justifyContent: 'space-evenly', flex: 1 }}>
                   {/* <MyText size={FONT_SIZE.base}>Share</MyText> */}
                   <MyText size={FONT_SIZE.base} onPress={handleChatPress}>
                     Message

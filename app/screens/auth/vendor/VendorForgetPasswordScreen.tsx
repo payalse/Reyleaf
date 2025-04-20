@@ -18,6 +18,11 @@ import {ForgetPasswordResponse} from '../../../types/apiResponse';
 import {ShowAlert} from '../../../utils/alert';
 import {ALERT_TYPE} from 'react-native-alert-notification';
 import InputErrorMsg from '../../../components/inputs/InputErrorMsg';
+import {
+  pixelSizeHorizontal,
+  pixelSizeVertical,
+  widthPixel,
+} from '../../../utils/sizeNormalization';
 
 type FormValues = {
   email: string;
@@ -64,20 +69,20 @@ const VendorForgetPasswordScreen = () => {
           errors,
           touched,
         }) => (
-          <ScrollView contentContainerStyle={{marginHorizontal: 20}}>
+          <ScrollView contentContainerStyle={{ marginHorizontal: pixelSizeHorizontal(20) }}>
             <BackBtn onPress={navigation.goBack} />
             <View>
               <MyText
                 bold={FONT_WEIGHT.bold}
                 size={FONT_SIZE['2xl']}
-                style={{marginTop: 100, marginBottom: 10}}>
+                style={{ marginTop: pixelSizeVertical(100), marginBottom: pixelSizeVertical(10) }}>
                 Forgot Password
               </MyText>
-              <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
+              <MyText  color={COLORS.grey}>
                 Enter your email we will send you a Code{' '}
               </MyText>
             </View>
-            <View style={{marginTop: 20}}>
+            <View style={{ marginTop: pixelSizeVertical(20) }}>
               <InputWrapper title="Email">
                 <MyInput
                   hasError={Boolean(errors.email && touched.email)}
@@ -87,8 +92,8 @@ const VendorForgetPasswordScreen = () => {
                   placeholder="Type your email"
                   leftIcon={() => (
                     <Ionicons
-                      size={24}
-                      color={COLORS.lightgrey}
+                    size={widthPixel(24)}
+                    color={COLORS.lightgrey}
                       name="mail-outline"
                     />
                   )}
@@ -101,7 +106,7 @@ const VendorForgetPasswordScreen = () => {
                 loading={loading}
                 onPress={handleSubmit}
                 text="Send Code"
-                conatinerStyle={{marginTop: 10}}
+                conatinerStyle={{ marginTop: pixelSizeVertical(10) }}
               />
             </View>
           </ScrollView>

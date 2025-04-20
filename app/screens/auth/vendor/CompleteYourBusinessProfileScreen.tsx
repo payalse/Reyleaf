@@ -1,5 +1,6 @@
 import {
   Image,
+  Platform,
   SafeAreaView,
   ScrollView,
   Text,
@@ -7,32 +8,38 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import LayoutBG from '../../../components/layout/LayoutBG';
 import BackBtn from '../../../components/buttons/BackBtn';
-import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {MyText} from '../../../components/MyText';
-import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../../styles';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { MyText } from '../../../components/MyText';
+import { BORDER_RADIUS, COLORS, FONT_SIZE, FONT_WEIGHT } from '../../../styles';
 import InputWrapper from '../../../components/inputs/InputWrapper';
 import MyInput from '../../../components/inputs/MyInput';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import PrimaryBtn from '../../../components/buttons/PrimaryBtn';
 import TextArea from '../../../components/inputs/TextArea';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootStackParams} from '../../../naviagtion/types';
-import {Formik} from 'formik';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParams } from '../../../naviagtion/types';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
-import {useDispatch} from 'react-redux';
-import {AppDispatch} from '../../../redux/store';
-import {AvatarDefaultType} from '../../../utils/defaultAvatar';
-import {Asset} from 'react-native-image-picker';
-import {api_completeProfile} from '../../../api/auth';
-import {updateUser} from '../../../redux/features/auth/authSlice';
-import {ShowAlert} from '../../../utils/alert';
-import {ALERT_TYPE} from 'react-native-alert-notification';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../../redux/store';
+import { AvatarDefaultType } from '../../../utils/defaultAvatar';
+import { Asset } from 'react-native-image-picker';
+import { api_completeProfile } from '../../../api/auth';
+import { updateUser } from '../../../redux/features/auth/authSlice';
+import { ShowAlert } from '../../../utils/alert';
+import { ALERT_TYPE } from 'react-native-alert-notification';
 import DatePicker from 'react-native-date-picker';
 import InputErrorMsg from '../../../components/inputs/InputErrorMsg';
+import {
+  heightPixel,
+  pixelSizeHorizontal,
+  pixelSizeVertical,
+  widthPixel,
+} from '../../../utils/sizeNormalization';
 
 type FormValues = {
   name: string;
@@ -41,14 +48,14 @@ type FormValues = {
 };
 const validationSchema = Yup.object().shape({
   name: Yup.string()
-    .min(4, ({min}) => `Name must be at least ${min} characters`)
+    .min(4, ({ min }) => `Name must be at least ${min} characters`)
     .required('Required')
     .required('Name is Required!'),
   bio: Yup.string()
-    .min(10, ({min}) => `Bio must be at least ${min} characters`)
+    .min(10, ({ min }) => `Bio must be at least ${min} characters`)
     .required('Description is Required!'),
   phone: Yup.string()
-    .min(10, ({min}) => `Phone must be at least ${min} characters`)
+    .min(10, ({ min }) => `Phone must be at least ${min} characters`)
     .required('Phone is Required!'),
 });
 
@@ -62,9 +69,7 @@ const CompleteYourBusinessProfileScreen = () => {
   const [date, setDate] = useState<Date | null>(null);
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<
-    Asset | AvatarDefaultType | null
-  >(null);
+  const [selectedImage, setSelectedImage] = useState<any>(null);
   const onSubmit = async (values: FormValues) => {
     const formData = new FormData();
     formData.append('fullname', values.name);
@@ -102,7 +107,7 @@ const CompleteYourBusinessProfileScreen = () => {
         authToken: params.authToken,
       });
     } catch (error: any) {
-      ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
+      ShowAlert({ textBody: error.message, type: ALERT_TYPE.DANGER });
     } finally {
       setLoading(false);
     }
@@ -126,7 +131,7 @@ const CompleteYourBusinessProfileScreen = () => {
           touched,
         }) => (
           <ScrollView
-            contentContainerStyle={{marginHorizontal: 20, paddingBottom: 50}}>
+            contentContainerStyle={{ marginHorizontal: 20, paddingBottom: 50 }}>
             <BackBtn onPress={navigation.goBack} />
 
             <View>
@@ -134,40 +139,40 @@ const CompleteYourBusinessProfileScreen = () => {
                 bold={FONT_WEIGHT.bold}
                 size={FONT_SIZE['2xl']}
                 center
-                style={{marginTop: 50, marginBottom: 10}}>
+                style={{ marginTop: pixelSizeVertical(24), marginBottom: pixelSizeVertical(8) }}>
                 Complete Your Account
               </MyText>
               <View
                 style={{
                   backgroundColor: COLORS.white,
-                  width: 100,
-                  height: 100,
-                  borderRadius: 50,
+                  width: widthPixel(100),
+                  height: heightPixel(104),
+                  borderRadius: BORDER_RADIUS.Circle,
                   alignSelf: 'center',
-                  marginVertical: 20,
+                  marginVertical: pixelSizeVertical(20),
                   position: 'relative',
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
                 {selectedImage === null ? (
-                  <Feather size={35} name="image" color={COLORS.lightgrey} />
+                  <Feather size={widthPixel(36)} name="image" color={COLORS.lightgrey} />
                 ) : selectedImage['isDefaultAvatar'] ? (
                   <Image
                     source={selectedImage.img}
                     style={{
                       width: '100%',
                       height: '100%',
-                      borderRadius: 100,
+                      borderRadius: BORDER_RADIUS.Circle,
                       resizeMode: 'cover',
                     }}
                   />
                 ) : (
                   <Image
-                    source={{uri: selectedImage.path}}
+                    source={{ uri: selectedImage.path }}
                     style={{
                       width: '100%',
                       height: '100%',
-                      borderRadius: 100,
+                      borderRadius: BORDER_RADIUS.Circle,
                       resizeMode: 'cover',
                     }}
                   />
@@ -181,9 +186,9 @@ const CompleteYourBusinessProfileScreen = () => {
                   }
                   style={{
                     backgroundColor: COLORS.greenDark,
-                    width: 28,
-                    height: 28,
-                    borderRadius: 28,
+                    width: widthPixel(26),
+                    height: heightPixel(28),
+                    borderRadius: BORDER_RADIUS.Circle,
                     justifyContent: 'center',
                     alignItems: 'center',
                     position: 'absolute',
@@ -191,8 +196,7 @@ const CompleteYourBusinessProfileScreen = () => {
                     right: 0,
                   }}>
                   <Ionicons
-                    size={15}
-                    name="cloud-upload"
+                    size={widthPixel(14)} name="cloud-upload"
                     color={COLORS.white}
                   />
                 </TouchableOpacity>
@@ -201,7 +205,7 @@ const CompleteYourBusinessProfileScreen = () => {
                 Upload Business Profile
               </MyText>
             </View>
-            <View style={{marginTop: 20}}>
+            <View style={{marginTop: pixelSizeVertical(20)}}>
               <InputWrapper title="Business Name">
                 <MyInput
                   hasError={Boolean(errors.name && touched.name)}
@@ -242,7 +246,7 @@ const CompleteYourBusinessProfileScreen = () => {
                 loading={loading}
                 onPress={handleSubmit}
                 text="Next"
-                conatinerStyle={{marginTop: 10}}
+                conatinerStyle={{marginTop: pixelSizeVertical(10)}}
               />
             </View>
           </ScrollView>

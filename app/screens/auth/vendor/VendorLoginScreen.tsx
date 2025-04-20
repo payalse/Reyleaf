@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
-import {View, TouchableOpacity, ScrollView, Image} from 'react-native';
-import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../../styles';
-import {useNavigation} from '@react-navigation/native';
+import React, { useState } from 'react';
+import { View, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { COLORS, FONT_SIZE, FONT_WEIGHT } from '../../../styles';
+import { useNavigation } from '@react-navigation/native';
 
 // COMPONENTS
 import BackBtn from '../../../components/buttons/BackBtn';
-import {MyText} from '../../../components/MyText';
+import { MyText } from '../../../components/MyText';
 import PrimaryBtn from '../../../components/buttons/PrimaryBtn';
 import MyInput from '../../../components/inputs/MyInput';
 import InputWrapper from '../../../components/inputs/InputWrapper';
@@ -15,11 +15,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import APPLOGO from '../../../../assets/svg/icons/icon.svg';
 import LayoutBG from '../../../components/layout/LayoutBG';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootStackParams} from '../../../naviagtion/types';
-import {AuthUserType} from '../../../types';
-import {AppDispatch} from '../../../redux/store';
-import {useDispatch} from 'react-redux';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParams } from '../../../naviagtion/types';
+import { AuthUserType } from '../../../types';
+import { AppDispatch } from '../../../redux/store';
+import { useDispatch } from 'react-redux';
 import {
   login,
   setIsAuthenticated,
@@ -28,13 +28,19 @@ import {
   changeAppMode,
   setFirstLaunched,
 } from '../../../redux/features/app/appSlice';
-import {Formik} from 'formik';
+import { Formik } from 'formik';
 import * as yup from 'yup';
-import {api_login} from '../../../api/auth';
-import {LoginResponseType} from '../../../types/apiResponse';
-import {ShowAlert} from '../../../utils/alert';
-import {ALERT_TYPE} from 'react-native-alert-notification';
+import { api_login } from '../../../api/auth';
+import { LoginResponseType } from '../../../types/apiResponse';
+import { ShowAlert } from '../../../utils/alert';
+import { ALERT_TYPE } from 'react-native-alert-notification';
 import InputErrorMsg from '../../../components/inputs/InputErrorMsg';
+import {
+  pixelSizeHorizontal,
+  pixelSizeVertical,
+  widthPixel,
+} from '../../../utils/sizeNormalization';
+import { LOGO_HEIGHT, LOGO_WIDTH } from '../../Welcome/WelcomeScreen';
 
 type LoginValues = {
   email: string;
@@ -48,7 +54,7 @@ const loginValidationSchema = yup.object().shape({
     .required('Email is Required!'),
   password: yup
     .string()
-    .min(8, ({min}) => `Password must be at least ${min} characters`)
+    .min(8, ({ min }) => `Password must be at least ${min} characters`)
     .required('Password is Required!'),
 });
 const VendorLoginScreen = () => {
@@ -67,7 +73,7 @@ const VendorLoginScreen = () => {
         email: values.email.toLocaleLowerCase(),
       })) as LoginResponseType;
       // ShowAlert({textBody: res.message});
-      dispatch(login({...res.data, token: res.token}));
+      dispatch(login({ ...res.data, token: res.token } as any));
       // not verfied
       if (res.data.account_status === 1) {
         navigation.navigate('VendorOtpVerification', {
@@ -89,13 +95,13 @@ const VendorLoginScreen = () => {
         dispatch(setFirstLaunched(false));
       }
       if (res.data.account_status === 3) {
-        ShowAlert({textBody: 'Account is Blocked!', type: ALERT_TYPE.DANGER});
+        ShowAlert({ textBody: 'Account is Blocked!', type: ALERT_TYPE.DANGER });
       }
       if (res.data.account_status === 4) {
-        ShowAlert({textBody: 'Account is Deleted!', type: ALERT_TYPE.DANGER});
+        ShowAlert({ textBody: 'Account is Deleted!', type: ALERT_TYPE.DANGER });
       }
     } catch (error: any) {
-      ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
+      ShowAlert({ textBody: error.message, type: ALERT_TYPE.DANGER });
     } finally {
       setLoading(false);
     }
@@ -119,7 +125,7 @@ const VendorLoginScreen = () => {
           touched,
         }) => (
           <ScrollView
-            style={{flex: 1, marginHorizontal: 20}}
+            style={{ flex: 1, marginHorizontal: pixelSizeHorizontal(20) }}
             showsVerticalScrollIndicator={false}>
             <View>
               <BackBtn onPress={navigation.goBack} />
@@ -127,26 +133,26 @@ const VendorLoginScreen = () => {
                 style={{
                   alignItems: 'center',
                 }}>
-                <APPLOGO width={120} height={200} />
+                <APPLOGO width={LOGO_WIDTH} height={LOGO_HEIGHT} />
               </View>
             </View>
 
-            <View style={{width: '90%'}}>
+            <View style={{ width: '90%' }}>
               <MyText
                 style={{
                   fontSize: FONT_SIZE['3xl'],
                   fontWeight: FONT_WEIGHT.bold,
-                  marginVertical: 10,
+                  marginVertical: pixelSizeVertical(6),
                 }}>
                 Let's get Started
               </MyText>
-              <MyText size={FONT_SIZE.sm} color={'grey'}>
+              <MyText color={'grey'}>
                 Give credentails to sign in your Account
               </MyText>
             </View>
             <View
               style={{
-                marginTop: 20,
+                marginTop: pixelSizeVertical(20),
               }}>
               <InputWrapper title="Email">
                 <MyInput
@@ -158,7 +164,7 @@ const VendorLoginScreen = () => {
                   placeholder="Type your email"
                   leftIcon={() => (
                     <Ionicons
-                      size={24}
+                      size={widthPixel(24)}
                       color={COLORS.lightgrey}
                       name="mail-outline"
                     />
@@ -176,7 +182,7 @@ const VendorLoginScreen = () => {
                   value={values.password}
                   leftIcon={() => (
                     <AntDesign
-                      size={24}
+                      size={widthPixel(24)}
                       color={COLORS.lightgrey}
                       name="lock1"
                     />
@@ -191,10 +197,9 @@ const VendorLoginScreen = () => {
             </View>
 
             <TouchableOpacity
-              style={{alignSelf: 'flex-end'}}
+              style={{ alignSelf: 'flex-end' }}
               onPress={() => navigation.navigate('VendorForgetPassword')}>
               <MyText
-                size={FONT_SIZE.sm}
                 color={COLORS.greenDark}
                 bold={FONT_WEIGHT.medium}>
                 Forget Password ?
@@ -202,8 +207,7 @@ const VendorLoginScreen = () => {
             </TouchableOpacity>
             <View
               style={{
-                paddingVertical: 20,
-                gap: 20,
+                paddingVertical: pixelSizeVertical(16),
               }}>
               <PrimaryBtn
                 loading={loading}
@@ -218,17 +222,16 @@ const VendorLoginScreen = () => {
                 justifyContent: 'center',
                 flexDirection: 'row',
                 gap: 6,
-                marginVertical: 50,
+                marginVertical: pixelSizeVertical(36),
               }}>
-              <MyText center size={FONT_SIZE.sm} style={{color: 'grey'}}>
+              <MyText center style={{ color: 'grey' }}>
                 Don’t have an Business account?
               </MyText>
               <TouchableOpacity
                 onPress={() => navigation.navigate('VendorSignup')}>
                 <MyText
-                  bold={FONT_WEIGHT.medium}
-                  size={FONT_SIZE.sm}
-                  style={{color: COLORS.greenDark}}>
+                  bold={FONT_WEIGHT.medium} 
+                  style={{ color: COLORS.greenDark }}>
                   Signup
                 </MyText>
               </TouchableOpacity>

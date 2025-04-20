@@ -103,7 +103,7 @@ const OtpVerificationScreen = () => {
             style={{marginTop: 60, marginBottom: 10}}>
             Enter Verfication Code
           </MyText>
-          <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
+          <MyText color={COLORS.grey}>
             We have sent a verification code to your email
           </MyText>
 

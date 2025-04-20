@@ -12,7 +12,7 @@ import LayoutBG from '../../components/layout/LayoutBG';
 import BackBtn from '../../components/buttons/BackBtn';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {MyText} from '../../components/MyText';
-import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../styles';
+import {BORDER_RADIUS, COLORS, FONT_SIZE, FONT_WEIGHT} from '../../styles';
 import InputWrapper from '../../components/inputs/InputWrapper';
 import MyInput from '../../components/inputs/MyInput';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -38,6 +38,12 @@ import moment from 'moment';
 import {SelectedImage} from '../../types';
 import {SHEETS} from '../../sheets/sheets';
 import {SheetManager} from 'react-native-actions-sheet';
+import {
+  heightPixel,
+  pixelSizeHorizontal,
+  pixelSizeVertical,
+  widthPixel,
+} from '../../utils/sizeNormalization';
 
 type FormValues = {
   name: string;
@@ -70,9 +76,7 @@ const CompleteYourProfileScreen = () => {
   const [extraError, setExtraError] = useState({date: ''});
   const [pronoun, setPronoun] = useState('');
   const [loading, setLoading] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<
-    SelectedImage | AvatarDefaultType | null
-  >(null);
+  const [selectedImage, setSelectedImage] = useState<any>(null);
 
   const onSubmit = async (values: FormValues) => {
     let isValid = true;
@@ -105,14 +109,6 @@ const CompleteYourProfileScreen = () => {
           formData.append('picture', tempImg);
         }
       }
-
-      console.log({
-        values,
-        date,
-        params,
-      });
-      console.log(pronoun);
-
       try {
         setLoading(true);
         const res = (await api_completeProfile(
@@ -151,7 +147,7 @@ const CompleteYourProfileScreen = () => {
           touched,
         }) => (
           <ScrollView
-            contentContainerStyle={{marginHorizontal: 20, paddingBottom: 50}}>
+            contentContainerStyle={{marginHorizontal: pixelSizeHorizontal(20), paddingBottom: pixelSizeVertical(40)}}>
             <BackBtn onPress={navigation.goBack} />
             <DatePicker
               modal
@@ -173,17 +169,17 @@ const CompleteYourProfileScreen = () => {
                 bold={FONT_WEIGHT.bold}
                 size={FONT_SIZE['2xl']}
                 center
-                style={{marginTop: 50, marginBottom: 10}}>
+                style={{marginTop: pixelSizeVertical(24), marginBottom: pixelSizeVertical(8)}}>
                 Complete Your Profile
               </MyText>
               <View
                 style={{
                   backgroundColor: COLORS.white,
-                  width: 100,
-                  height: 100,
-                  borderRadius: 50,
+                  width: widthPixel(100),
+                  height: heightPixel(104),
+                  borderRadius: BORDER_RADIUS.Circle,
                   alignSelf: 'center',
-                  marginVertical: 20,
+                  marginVertical: pixelSizeVertical(20),
                   position: 'relative',
                   justifyContent: 'center',
                   alignItems: 'center',
@@ -200,7 +196,7 @@ const CompleteYourProfileScreen = () => {
                     style={{
                       width: '100%',
                       height: '100%',
-                      borderRadius: 100,
+                      borderRadius: BORDER_RADIUS.Circle,
                       resizeMode: 'cover',
                     }}
                   />
@@ -210,7 +206,7 @@ const CompleteYourProfileScreen = () => {
                     style={{
                       width: '100%',
                       height: '100%',
-                      borderRadius: 100,
+                      borderRadius: BORDER_RADIUS.Circle,
                       resizeMode: 'cover',
                     }}
                   />
@@ -225,23 +221,23 @@ const CompleteYourProfileScreen = () => {
                   }
                   style={{
                     backgroundColor: COLORS.greenDark,
-                    width: 28,
-                    height: 28,
-                    borderRadius: 28,
+                    width: widthPixel(26),
+                    height: heightPixel(28),
+                    borderRadius: BORDER_RADIUS.Circle,
                     justifyContent: 'center',
                     alignItems: 'center',
                     position: 'absolute',
                     bottom: 0,
-                    right: 0,
+                    right: pixelSizeHorizontal(4),
                   }}>
-                  <MaterialIcons size={15} name="edit" color={COLORS.white} />
+                  <MaterialIcons size={widthPixel(14)} name="edit" color={COLORS.white} />
                 </TouchableOpacity>
               </View>
-              <MyText center size={FONT_SIZE.sm} color={COLORS.grey}>
+              <MyText center size={FONT_SIZE.base} color={COLORS.grey}>
                 Upload profile or Choose avatar
               </MyText>
             </View>
-            <View style={{marginTop: 20}}>
+            <View style={{marginTop: pixelSizeVertical(20)}}>
               <InputWrapper title="Name">
                 <MyInput
                   hasError={Boolean(errors.name && touched.name)}
@@ -303,7 +299,7 @@ const CompleteYourProfileScreen = () => {
                 loading={loading}
                 onPress={handleSubmit}
                 text="Next"
-                conatinerStyle={{marginTop: 10}}
+                conatinerStyle={{marginTop: pixelSizeVertical(10)}}
               />
             </View>
           </ScrollView>

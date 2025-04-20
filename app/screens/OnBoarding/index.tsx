@@ -1,4 +1,4 @@
-import React, {useCallback, useRef, useState} from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   FlatList,
   Image,
@@ -12,17 +12,17 @@ import BoardOne from './BoardOne';
 import BoardTwo from './BoardTwo';
 import BoardThree from './BoardThree';
 import PrimaryBtn from '../../components/buttons/PrimaryBtn';
-import {COLORS, hp, wp} from '../../styles';
-import {MyText} from '../../components/MyText';
+import { COLORS, hp, wp } from '../../styles';
+import { MyText } from '../../components/MyText';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 // IMAGES
 import ImgOne from '../../../assets/onbord/img/img1.png';
 import ImgTwo from '../../../assets/onbord/img/img2.png';
 import ImgThree from '../../../assets/onbord/img/img3.png';
 import Dot from './components/Dot';
-import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootStackParams} from '../../naviagtion/types';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParams } from '../../naviagtion/types';
 
 // LEAF
 import Leave1Svg from '../../../assets/onbord/leaf/leaf1.svg';
@@ -31,7 +31,7 @@ import Leave2Png from '../../../assets/onbord/leaf/leaf2.png';
 import Leave3Svg from '../../../assets/onbord/leaf/leaf3.svg';
 import Leave3Png from '../../../assets/onbord/leaf/leaf3.png';
 import Leave4Svg from '../../../assets/onbord/leaf/leaf4.svg';
-import {Touchable} from 'react-native';
+import { Touchable } from 'react-native';
 
 const CONTENT_HEIGHT = hp(65);
 export const MARGIN_TOP = CONTENT_HEIGHT;
@@ -46,7 +46,7 @@ const OnBoarding = () => {
 
   const handleScollToIndex = (index: number) => {
     if (flatListRef.current != null) {
-      flatListRef?.current?.scrollToIndex({animated: true, index});
+      flatListRef?.current?.scrollToIndex({ animated: true, index });
     }
   };
 
@@ -61,8 +61,8 @@ const OnBoarding = () => {
   );
 
   return (
-    <View style={{flex: 1}}>
-      <View style={{flex: 1, position: 'relative'}}>
+    <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, position: 'relative' }}>
         <View
           style={{
             width: '100%',
@@ -83,7 +83,7 @@ const OnBoarding = () => {
               marginTop: 30,
               opacity: activeIndex === 2 ? 0 : 1,
             }}>
-            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <TouchableOpacity onPress={() => navigation.navigate('Welcome')}>
               <MyText>Skip</MyText>
             </TouchableOpacity>
           </View>
@@ -108,7 +108,7 @@ const OnBoarding = () => {
             {/*  1 */}
             {activeIndex === 0 && (
               <React.Fragment>
-                <Leave4Svg style={{position: 'absolute', top: -25, right: 0}} />
+                <Leave4Svg style={{ position: 'absolute', top: -25, right: 0 }} />
                 <Image
                   source={Leave3Png}
                   style={{
@@ -131,7 +131,7 @@ const OnBoarding = () => {
                     position: 'absolute',
                     top: -25,
                     left: 20,
-                    transform: [{rotate: '-50deg'}],
+                    transform: [{ rotate: '-50deg' }],
                   }}
                 />
                 <Image
@@ -150,14 +150,14 @@ const OnBoarding = () => {
             {/* 3 */}
             {activeIndex === 2 && (
               <React.Fragment>
-                <Leave4Svg style={{position: 'absolute', top: -25, right: 0}} />
+                <Leave4Svg style={{ position: 'absolute', top: -25, right: 0 }} />
                 <Leave1Svg
                   style={{
                     position: 'absolute',
                     bottom: -25,
                     left: 0,
 
-                    transform: [{rotate: '0deg'}],
+                    transform: [{ rotate: '0deg' }],
                   }}
                 />
               </React.Fragment>
@@ -165,7 +165,7 @@ const OnBoarding = () => {
 
             <Image
               source={CENTER_IMAGE}
-              style={{width: '100%', height: '100%', resizeMode: 'cover'}}
+              style={{ width: '100%', height: '100%', resizeMode: 'cover' }}
             />
           </View>
         </View>
@@ -179,7 +179,7 @@ const OnBoarding = () => {
           pagingEnabled
           horizontal
           onScroll={onScroll}
-          renderItem={({item}) => {
+          renderItem={({ item }) => {
             if (item === 1) {
               return <BoardOne />;
             }

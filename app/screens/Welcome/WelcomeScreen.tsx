@@ -1,12 +1,11 @@
-import React, {useEffect} from 'react';
-import {Platform, ScrollView, View} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {COLORS, FONT_SIZE, FONT_WEIGHT, wp} from '../../styles';
+import { Dimensions, ScrollView, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { COLORS, FONT_SIZE, FONT_WEIGHT } from '../../styles';
 
 // COMPONENTS
 import PrimaryBtn from '../../components/buttons/PrimaryBtn';
 import MyButton from '../../components/buttons/MyButton';
-import {MyText} from '../../components/MyText';
+import { MyText } from '../../components/MyText';
 
 // ICONS
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -15,24 +14,35 @@ import Apple from '../../components/icons/Apple';
 import Facebook from '../../components/icons/Facebook';
 import APPLOGO from '../../../assets/svg/icons/icon.svg';
 import LayoutBG from '../../components/layout/LayoutBG';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootStackParams} from '../../naviagtion/types';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParams } from '../../naviagtion/types';
 import GoogleButton from './GoogleButton';
+import {
+  pixelSizeHorizontal,
+  pixelSizeVertical,
+  widthPixel,
+} from '../../utils/sizeNormalization';
+
+const { width } = Dimensions.get('window');
+
+export const LOGO_WIDTH = width * 0.35;
+export const LOGO_HEIGHT = width * 0.55;
+
 const WelcomeScreen = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParams>>();
 
   return (
     <LayoutBG type="bg-tr-bl">
-      <ScrollView contentContainerStyle={{alignItems: 'center'}}>
+      <ScrollView contentContainerStyle={{ alignItems: 'center' }}>
         <View
           style={{
-            width: wp(35),
-            height: wp(55),
+            width: LOGO_WIDTH,
+            height: LOGO_HEIGHT,
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <APPLOGO width={wp(35)} height={wp(55)} />
+          <APPLOGO width={LOGO_WIDTH} height={LOGO_HEIGHT} />
         </View>
         <MyText
           bold={FONT_WEIGHT.bold}
@@ -43,13 +53,21 @@ const WelcomeScreen = () => {
 
         <MyText
           center
-          size={FONT_SIZE.sm}
-          style={{marginTop: 5}}
+          style={{
+            marginTop: pixelSizeVertical(6),
+            width: '60%',
+            lineHeight: 24,
+          }}
           color={COLORS.grey}>
           Welcome back to Reyleaf - your eco-friendly heaven!
         </MyText>
 
-        <View style={{width: '90%', paddingVertical: 20, gap: 20}}>
+        <View
+          style={{
+            width: '90%',
+            paddingVertical: pixelSizeVertical(20),
+            gap: 20,
+          }}>
           {/* <GoogleButton /> */}
 
           {/* <MyButton
@@ -60,7 +78,11 @@ const WelcomeScreen = () => {
             text="Continue with Email"
             onPress={() => navigation.navigate('Login')}
             leftComp={() => (
-              <Ionicons size={24} color={COLORS.white} name="mail-outline" />
+              <Ionicons
+                size={widthPixel(24)}
+                color={COLORS.white}
+                name="mail-outline"
+              />
             )}
           />
         </View>
@@ -81,8 +103,8 @@ const WelcomeScreen = () => {
           />
 
           <MyText
-            size={FONT_SIZE.sm}
-            style={{opacity: 0.5, paddingHorizontal: 20}}>
+            size={FONT_SIZE.base}
+            style={{ opacity: 0.5, paddingHorizontal: pixelSizeHorizontal(20) }}>
             Or Login as seller account
           </MyText>
           <View
@@ -94,11 +116,15 @@ const WelcomeScreen = () => {
             }}
           />
         </View>
-        <View style={{width: '90%', paddingVertical: 20}}>
+        <View style={{ width: '90%', paddingVertical: pixelSizeHorizontal(20) }}>
           <MyButton
             onPress={() => navigation.navigate('VendorLogin')}
             leftComp={() => (
-              <FontAwesome size={20} color={'#444'} name="user-circle-o" />
+              <FontAwesome
+                size={widthPixel(20)}
+                color={'#444'}
+                name="user-circle-o"
+              />
             )}
             text="Continue with Seller account"
           />
@@ -119,8 +145,8 @@ const WelcomeScreen = () => {
           />
 
           <MyText
-            size={FONT_SIZE.sm}
-            style={{opacity: 0.5, paddingHorizontal: 20}}>
+            size={FONT_SIZE.base}
+            style={{ opacity: 0.5, paddingHorizontal: pixelSizeHorizontal(20) }}>
             Or explore products
           </MyText>
           <View
@@ -132,11 +158,15 @@ const WelcomeScreen = () => {
             }}
           />
         </View>
-        <View style={{width: '90%', paddingVertical: 20}}>
+        <View style={{ width: '90%', paddingVertical: pixelSizeHorizontal(20) }}>
           <MyButton
             onPress={() => navigation.navigate('Home')}
             leftComp={() => (
-              <FontAwesome size={20} color={'#444'} name="user-circle-o" />
+              <FontAwesome
+                size={widthPixel(20)}
+                color={'#444'}
+                name="user-circle-o"
+              />
             )}
             text="Explore Products"
           />

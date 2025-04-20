@@ -1,13 +1,13 @@
-import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import SecondaryHeader from '../../components/header/SecondaryHeader';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import SearchBox from '../../components/SearchBox';
-import {useHideBottomBar} from '../../hook/useHideBottomBar';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../redux/store';
+import { useHideBottomBar } from '../../hook/useHideBottomBar';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
 import Product from '../../components/Product';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {HomeStackParams} from '../../naviagtion/types';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { HomeStackParams } from '../../naviagtion/types';
 
 type RouteParams = {
   title: string;
@@ -19,9 +19,9 @@ const AllProductList = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const navigationHome =
-  useNavigation<NativeStackNavigationProp<HomeStackParams>>();
-  const {title, productData} = route.params as RouteParams;
-  const {isAuthenticated} = useSelector((s: RootState) => s.auth);
+    useNavigation<NativeStackNavigationProp<any>>();
+  const { title, productData } = route.params as RouteParams;
+  const { isAuthenticated } = useSelector((s: RootState) => s.auth);
 
   return (
     <FlatList
@@ -30,31 +30,30 @@ const AllProductList = () => {
           <View>
             <SafeAreaView />
             <SecondaryHeader
-              backBtnContainerStyle={{left: 0}}
+              backBtnContainerStyle={{ left: 0 }}
               onBack={navigation.goBack}
               title={title}
             />
             {isAuthenticated ? (
               <SearchBox
                 onFilterBtnPress={() => {
-                    navigationHome.navigate('SearchFilter');
+                  navigationHome.navigate('SearchFilter');
                 }}
                 disabledOnPress={() => {
-                  // @ts-ignore
                   navigationHome.navigate('SearchTab');
                 }}
               />
             ) : (
-              <View style={{height: 20}} />
+              <View style={{ height: 20 }} />
             )}
           </View>
         );
       }}
-      contentContainerStyle={{marginHorizontal: 20}}
-      ItemSeparatorComponent={() => <View style={{height: 20}} />}
+      contentContainerStyle={{ marginHorizontal: 20 }}
+      ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
       data={productData}
       keyExtractor={item => item._id}
-      renderItem={({item}) => (
+      renderItem={({ item }) => (
         <Product
           photos={item?.photos}
           id={item?._id}

@@ -1,121 +1,115 @@
-import {Image, Platform, TouchableOpacity, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
-import {MyText} from '../../../components/MyText';
-import {COLORS, FONT_SIZE} from '../../../styles';
+import { Alert, Image, Platform, TouchableOpacity, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { MyText } from '../../../components/MyText';
+import { COLORS, FONT_SIZE } from '../../../styles';
 import InputWrapper from '../../../components/inputs/InputWrapper';
 import MyInput from '../../../components/inputs/MyInput';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import PrimaryBtn from '../../../components/buttons/PrimaryBtn';
 import TextArea from '../../../components/inputs/TextArea';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {
   ProfileEditStackParams,
   RootStackParams,
 } from '../../../naviagtion/types';
 import MainLayout from '../../../components/layout/MainLayout';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
-import {Formik} from 'formik';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
-import {api_completeProfile} from '../../../api/auth';
-import {logout, updateUser} from '../../../redux/features/auth/authSlice';
-import {ShowAlert} from '../../../utils/alert';
-import {ALERT_TYPE} from 'react-native-alert-notification';
+import { api_completeProfile } from '../../../api/auth';
+import { logout, updateUser } from '../../../redux/features/auth/authSlice';
+import { ShowAlert } from '../../../utils/alert';
+import { ALERT_TYPE } from 'react-native-alert-notification';
 import DatePicker from 'react-native-date-picker';
-import {useDispatch, useSelector} from 'react-redux';
-import {AppDispatch, RootState} from '../../../redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../../redux/store';
 import InputErrorMsg from '../../../components/inputs/InputErrorMsg';
 import SelectInput from '../../../components/inputs/SelectInput';
-import {AvatarDefaultType} from '../../../utils/defaultAvatar';
-import {Asset} from 'react-native-image-picker';
 import moment from 'moment';
-import {SelectedImage} from '../../../types';
-import {SHEETS} from '../../../sheets/sheets';
-import {SheetManager} from 'react-native-actions-sheet';
-import {BUILD_IMAGE_URL} from '../../../api';
-import {CountryType} from '../../../utils/countryTable';
-import {api_deleteUserProfile} from '../../../api/user';
-import {setFirstLaunched} from '../../../redux/features/app/appSlice';
-
-type FormValues = {
+import { SHEETS } from '../../../sheets/sheets';
+import { SheetManager } from 'react-native-actions-sheet';
+import { BUILD_IMAGE_URL } from '../../../api';
+import { CountryType } from '../../../utils/countryTable';
+import { api_deleteUserProfile } from '../../../api/user';
+import { setFirstLaunched } from '../../../redux/features/app/appSlice';
+import { pixelSizeVertical } from '../../../utils/sizeNormalization';
+interface UserFormValues {
   name: string;
   bio: string;
   phone: string;
   bAddress: string;
-};
-const validationSchema = Yup.object().shape({
-  name: Yup.string()
-    .min(4, ({min}) => `Name must be at least ${min} characters`)
-    .required('Required')
-    .required('Name is Required!'),
-  bio: Yup.string()
-    .min(10, ({min}) => `Bio must be at least ${min} characters`)
-    .required('Bio is Required!'),
-  phone: Yup.string()
-    .min(10, ({min}) => `Phone must be at least ${min} characters`)
-    .max(12, ({max}) => `Phone must not exceed ${max} characters`),
-  bAddress: Yup.string(),
-});
+}
 
-type VendorFormValues = {
-  name: string;
-  bio: string;
-  phone: string;
-  bAddress: string;
+interface VendorFormValues extends UserFormValues {
   city: string;
   state: string;
   zipcode: string;
-};
+}
+
+const nameValidator = Yup.string()
+  .min(4, ({ min }) => `Name must be at least ${min} characters`)
+  .required('Name is Required!');
+
+const bioValidator = Yup.string()
+  .min(10, ({ min }) => `Bio must be at least ${min} characters`)
+  .required('Bio is Required!');
+
+const phoneValidator = Yup.string()
+  .min(10, ({ min }) => `Phone must be at least ${min} characters`)
+  .max(12, ({ max }) => `Phone must not exceed ${max} characters`);
+
+const addressValidator = Yup.string()
+  .min(10, ({ min }) => `Address must be at least ${min} characters`)
+  .required('Address is Required!');
+
+const cityValidator = Yup.string()
+  .min(4, ({ min }) => `City must be at least ${min} characters`)
+  .required('City is Required!');
+
+const stateValidator = Yup.string()
+  .min(4, ({ min }) => `State must be at least ${min} characters`)
+  .required('State is Required!');
+
+const zipValidator = Yup.string()
+  .min(4, ({ min }) => `ZipCode must be at least ${min} characters`)
+  .required('ZipCode is Required!');
+
+// Validation Schemas
+const validationSchema = Yup.object().shape({
+  name: nameValidator,
+  bio: bioValidator,
+  phone: phoneValidator,
+  bAddress: Yup.string(),
+});
+
 const VendorValidationSchema = Yup.object().shape({
-  name: Yup.string()
-    .min(4, ({min}) => `Name must be at least ${min} characters`)
-    .required('Required')
-    .required('Name is Required!'),
-  bio: Yup.string()
-    .min(10, ({min}) => `Bio must be at least ${min} characters`)
-    .required('Bio is Required!'),
-  phone: Yup.string()
-    .min(10, ({min}) => `Phone must be at least ${min} characters`)
-    .max(12, ({max}) => `Phone must not exceed ${max} characters`),
-  bAddress: Yup.string()
-    .min(10, ({min}) => `Address must be at least ${min} characters`)
-    .required('Address is Required!'),
-  city: Yup.string()
-    .min(4, ({min}) => `City must be at least ${min} characters`)
-    .required('City is Required!'),
-  state: Yup.string()
-    .min(4, ({min}) => `State must be at least ${min} characters`)
-    .required('State is Required!'),
-  zipcode: Yup.string()
-    .min(4, ({min}) => `ZipCode must be at least ${min} characters`)
-    .required('ZipCode is Required!'),
+  name: nameValidator,
+  bio: bioValidator,
+  phone: phoneValidator,
+  bAddress: addressValidator,
+  city: cityValidator,
+  state: stateValidator,
+  zipcode: zipValidator,
 });
 
 const EditProfileScreen = () => {
-  const {mode} = useSelector((s: RootState) => s.app);
-  const navigation =
-    useNavigation<NativeStackNavigationProp<ProfileEditStackParams>>();
-  const navigation1 =
-    useNavigation<NativeStackNavigationProp<RootStackParams>>();
+  const { mode, defaultAvatar } = useSelector((s: RootState) => s.app);
+  const authUser = useSelector((s: RootState) => s.auth.user);
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const dispatch = useDispatch<AppDispatch>();
   const [date, setDate] = useState<Date | null>(null);
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
-  const [extraError, setExtraError] = useState({date: ''});
-  const [pronoun, setPronoun] = useState('');
+  const [extraError, setExtraError] = useState({ date: '' });
   const [loading, setLoading] = useState(false);
-  const [loading1, setLoading1] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<
-    SelectedImage | AvatarDefaultType | null
-  >(null);
-  const authUser = useSelector((s: RootState) => s.auth.user);
-  const {defaultAvatar} = useSelector((s: RootState) => s.app);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<any>(null);
   const [country, setCoutry] = useState<null | CountryType>(null);
   const [extraErr, setExtraErr] = useState({
     country: '',
   });
-  console.log(authUser);
-  const onSubmit = async (values: FormValues) => {
+
+  const onSubmit = async (values: UserFormValues) => {
     let isValid = true;
     // if (date === null) {
     //   setExtraError(prev => ({...prev, date: 'Please Pick Date!'}));
@@ -133,7 +127,7 @@ const EditProfileScreen = () => {
       // formData.append('pronouns', pronoun);
 
       if (selectedImage !== null) {
-        if (!selectedImage['isDefaultAvatar']) {
+        if (!selectedImage as any['isDefaultAvatar']) {
           const tempImg = {
             name: Date.now().toString() + '.png',
             type: selectedImage?.mime,
@@ -153,11 +147,11 @@ const EditProfileScreen = () => {
           formData,
           authUser?.token!,
         )) as any;
-        ShowAlert({textBody: res?.message, type: ALERT_TYPE.SUCCESS});
+        ShowAlert({ textBody: res?.message, type: ALERT_TYPE.SUCCESS });
         dispatch(updateUser(res.data));
       } catch (error: any) {
         console.log(error);
-        ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
+        ShowAlert({ textBody: error.message, type: ALERT_TYPE.DANGER });
       } finally {
         setLoading(false);
       }
@@ -211,28 +205,9 @@ const EditProfileScreen = () => {
       dispatch(updateUser(res.data));
     } catch (error: any) {
       console.log(error);
-      ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
+      ShowAlert({ textBody: error.message, type: ALERT_TYPE.DANGER });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const deleteProfile = async () => {
-    try {
-      setLoading1(true);
-      const res: any = await api_deleteUserProfile(authUser?.token!);
-      dispatch(setFirstLaunched(false));
-      dispatch(logout());
-      navigation1.navigate('Login');
-      ShowAlert({
-        textBody: 'profile deleted successfully',
-        type: ALERT_TYPE.SUCCESS,
-      });
-    } catch (error: any) {
-      ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
-      console.log(error);
-    } finally {
-      setLoading1(false);
     }
   };
 
@@ -244,12 +219,35 @@ const EditProfileScreen = () => {
       // setPronoun(authUser?.pronouns)
     }
   }, []);
+
+
+  const deleteProfile = async () => {
+    try {
+      if (isDeleting) return;
+
+      setIsDeleting(true);
+      await api_deleteUserProfile(authUser?.token!);
+      dispatch(setFirstLaunched(false));
+      dispatch(logout());
+      navigation.navigate('Login');
+      ShowAlert({
+        textBody: 'Profile Deleted Successfully!',
+        type: ALERT_TYPE.SUCCESS,
+      });
+
+    } catch (error: any) {
+      ShowAlert({ textBody: error.message || "Error While Deleting Your Profile!", type: ALERT_TYPE.DANGER });
+      console.log(error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
   return (
     <MainLayout
       headerComp={
         <SecondaryHeader
           onBack={navigation.goBack}
-          backBtnContainerStyle={{left: 0}}
+          backBtnContainerStyle={{ left: 0 }}
           title="Edit Profile"
         />
       }>
@@ -285,7 +283,7 @@ const EditProfileScreen = () => {
                   onConfirm={date => {
                     setDate(() => date);
                     setIsDateModalOpen(false);
-                    setExtraError(prev => ({...prev, date: ''}));
+                    setExtraError(prev => ({ ...prev, date: '' }));
                   }}
                   onCancel={() => setIsDateModalOpen(false)}
                 />
@@ -304,7 +302,7 @@ const EditProfileScreen = () => {
                   {selectedImage === null ? (
                     authUser?.picture ? (
                       <Image
-                        source={{uri: BUILD_IMAGE_URL(authUser.picture)}}
+                        source={{ uri: BUILD_IMAGE_URL(authUser.picture) }}
                         style={{
                           width: '100%',
                           height: '100%',
@@ -335,7 +333,7 @@ const EditProfileScreen = () => {
                     />
                   ) : (
                     <Image
-                      source={{uri: selectedImage.path}}
+                      source={{ uri: selectedImage.path }}
                       style={{
                         width: '100%',
                         height: '100%',
@@ -370,7 +368,7 @@ const EditProfileScreen = () => {
                   Upload Business Profile
                 </MyText>
               </View>
-              <View style={{marginTop: 20}}>
+              <View style={{ marginTop: 20 }}>
                 <InputWrapper title="Business Name">
                   <MyInput
                     hasError={Boolean(errors.name && touched.name)}
@@ -450,7 +448,7 @@ const EditProfileScreen = () => {
                         payload: {
                           onSelect: (e: CountryType) => {
                             setCoutry(e);
-                            setExtraErr(prev => ({...prev, country: ''}));
+                            setExtraErr(prev => ({ ...prev, country: '' }));
                           },
                         },
                       });
@@ -476,7 +474,7 @@ const EditProfileScreen = () => {
                   loading={loading}
                   onPress={handleSubmit}
                   text="Update"
-                  conatinerStyle={{marginTop: 10, marginBottom: 20}}
+                  conatinerStyle={{ marginTop: 10, marginBottom: 20 }}
                 />
               </View>
             </>
@@ -511,7 +509,7 @@ const EditProfileScreen = () => {
                   onConfirm={date => {
                     setDate(() => date);
                     setIsDateModalOpen(false);
-                    setExtraError(prev => ({...prev, date: ''}));
+                    setExtraError(prev => ({ ...prev, date: '' }));
                   }}
                   onCancel={() => setIsDateModalOpen(false)}
                 />
@@ -530,7 +528,7 @@ const EditProfileScreen = () => {
                   {selectedImage === null ? (
                     authUser?.picture ? (
                       <Image
-                        source={{uri: BUILD_IMAGE_URL(authUser.picture)}}
+                        source={{ uri: BUILD_IMAGE_URL(authUser.picture) }}
                         style={{
                           width: '100%',
                           height: '100%',
@@ -561,7 +559,7 @@ const EditProfileScreen = () => {
                     />
                   ) : (
                     <Image
-                      source={{uri: selectedImage.path}}
+                      source={{ uri: selectedImage.path }}
                       style={{
                         width: '100%',
                         height: '100%',
@@ -596,7 +594,7 @@ const EditProfileScreen = () => {
                   Upload profile or Choose avatar
                 </MyText>
               </View>
-              <View style={{marginTop: 20}}>
+              <View style={{ marginTop: 20 }}>
                 <InputWrapper title="Name">
                   <MyInput
                     hasError={Boolean(errors.name && touched.name)}
@@ -647,7 +645,7 @@ const EditProfileScreen = () => {
                   loading={loading}
                   onPress={handleSubmit}
                   text="Update"
-                  conatinerStyle={{marginTop: 10, marginBottom: 20}}
+                  conatinerStyle={{ marginVertical: pixelSizeVertical(10) }}
                 />
               </View>
             </>
@@ -655,11 +653,29 @@ const EditProfileScreen = () => {
         </Formik>
       )}
       <PrimaryBtn
-        loading={loading1}
-        onPress={deleteProfile}
+        loading={isDeleting}
+        onPress={() => {
+          Alert.alert(
+            "Confirm Delete",
+            "Are you sure you want to delete your account? This action cannot be undone.",
+            [
+              {
+                text: "Cancel",
+                style: "cancel",
+              },
+              {
+                text: "Delete",
+                onPress: () => deleteProfile(),
+                style: "destructive",
+              },
+            ]
+          );
+        }}
         text="Delete Account"
-        conatinerStyle={{marginTop: 0, marginBottom: 20}}
+        conatinerStyle={{ marginBottom: pixelSizeVertical(20) }}
+        colors={['#8B0000', '#B22222']}
       />
+
     </MainLayout>
   );
 };

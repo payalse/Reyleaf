@@ -7,9 +7,10 @@ import {
   ViewStyle,
 } from 'react-native';
 import React from 'react';
-import {COLORS, FONT_SIZE, FONT_WEIGHT, wp} from '../../styles';
-import {MyText} from '../MyText';
+import { BORDER_RADIUS, COLORS, FONT_SIZE, FONT_WEIGHT, wp } from '../../styles';
+import { MyText } from '../MyText';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { heightPixel, widthPixel } from '../../utils/sizeNormalization';
 
 type Props = {
   onBack?: () => void;
@@ -33,7 +34,7 @@ const SecondaryHeader = ({
   RightComp,
 }: Props) => {
   return (
-    <View style={{marginTop: 15}}>
+    <View style={{ marginTop: 15 }}>
       <TouchableOpacity
         onPress={onBack}
         style={[
@@ -43,7 +44,7 @@ const SecondaryHeader = ({
             flexDirection: 'row',
             alignItems: 'center',
             gap: 5,
-            top: 5,
+            // top: 5,
             zIndex: 10,
           },
           backBtnContainerStyle,
@@ -51,21 +52,21 @@ const SecondaryHeader = ({
         <View
           style={{
             backgroundColor: backIconBgColor || COLORS.greenDark,
-            width: wp(6),
-            height: wp(6),
-            borderRadius: wp(6) / 2,
+            width: widthPixel(26),
+            height: heightPixel(28),
+            borderRadius: BORDER_RADIUS.Circle,
             justifyContent: 'center',
             alignItems: 'center',
           }}>
           <AntDesign
             name="arrowleft"
-            size={FONT_SIZE.sm}
+            size={FONT_SIZE.xl}
             color={backIconColor || COLORS.white}
           />
         </View>
         <MyText
           center
-          size={FONT_SIZE.sm}
+          size={FONT_SIZE.xl}
           color={backTextColor || COLORS.greenDark}>
           Back
         </MyText>
@@ -76,6 +77,7 @@ const SecondaryHeader = ({
           textAlign: 'center',
           margin: 'auto',
           alignSelf: 'center',
+          top: 5
         }}
         center
         size={FONT_SIZE.xl}

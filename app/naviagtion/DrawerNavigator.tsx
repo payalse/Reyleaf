@@ -1,7 +1,6 @@
 import MainTab from './MainTab';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import CustomDrawer from './components/CustomDrawer';
-import { wp } from '../styles';
 import EditProfileScreen from '../screens/drawer/EditProfileScreen';
 import { DrawerParams, ProfileEditStackParams } from './types';
 import ChangePasswordScreen from '../screens/drawer/ChangePasswordScreen';
@@ -35,6 +34,7 @@ import AddNewAccount from '../screens/drawer/AddNewAccount';
 import UpdateAccountScreen from '../screens/drawer/UpdateAccountScreen';
 import SearchStack from './SearchStack';
 import ConnectWithCalendarScreen from '../screens/drawer/ConnectCalender';
+import { Dimensions } from 'react-native';
 
 // SHIPPING STACK
 export type ShippingAddressStackParams = {
@@ -177,16 +177,15 @@ const DrawerNavigator = () => {
       screenOptions={{
         headerShown: false,
         drawerStyle: {
-          width: wp(100),
+          width: Dimensions.get('window').width,
         },
       }}
       drawerContent={props => <CustomDrawer />}>
       {appMode === 'USER' ?
-          <Drawer.Screen name="MainTab" component={MainTab} />
-          :
-          <Drawer.Screen name="MainTab" component={VendorTab} />
+        <Drawer.Screen name="MainTab" component={MainTab} />
+        :
+        <Drawer.Screen name="MainTab" component={VendorTab} />
       }
-
       <Drawer.Screen name="SearchStack" component={SearchStack} />
       <Drawer.Screen name="ProfileEditStack" component={ProfileEditStack} />
       <Drawer.Screen
@@ -208,13 +207,6 @@ const DrawerNavigator = () => {
       />
       <Drawer.Screen name="AboutUsStack" component={AboutUsStack} />
       <Drawer.Screen name="SupportStack" component={SupportStack} />
-      {/* {appMode === 'USER' ? (
-      ) : (
-        <Drawer.Screen name="MainTab" component={VendorTab} />
-      )}
-     
-      
-      */}
     </Drawer.Navigator>
   );
 };

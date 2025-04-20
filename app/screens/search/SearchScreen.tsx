@@ -5,23 +5,23 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import MainHeader from '../../components/header/MainHeader';
 import RecommendList from './RecommendList';
 import SearchBox from '../../components/SearchBox';
-import {MyText} from '../../components/MyText';
-import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../styles';
+import { MyText } from '../../components/MyText';
+import { COLORS, FONT_SIZE, FONT_WEIGHT } from '../../styles';
 import AntDesgin from 'react-native-vector-icons/AntDesign';
-import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {SearchStackParams} from '../../naviagtion/types';
-import {api_searchProduct} from '../../api/product';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../redux/store';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { SearchStackParams } from '../../naviagtion/types';
+import { api_searchProduct } from '../../api/product';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
 import FullScreenLoader from '../../components/FullScreenLoader';
 import Product from '../../components/Product';
-import {ProductType} from '../../types';
-import {TAB_BAR_BG_HEIGHT} from '../../naviagtion/MainTab';
+import { ProductType } from '../../types';
+import { TAB_BAR_BG_HEIGHT } from '../../naviagtion/MainTab';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const data = [
@@ -38,7 +38,7 @@ const SearchScreen = () => {
   const [resultProduct, setResultProduct] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(false);
   const [text, setText] = useState('');
-  const {token} = useSelector((s: RootState) => s.auth);
+  const { token } = useSelector((s: RootState) => s.auth);
   const [history, setHistory] = useState<string[]>([]);
   // const handleTabPress = (e: any) => {
 
@@ -100,7 +100,7 @@ const SearchScreen = () => {
     <React.Fragment>
       {loading && <FullScreenLoader />}
       <SafeAreaView />
-      <View style={{marginHorizontal: 20}}>
+      <View style={{ marginHorizontal: 20 }}>
         <MainHeader
           onMessagePress={() => navigation.navigate('ChatStack')}
           onNotiPress={() => navigation.navigate('AppNotification')}
@@ -116,7 +116,7 @@ const SearchScreen = () => {
         data={resultProduct}
         ListHeaderComponent={() => {
           return (
-            <View style={{marginHorizontal: 20}}>
+            <View style={{ marginHorizontal: 20 }}>
               <View>
                 <View
                   style={{
@@ -160,9 +160,9 @@ const SearchScreen = () => {
             </View>
           );
         }}
-        renderItem={({item}) => {
+        renderItem={({ item }) => {
           return (
-            <View style={{marginBottom: 10}}>
+            <View style={{ marginBottom: 10, paddingHorizontal: 20 }}>
               <Product
                 id={item._id}
                 photos={item.photos}
@@ -177,10 +177,10 @@ const SearchScreen = () => {
             </View>
           );
         }}
-        ListFooterComponentStyle={{marginBottom: TAB_BAR_BG_HEIGHT}}
+        ListFooterComponentStyle={{ marginBottom: TAB_BAR_BG_HEIGHT }}
         ListFooterComponent={() => {
           return (
-            <View style={{marginHorizontal: 20}}>
+            <View style={{ marginHorizontal: 20 }}>
               <RecommendList products={recommendedList} />
             </View>
           );

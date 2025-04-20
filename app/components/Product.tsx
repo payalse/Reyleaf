@@ -1,25 +1,22 @@
-import React, {useState, useCallback} from 'react';
+import { memo, useCallback, useState } from 'react';
 import {
   View,
   TouchableOpacity,
-  Image,
-  StyleSheet,
-  StyleProp,
-  ViewStyle,
+  StyleSheet, Alert
 } from 'react-native';
-import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../styles';
-import {MyText} from './MyText';
+import { BORDER_RADIUS, COLORS, FONT_SIZE, FONT_WEIGHT } from '../styles';
+import { MyText } from './MyText';
 import GradientBox from './GradientBox';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {HomeStackParams} from '../navigation/types';
-import {BUILD_IMAGE_URL} from '../api';
-import DummyProductImage from '../../assets/img/productPlaceholder.jpeg';
-import {useSelector} from 'react-redux';
-import {RootState} from '../redux/store';
-import {api_addProductToFavourite} from '../api/product';
-import {Rating} from 'react-native-ratings';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { BUILD_IMAGE_URL } from '../api';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
+import { api_addProductToFavourite } from '../api/product';
+import { Rating } from 'react-native-ratings';
+import { heightPixel, pixelSizeHorizontal, pixelSizeVertical, widthPixel } from '../utils/sizeNormalization';
+import FastImage from 'react-native-fast-image';
 
 type Props = {
   id: string;
@@ -29,7 +26,7 @@ type Props = {
   oldPrice: string;
   price: string;
   category: string;
-  photos?: {url: string}[];
+  photos?: { url: string }[];
   layout?: 'vertical' | 'horizontal';
   onValueChange?: (productId: string) => void;
 };
@@ -47,25 +44,27 @@ const Product = ({
   onValueChange,
 }: Props) => {
   const [isLiked, setIsLiked] = useState(isFav);
-  const {token} = useSelector((state: RootState) => state.auth);
+  const { token } = useSelector((state: RootState) => state.auth);
   const navigation =
-    useNavigation<NativeStackNavigationProp<HomeStackParams>>();
+    useNavigation<NativeStackNavigationProp<any>>();
   const photo = photos?.[0]?.url ? BUILD_IMAGE_URL(photos[0].url) : '';
 
-  const addToFavourite = async () => {
+  const addToFavourite = useCallback(async () => {
     try {
       if (!token) {
         navigation.navigate('Welcome');
         return;
       }
-      setIsLiked(!isLiked);
-      const res = await api_addProductToFavourite(token, id);
-      if (onValueChange) onValueChange(id);
-      console.log(res);
-    } catch (error) {
+      setIsLiked((prev) => !prev);
+      const res = (await api_addProductToFavourite(token, id) as any)
+      if (res?.status === 200) {
+        onValueChange?.(id);
+      }
+    } catch (error: any) {
       console.error(error);
+      Alert.alert("Error", error?.message)
     }
-  };
+  }, [token, id, navigation, onValueChange]);
 
   const containerStyle =
     layout === 'vertical'
@@ -88,21 +87,21 @@ const Product = ({
       <View
         style={[
           styles.imageContainer,
-          layout === 'horizontal' && {width: 100},
+          layout === 'horizontal' && { width: widthPixel(100) },
         ]}>
-        <Image
-          source={photo ? {uri: photo} : DummyProductImage}
+        <FastImage
+          source={photo ? { uri: photo } : require("../../assets/img/productPlaceholder.jpeg")}
           style={[styles.image, imageStyle]}
-          resizeMode="cover"
+          resizeMode={FastImage.resizeMode[photo ? 'contain' : "stretch"]}
         />
         {layout === 'vertical' && (
           <TouchableOpacity onPress={addToFavourite} style={styles.likeButton}>
             <GradientBox conatinerStyle={styles.likeButtonContainer}>
               <AntDesign
                 color={COLORS.white}
-                style={{opacity: isLiked ? 1 : 0.3}}
+                style={{ opacity: isLiked ? 1 : 0.3 }}
                 name="heart"
-                size={18}
+                size={widthPixel(FONT_SIZE.xl)}
               />
             </GradientBox>
           </TouchableOpacity>
@@ -111,21 +110,21 @@ const Product = ({
       {layout === 'vertical' && (
         <View
           style={{
-            height: 28,
+            height: heightPixel(28),
             backgroundColor: COLORS.white,
-            width: 42,
+            width: widthPixel(42),
             alignItems: 'center',
             justifyContent: 'center',
-            borderRadius: 10,
+            borderRadius: BORDER_RADIUS.XMedium,
             flexDirection: 'row',
             gap: 2,
-            margin: 10,
+            margin: heightPixel(10),
             position: 'absolute',
-            top: 10,
-            left: 10,
+            top: pixelSizeVertical(10),
+            left: pixelSizeHorizontal(10),
           }}>
-          <AntDesign size={15} name="star" color={'#FFC700'} />
-          <MyText size={FONT_SIZE.xs} bold={FONT_WEIGHT.bold}>
+          <AntDesign size={widthPixel(FONT_SIZE.xl)} name="star" color={'#FFC700'} />
+          <MyText size={FONT_SIZE.base} bold={FONT_WEIGHT.bold}>
             {Math.round(rating)}
           </MyText>
         </View>
@@ -134,10 +133,19 @@ const Product = ({
       <View style={styles.details}>
         <View style={styles.header}>
           <View>
-            <MyText size={FONT_SIZE.lg} bold={FONT_WEIGHT.semibold}>
-              {title}
+            <MyText size={FONT_SIZE.lg}
+              bold={FONT_WEIGHT.semibold}
+              style={{
+                maxWidth: "90%",
+                lineHeight: FONT_SIZE['1.5xl']
+              }}>
+              {title.length > 28 ? `${title.substring(0, 28)}...` : title}
             </MyText>
-            <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
+            <MyText
+              size={FONT_SIZE.base}
+              color={COLORS.grey}
+              style={{ opacity: 0.8, marginTop: pixelSizeVertical(3) }}
+            >
               {category}
             </MyText>
           </View>
@@ -146,9 +154,9 @@ const Product = ({
               <GradientBox conatinerStyle={styles.likeButtonContainer}>
                 <AntDesign
                   color={COLORS.white}
-                  style={{opacity: isLiked ? 1 : 0.3}}
+                  style={{ opacity: isLiked ? 1 : 0.3 }}
                   name="heart"
-                  size={14}
+                  size={widthPixel(FONT_SIZE.lg)}
                 />
               </GradientBox>
             </TouchableOpacity>
@@ -169,13 +177,13 @@ const Product = ({
           </View>
         )}
         <View style={styles.priceContainer}>
-          <MyText size={FONT_SIZE.lg} bold={FONT_WEIGHT.semibold}>
+          <MyText size={FONT_SIZE.xl} bold={FONT_WEIGHT.semibold}>
             ${price}
           </MyText>
           <MyText
-            size={FONT_SIZE.sm}
+            size={FONT_SIZE.base}
             color={COLORS.grey}
-            style={{textDecorationLine: 'line-through'}}>
+            style={{ textDecorationLine: 'line-through' }}>
             ${oldPrice}
           </MyText>
         </View>
@@ -184,17 +192,17 @@ const Product = ({
   );
 };
 
-export default Product;
+export default memo(Product);
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.white,
-    borderRadius: 25,
-    padding: 10,
+    borderRadius: BORDER_RADIUS.Large,
+    padding: heightPixel(10),
     position: 'relative',
   },
   verticalContainer: {
-    width: 210,
+    width: widthPixel(200),
   },
   horizontalContainer: {
     flexDirection: 'row',
@@ -202,28 +210,28 @@ const styles = StyleSheet.create({
   imageContainer: {
     position: 'relative',
     backgroundColor: COLORS.grey,
-    borderRadius: 20,
+    borderRadius: BORDER_RADIUS['Semi-Large'],
   },
   verticalImage: {
-    height: 137,
+    height: heightPixel(142),
   },
   horizontalImage: {
-    height: 100,
+    height: heightPixel(100),
   },
   image: {
     width: '100%',
-    borderRadius: 20,
+    borderRadius: BORDER_RADIUS['Semi-Large'],
   },
   likeButton: {
     position: 'absolute',
-    bottom: -10,
-    right: 10,
+    bottom: pixelSizeVertical(-14),
+    right: pixelSizeHorizontal(10),
     zIndex: 4,
   },
   likeButtonContainer: {
-    width: 39,
-    height: 38,
-    borderRadius: 10,
+    width: widthPixel(40),
+    height: heightPixel(40),
+    borderRadius: BORDER_RADIUS.XMedium,
     justifyContent: 'center',
     alignItems: 'center',
   },

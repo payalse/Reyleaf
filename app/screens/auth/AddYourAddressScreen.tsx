@@ -23,6 +23,11 @@ import {SHEETS} from '../../sheets/sheets';
 import {CountryType} from '../../utils/countryTable';
 import {ShowAlert} from '../../utils/alert';
 import {ALERT_TYPE} from 'react-native-alert-notification';
+import {
+  pixelSizeHorizontal,
+  pixelSizeVertical,
+  widthPixel,
+} from '../../utils/sizeNormalization';
 
 type FormValues = {
   address: string;
@@ -57,7 +62,7 @@ const AddYourAddressScreen = () => {
   const [extraErr, setExtraErr] = useState({
     country: '',
   });
-  console.log({country});
+
   const onSubmit = async (values: FormValues) => {
     let isValid = true;
     if (country === null) {
@@ -73,16 +78,15 @@ const AddYourAddressScreen = () => {
       country: country?.name,
       zipcode: values.zipcode,
     };
-    console.log(payload, params);
     try {
       setLoading(true);
       const res = (await api_addUpdateAddress(
         payload,
         params.authToken,
       )) as any;
-      console.log(res, 'api_addUpdateAddress');
       dispatch(updateUser(res));
       navigation.navigate('AccountCreatedSuccess');
+
     } catch (error: any) {
       ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
     } finally {
@@ -109,20 +113,20 @@ const AddYourAddressScreen = () => {
           touched,
         }) => (
           <ScrollView
-            contentContainerStyle={{marginHorizontal: 20, paddingBottom: 20}}>
+            contentContainerStyle={{marginHorizontal:  pixelSizeHorizontal(20), paddingBottom:  pixelSizeVertical(20)}}>
             <BackBtn onPress={navigation.goBack} />
             <View>
               <MyText
                 bold={FONT_WEIGHT.bold}
                 size={FONT_SIZE['2xl']}
-                style={{marginTop: 40, marginBottom: 10}}>
+                style={{marginTop: pixelSizeVertical(28), marginBottom: pixelSizeVertical(8)}}>
                 Add your Address
               </MyText>
-              <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
+              <MyText size={FONT_SIZE.lg} color={COLORS.grey}>
                 Please enter your address to ensure accurate delivery.
               </MyText>
             </View>
-            <View style={{marginTop: 20}}>
+            <View style={{marginTop: pixelSizeHorizontal(20)}}>
               <InputWrapper title="Address">
                 <MyInput
                   hasError={Boolean(errors.address && touched.address)}
@@ -194,7 +198,7 @@ const AddYourAddressScreen = () => {
                 loading={loading}
                 onPress={handleSubmit}
                 text="Next"
-                conatinerStyle={{marginTop: 10, marginBottom: 40}}
+                conatinerStyle={{marginTop: pixelSizeVertical(10), marginBottom: pixelSizeVertical(40)}}
               />
             </View>
           </ScrollView>

@@ -17,6 +17,11 @@ import {VerifyEmailResponse} from '../../../types/apiResponse';
 import {ALERT_TYPE} from 'react-native-alert-notification';
 import {ShowAlert} from '../../../utils/alert';
 import PrimaryBtn from '../../../components/buttons/PrimaryBtn';
+import {
+  pixelSizeHorizontal,
+  pixelSizeVertical,
+  widthPixel,
+} from '../../../utils/sizeNormalization';
 
 const VendorForgetPasswordOtpVerificationScreen = () => {
   const params =
@@ -37,7 +42,6 @@ const VendorForgetPasswordOtpVerificationScreen = () => {
 
   const onSubmit = async () => {
     if (code.length < 4) return;
-    console.log(code);
 
     try {
       setLoading(true);
@@ -45,7 +49,7 @@ const VendorForgetPasswordOtpVerificationScreen = () => {
         refId: params.verifyToken,
         otp: code,
       })) as any;
-      console.log(res);
+
       ShowAlert({textBody: res?.message});
       navigation.navigate('VendorSetNewPassword', {
         verifyToken: params.verifyToken,
@@ -79,20 +83,20 @@ const VendorForgetPasswordOtpVerificationScreen = () => {
   });
   return (
     <LayoutBG type="bg-leaf">
-      <ScrollView contentContainerStyle={{marginHorizontal: 20}}>
-        <BackBtn onPress={navigation.goBack} />
+      <ScrollView contentContainerStyle={{ marginHorizontal: pixelSizeHorizontal(20) }}>
+      <BackBtn onPress={navigation.goBack} />
         <View>
           <MyText
             bold={FONT_WEIGHT.bold}
             size={FONT_SIZE['2xl']}
-            style={{marginTop: 100, marginBottom: 10}}>
+            style={{ marginTop: pixelSizeVertical(100), marginBottom: pixelSizeVertical(10) }}>
             Enter Verfication Code
           </MyText>
-          <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
+          <MyText  color={COLORS.grey}>
             We have sent a verification code to your email
           </MyText>
 
-          <View style={{marginVertical: 40}}>
+          <View style={{ marginVertical: pixelSizeVertical(40) }}>
             <OTPInput
               onOTPChange={e => {
                 setCode(e);
@@ -108,12 +112,11 @@ const VendorForgetPasswordOtpVerificationScreen = () => {
             </View>
           ) : (
             <View style={{flexDirection: 'row', alignSelf: 'center', gap: 5}}>
-              <MyText center size={FONT_SIZE.sm} color={COLORS.grey}>
+              <MyText center  color={COLORS.grey}>
                 Didn’t Receive the Code{' '}
               </MyText>
               <TouchableOpacity onPress={resendOTPStartTimmer}>
                 <MyText
-                  size={FONT_SIZE.sm}
                   color={COLORS.greenDark}
                   bold={FONT_WEIGHT.bold}>
                   Resend
@@ -122,7 +125,7 @@ const VendorForgetPasswordOtpVerificationScreen = () => {
             </View>
           )}
         </View>
-        <View style={{marginTop: 40}}>
+        <View style={{marginTop: pixelSizeVertical(40)}}>
           <PrimaryBtn
             onPress={() => {
               onSubmit();

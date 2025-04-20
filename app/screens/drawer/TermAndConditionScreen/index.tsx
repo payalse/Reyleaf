@@ -1,12 +1,12 @@
 import {SafeAreaView, Text, StyleSheet} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
-import {MyText} from '../../../components/MyText';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
-import {COLORS} from '../../../styles';
 import LayoutBG from '../../../components/layout/LayoutBG';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AboutUsStackParams} from '../../../naviagtion/DrawerNavigator';
+import { heightPixel, pixelSizeVertical } from '../../../utils/sizeNormalization';
+import { FONT_SIZE } from '../../../styles';
 
 const TermAndConditionScreen = () => {
   const navigation =
@@ -19,8 +19,8 @@ const TermAndConditionScreen = () => {
         contentContainerStyle={{
           justifyContent: 'center',
           alignItems: 'center',
-          padding: 20,
-          gap: 50,
+          padding: heightPixel(20),
+          gap: 10,
         }}>
         <Text style={styles.text}>
           These Terms & Conditions ("Terms") govern the use of the Reynette
@@ -168,29 +168,27 @@ const TermAndConditionScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 5,
+    padding: heightPixel(6),
   },
   title: {
-    fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 6,
+    marginBottom: pixelSizeVertical(6),
     color: 'black',
   },
   heading: {
-    fontSize: 16,
+    fontSize: FONT_SIZE.xl,
     fontWeight: 'bold',
-    marginTop: 6,
     color: 'black',
+    marginTop: pixelSizeVertical(6),
   },
   text: {
-    fontSize: 12,
+    fontSize: FONT_SIZE.base,
     lineHeight: 24,
     color: 'black',
   },
   listItem: {
-    fontSize: 16,
-    lineHeight: 24,
-    marginBottom: 8,
+    lineHeight: 20,
+    marginBottom: pixelSizeVertical(8),
     color: 'black',
   },
   link: {

@@ -3,10 +3,9 @@ import {BASE_URL} from './index';
 export const api_login = (payload: {
   email: string;
   password: string;
-  fcmToken: string;
+  fcmToken?: string;
 }) => {
   const uri = `${BASE_URL}/api/v1/login`;
-  console.log(payload, 'payload');
   return new Promise((resolve, reject) => {
     fetch(uri, {
       method: 'POST',

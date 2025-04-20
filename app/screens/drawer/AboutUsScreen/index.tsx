@@ -66,7 +66,7 @@ const AboutUsScreen = () => {
           justifyContent: 'center',
           alignItems: 'center',
           padding: 20,
-          gap: 50,
+          gap: 20,
         }}>
         <LogoSvg height={120} />
         <MyText center color={COLORS.grey} style={{lineHeight: 20}}>
@@ -110,7 +110,7 @@ const AboutUsScreen = () => {
                 textDecorationLine: 'underline',
               }}
               onPress={() => navigation.navigate('PrivacyPolicy')}>
-              Privacy Policy & 
+              Privacy Policy 
             </MyText>
           </TouchableOpacity>
           <TouchableOpacity
@@ -120,6 +120,7 @@ const AboutUsScreen = () => {
                 fontWeight: FONT_WEIGHT.semibold,
                 color: COLORS.greenDark,
                 textDecorationLine: 'underline',
+                marginLeft:8
               }}>
               Terms & Condition
             </MyText>

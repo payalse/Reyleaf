@@ -6,35 +6,35 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {useHideBottomBar} from '../../hook/useHideBottomBar';
+import React, { useEffect, useState } from 'react';
+import { useHideBottomBar } from '../../hook/useHideBottomBar';
 import MainLayout from '../../components/layout/MainLayout';
 import SecondaryHeader from '../../components/header/SecondaryHeader';
 import PrimaryBtn from '../../components/buttons/PrimaryBtn';
-import {MyText} from '../../components/MyText';
-import {COLORS, FONT_SIZE, FONT_WEIGHT, hp, wp} from '../../styles';
+import { MyText } from '../../components/MyText';
+import { COLORS, FONT_SIZE, FONT_WEIGHT, hp, wp } from '../../styles';
 import AntDesgin from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {FlatList} from 'react-native';
+import { FlatList } from 'react-native';
 import Product from '../../components/Product';
-import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import ProductShow from './components/ProductShow';
 import CartSvg from '../../../assets/svg/tab/icons/CartFill.svg';
 import HeartIconSvg from '../../../assets/svg/icons/heart.svg';
-import {ShowAlert} from '../../utils/alert';
-import {ALERT_TYPE} from 'react-native-alert-notification';
-import {api_addToCart} from '../../api/cart';
-import {useDispatch, useSelector} from 'react-redux';
-import {AppDispatch, RootState} from '../../redux/store';
-import {ProductType, Reviews} from '../../types';
+import { ShowAlert } from '../../utils/alert';
+import { ALERT_TYPE } from 'react-native-alert-notification';
+import { api_addToCart } from '../../api/cart';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../redux/store';
+import { ProductType, Reviews } from '../../types';
 import {
   api_addProductToFavourite,
   api_getReviewList,
   api_productGetById,
   apiSimilarProductList,
 } from '../../api/product';
-import {HomeStackParams, ProductDetailParams} from '../../naviagtion/types';
-import {BASE_URL, BUILD_IMAGE_URL} from '../../api';
+import { HomeStackParams, ProductDetailParams } from '../../naviagtion/types';
+import { BASE_URL, BUILD_IMAGE_URL } from '../../api';
 import FullScreenLoader from '../../components/FullScreenLoader';
 import {
   GetHomeProductResponse,
@@ -47,15 +47,16 @@ import {
   setSimilarProduct,
   setProductReview,
 } from '../../redux/features/product/productSlice';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Review from '../../components/Reviews';
-import {Rating} from 'react-native-ratings';
+import { Rating } from 'react-native-ratings';
+import { pixelSizeVertical } from '../../utils/sizeNormalization';
 
-const SimilarList = ({productList}: any) => {
+const SimilarList = ({ productList }: any) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<HomeStackParams>>();
   return (
-    <View style={{marginVertical: 20}}>
+    <View style={{ marginVertical: 20 }}>
       <View
         style={{
           flexDirection: 'row',
@@ -79,11 +80,11 @@ const SimilarList = ({productList}: any) => {
       </View>
       <FlatList
         data={productList}
-        contentContainerStyle={{gap: 25, marginLeft: 20}}
+        contentContainerStyle={{ gap: 25, marginLeft: 20 }}
         showsHorizontalScrollIndicator={false}
         horizontal
         keyExtractor={item => item.id}
-        renderItem={({item}) => {
+        renderItem={({ item }) => {
           return (
             <Product
               photos={item?.photos}
@@ -114,7 +115,7 @@ const ProductDetailScreen = () => {
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(false);
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(true);
-  const {token} = useSelector((s: RootState) => s.auth);
+  const { token } = useSelector((s: RootState) => s.auth);
   const navigation = useNavigation();
   const [productImages, setProductImages] = useState<string[]>([]);
   const navigation1 =
@@ -251,7 +252,7 @@ const ProductDetailScreen = () => {
         flex: 1,
       }}>
       <MainLayout
-        contentContainerStyle={{marginHorizontal: 0}}
+        contentContainerStyle={{ marginHorizontal: 0 }}
         headerComp={
           <SecondaryHeader onBack={navigation.goBack} title="Product Detail" />
         }>
@@ -291,11 +292,17 @@ const ProductDetailScreen = () => {
                 alignItems: 'flex-end',
                 marginBottom: 10,
               }}>
-              <View style={{gap: 5}}>
-                <MyText size={FONT_SIZE.lg} bold={FONT_WEIGHT.semibold}>
+              <View style={{ gap: 5 }}>
+                <MyText
+                  size={FONT_SIZE.xl}
+                  bold={FONT_WEIGHT.semibold}
+                  style={{ width: '90%', flexWrap: 'wrap' }}
+                >
                   {product?.title || 'Product title'}
                 </MyText>
-                <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
+
+                <MyText size={FONT_SIZE.lg} color={COLORS.grey} style={{ width: '90%', flexWrap: 'wrap' }}
+                >
                   {product?.categoryId?.name || 'Product Category'}
                 </MyText>
                 <View
@@ -311,7 +318,10 @@ const ProductDetailScreen = () => {
                     readonly
                     startingValue={product?.rating}
                   />
-                  <MyText size={FONT_SIZE.sm}>{product?.rating || '0'}</MyText>
+                  {
+                    product?.rating !== undefined && product?.rating > 0 &&
+                    <MyText size={FONT_SIZE.lg}>{product?.rating || '0'}</MyText>
+                  }
                 </View>
               </View>
               <View
@@ -319,13 +329,13 @@ const ProductDetailScreen = () => {
                   alignItems: 'flex-end',
                   justifyContent: 'flex-end',
                 }}>
-                <MyText size={FONT_SIZE.lg} bold={FONT_WEIGHT.semibold}>
+                <MyText size={FONT_SIZE['1.5xl']} bold={FONT_WEIGHT.semibold}>
                   ${product?.discountedProce}
                 </MyText>
                 <MyText
-                  size={FONT_SIZE.sm}
+                  size={FONT_SIZE.xl}
                   color={COLORS.grey}
-                  style={{textDecorationLine: 'line-through'}}>
+                  style={{ textDecorationLine: 'line-through' }}>
                   ${product?.price}
                 </MyText>
               </View>
@@ -336,9 +346,9 @@ const ProductDetailScreen = () => {
                 flexDirection: 'row',
                 justifyContent: 'space-between',
               }}>
-              <MyText size={FONT_SIZE.sm}>Select Total Item</MyText>
+              <MyText size={FONT_SIZE.lg}>Select Total Item</MyText>
               <View
-                style={{alignItems: 'center', flexDirection: 'row', gap: 10}}>
+                style={{ alignItems: 'center', flexDirection: 'row', gap: 10 }}>
                 <TouchableOpacity
                   style={styles.countBtn}
                   onPress={() => {
@@ -348,7 +358,7 @@ const ProductDetailScreen = () => {
                   }}>
                   <AntDesgin
                     name="minus"
-                    size={FONT_SIZE.sm}
+                    size={FONT_SIZE.base}
                     color={COLORS.white}
                   />
                 </TouchableOpacity>
@@ -359,7 +369,7 @@ const ProductDetailScreen = () => {
                   onPress={() => setQty(prev => prev + 1)}>
                   <AntDesgin
                     name="plus"
-                    size={FONT_SIZE.sm}
+                    size={FONT_SIZE.base}
                     color={COLORS.white}
                   />
                 </TouchableOpacity>
@@ -372,7 +382,7 @@ const ProductDetailScreen = () => {
               flexDirection: 'row',
               justifyContent: 'space-between',
               alignItems: 'center',
-              marginBottom: 5,
+              marginBottom: pixelSizeVertical(4),
             }}>
             <MyText>Description</MyText>
             <TouchableOpacity
@@ -382,7 +392,7 @@ const ProductDetailScreen = () => {
                 name="chevron-down"
                 size={FONT_SIZE['xl']}
                 style={{
-                  transform: [{rotate: !isDescriptionOpen ? '180deg' : '0deg'}],
+                  transform: [{ rotate: !isDescriptionOpen ? '180deg' : '0deg' }],
                 }}
               />
             </TouchableOpacity>
@@ -390,8 +400,8 @@ const ProductDetailScreen = () => {
           {isDescriptionOpen ? (
             <MyText
               color={COLORS.grey}
-              style={{lineHeight: 18}}
-              size={FONT_SIZE.sm}>
+              style={{ lineHeight: 18 }}
+              size={FONT_SIZE.base}>
               {product?.description}
             </MyText>
           ) : null}
@@ -406,7 +416,7 @@ const ProductDetailScreen = () => {
             }}>
             <MyText>Rating & Reviews</MyText>
             <TouchableOpacity onPress={() => navigation1.navigate('Reviews')}>
-              <MyText size={FONT_SIZE.sm}>View all</MyText>
+              <MyText size={FONT_SIZE.lg}>View all</MyText>
             </TouchableOpacity>
           </View>
           <View>

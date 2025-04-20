@@ -1,9 +1,9 @@
-import {TouchableOpacity, ViewStyle} from 'react-native';
-import {MyText} from '../MyText';
+import { TouchableOpacity, ViewStyle } from 'react-native';
+import { MyText } from '../MyText';
 import LinearGradient from 'react-native-linear-gradient';
-import {COLORS, FONT_WEIGHT} from '../../styles';
-import {StyleProp} from 'react-native';
-import {ActivityIndicator} from 'react-native';
+import { COLORS, FONT_WEIGHT } from '../../styles';
+import { StyleProp } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 type Props = {
   text: string;
   rightComp?: () => React.ReactNode;
@@ -11,6 +11,7 @@ type Props = {
   onPress?: () => void;
   conatinerStyle?: StyleProp<ViewStyle>;
   loading?: boolean;
+  colors?: [string, string]
 };
 const PrimaryBtn = ({
   text,
@@ -19,11 +20,14 @@ const PrimaryBtn = ({
   onPress,
   conatinerStyle,
   loading,
+  colors
 }: Props) => {
   return (
-    <TouchableOpacity onPress={onPress} style={conatinerStyle}>
+    <TouchableOpacity onPress={onPress}
+      disabled={loading}
+      style={conatinerStyle}>
       <LinearGradient
-        colors={[COLORS.greenDark, COLORS.greenLight]}
+        colors={colors ? colors : [COLORS.greenDark, COLORS.greenLight]}
         style={[
           {
             backgroundColor: 'white',

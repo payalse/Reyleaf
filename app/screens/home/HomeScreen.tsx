@@ -141,9 +141,9 @@ const HomeScreen = () => {
       contentContainerStyle={{paddingBottom: 150}}>
       <View style={{flex: 1}}>
         <MyText
-          size={FONT_SIZE['2xl']}
+          size={FONT_SIZE['3xl']}
           bold={FONT_WEIGHT.bold}
-          style={{lineHeight: 45, marginTop: 10}}>
+          style={{lineHeight: 40, marginTop: 10,width:"80%"}}>
           Welcome, to our center for eco-friendly living 🛒
         </MyText>
         {/* Search */}

@@ -1,16 +1,17 @@
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import React, {useState} from 'react';
+import { useState } from 'react';
+import { TouchableOpacity, View } from 'react-native';
 import MainLayout from '../../../components/layout/MainLayout';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
-import {MyText} from '../../../components/MyText';
-import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../../styles';
-import {useNavigation} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
-import {AppDispatch, RootState} from '../../../redux/store';
-import {api_updateNotificationSettings} from '../../../api/user';
-import {ShowAlert} from '../../../utils/alert';
-import {ALERT_TYPE} from 'react-native-alert-notification';
-import {updateUser} from '../../../redux/features/auth/authSlice';
+import { MyText } from '../../../components/MyText';
+import { BORDER_RADIUS, COLORS, FONT_SIZE, FONT_WEIGHT } from '../../../styles';
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../../redux/store';
+import { api_updateNotificationSettings } from '../../../api/user';
+import { ShowAlert } from '../../../utils/alert';
+import { ALERT_TYPE } from 'react-native-alert-notification';
+import { updateUser } from '../../../redux/features/auth/authSlice';
+import { heightPixel, pixelSizeHorizontal, pixelSizeVertical, widthPixel } from '../../../utils/sizeNormalization';
 
 const SwitchComp = ({
   value,
@@ -25,19 +26,19 @@ const SwitchComp = ({
       style={{
         backgroundColor: COLORS.white,
         padding: 5,
-        width: 60,
-        borderRadius: 20,
-        height: 35,
-        marginLeft: -50,
+        width: widthPixel(60),
+        borderRadius: BORDER_RADIUS['Semi-Large'],
+        height: heightPixel(36),
+        marginLeft: pixelSizeHorizontal(-50),
         justifyContent: 'center',
         alignItems: value ? 'flex-end' : 'flex-start',
       }}>
       <View
         style={{
           backgroundColor: value ? COLORS.greenDark : COLORS.lightgrey,
-          width: 25,
-          height: 25,
-          borderRadius: 25 / 2,
+          width: widthPixel(26),
+          height: heightPixel(26),
+          borderRadius: BORDER_RADIUS.Circle,
         }}
       />
     </TouchableOpacity>
@@ -45,9 +46,10 @@ const SwitchComp = ({
 };
 
 const NotificationScreen = () => {
-  const {token} = useSelector((s: RootState) => s.auth);
+  const { token } = useSelector((s: RootState) => s.auth);
   const authUser = useSelector((s: RootState) => s.auth.user);
   const dispatch = useDispatch<AppDispatch>();
+  const navigation = useNavigation();
   const [notiObj, setNotObj] = useState({
     order: authUser?.orderNotification || true,
     event: authUser?.eventNotification || true,
@@ -66,30 +68,31 @@ const NotificationScreen = () => {
         textBody: 'Notification settings updated successfully!!',
         type: ALERT_TYPE.SUCCESS,
       });
-      console.log(res);
     } catch (error) {
       console.log(error);
-    } finally {
+      ShowAlert({
+        textBody: 'Error updating notification settings!',
+        type: ALERT_TYPE.DANGER,
+      });
     }
   };
 
-  const navigation = useNavigation();
   return (
     <MainLayout
       headerComp={
         <SecondaryHeader
           onBack={navigation.goBack}
-          backBtnContainerStyle={{left: 0}}
+          backBtnContainerStyle={{ left: 0 }}
           title="Notification"
         />
       }>
       <View
         style={{
-          marginTop: 20,
+          marginTop: pixelSizeVertical(20),
           gap: 10,
-          paddingBottom: 20,
+          paddingBottom: pixelSizeVertical(20),
           borderBlockColor: COLORS.lightgrey2,
-          borderBottomWidth: 2,
+          borderBottomWidth: heightPixel(2),
         }}>
         <MyText bold={FONT_WEIGHT.bold}>All Notification</MyText>
         <MyText color={COLORS.grey} >
@@ -97,23 +100,23 @@ const NotificationScreen = () => {
           updated—enable or disable alerts for updates, promotions, and more.
         </MyText>
       </View>
-      <View style={{gap: 20, marginVertical: 20}}>
+      <View style={{ gap: 20, marginVertical: pixelSizeVertical(20) }}>
         <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
           }}>
-          <View style={{gap: 5}}>
+          <View style={{ gap: 5 }}>
             <MyText bold={FONT_WEIGHT.semibold}>Order Notification</MyText>
-            <MyText size={FONT_SIZE.sm} color={COLORS.grey} style={{width: '80%'}}>
+            <MyText size={FONT_SIZE.base} color={COLORS.grey} style={{ width: '80%' }}>
               Adjust your settings to manage order notification preferences.
             </MyText>
           </View>
           <SwitchComp
             value={notiObj.order}
             onPress={() => {
-              setNotObj((s: any) => ({...s, order: !notiObj.order}));
+              setNotObj((s: any) => ({ ...s, order: !notiObj.order }));
               updateSettings(!notiObj.order, 'order');
             }}
           />
@@ -124,16 +127,16 @@ const NotificationScreen = () => {
             justifyContent: 'space-between',
             alignItems: 'center',
           }}>
-          <View style={{gap: 5}}>
+          <View style={{ gap: 5 }}>
             <MyText bold={FONT_WEIGHT.semibold}>Event Notification</MyText>
-            <MyText size={FONT_SIZE.sm} color={COLORS.grey} style={{width: '80%'}}>
+            <MyText size={FONT_SIZE.base} color={COLORS.grey} style={{ width: '80%' }}>
               Customize your preferences to receive event notifications easily.
             </MyText>
           </View>
           <SwitchComp
             value={notiObj.event}
             onPress={() => {
-              setNotObj((s: any) => ({...s, event: !notiObj.event}));
+              setNotObj((s: any) => ({ ...s, event: !notiObj.event }));
               updateSettings(!notiObj.event, 'event');
             }}
           />
@@ -144,16 +147,16 @@ const NotificationScreen = () => {
             justifyContent: 'space-between',
             alignItems: 'center',
           }}>
-          <View style={{gap: 5}}>
+          <View style={{ gap: 5 }}>
             <MyText bold={FONT_WEIGHT.semibold}>Message Notification</MyText>
-            <MyText size={FONT_SIZE.sm} color={COLORS.grey} style={{width: '80%'}}>
+            <MyText size={FONT_SIZE.base} color={COLORS.grey} style={{ width: '80%' }}>
               Update your preferences to manage your message notifications.
             </MyText>
           </View>
           <SwitchComp
             value={notiObj.message}
             onPress={() => {
-              setNotObj((s: any) => ({...s, message: !notiObj.message}));
+              setNotObj((s: any) => ({ ...s, message: !notiObj.message }));
               updateSettings(!notiObj.message, 'message');
             }}
           />
@@ -164,8 +167,3 @@ const NotificationScreen = () => {
 };
 
 export default NotificationScreen;
-
-const styles = StyleSheet.create({});
-function dispatch(arg0: any) {
-  throw new Error('Function not implemented.');
-}

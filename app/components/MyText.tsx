@@ -37,7 +37,7 @@ export const MyText = ({
       style={[
         {
           // fontFamily: FONT_FAMILY.Mulish.name,
-          fontSize: size ? size : FONT_SIZE.base,
+          fontSize: size ? size : FONT_SIZE.lg,
           fontWeight: bold,
           color: color ? color : '#222',
           textAlign: center ? 'center' : 'auto',

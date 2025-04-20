@@ -33,6 +33,12 @@ import CheckBox from '@react-native-community/checkbox';
 import {Text} from 'react-native';
 import TnC from '../../components/modal/TnC';
 import PrivacyPolicy from '../../components/modal/PrivacyPolicy';
+import { LOGO_HEIGHT, LOGO_WIDTH } from '../Welcome/WelcomeScreen';
+import {
+  pixelSizeHorizontal,
+  pixelSizeVertical,
+  widthPixel,
+} from '../../utils/sizeNormalization';
 
 type FormValues = {
   email: string;
@@ -120,7 +126,7 @@ const SignupScreen = () => {
             <View>
               <BackBtn onPress={navigation.goBack} />
               <View style={{alignItems: 'center'}}>
-                <APPLOGO width={100} height={200} />
+                <APPLOGO width={LOGO_WIDTH} height={LOGO_HEIGHT} />
               </View>
             </View>
 
@@ -129,18 +135,18 @@ const SignupScreen = () => {
                 style={{
                   fontSize: FONT_SIZE['2xl'],
                   fontWeight: FONT_WEIGHT.bold,
-                  marginVertical: 5,
+                  marginVertical: pixelSizeVertical(6),
                   width: '90%',
                 }}>
                 Let’s Open your Account
               </MyText>
-              <MyText size={FONT_SIZE.base} color={'grey'}>
+              <MyText size={FONT_SIZE.lg} color={'grey'}>
                 Enter your information to create a new account
               </MyText>
             </View>
             <View
               style={{
-                marginTop: 20,
+                marginTop: pixelSizeVertical(10),
               }}>
               <InputWrapper title="Email">
                 <MyInput
@@ -151,8 +157,8 @@ const SignupScreen = () => {
                   placeholder="Type your email"
                   leftIcon={() => (
                     <Ionicons
-                      size={24}
-                      color={COLORS.lightgrey}
+                    size={widthPixel(24)}
+                    color={COLORS.lightgrey}
                       name="mail-outline"
                     />
                   )}
@@ -169,8 +175,8 @@ const SignupScreen = () => {
                   value={values.password}
                   leftIcon={() => (
                     <AntDesign
-                      size={24}
-                      color={COLORS.lightgrey}
+                    size={widthPixel(24)}
+                    color={COLORS.lightgrey}
                       name="lock1"
                     />
                   )}
@@ -191,8 +197,8 @@ const SignupScreen = () => {
                   value={values.confirmPassword}
                   leftIcon={() => (
                     <AntDesign
-                      size={24}
-                      color={COLORS.lightgrey}
+                    size={widthPixel(24)}
+                    color={COLORS.lightgrey}
                       name="lock1"
                     />
                   )}
@@ -208,7 +214,7 @@ const SignupScreen = () => {
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  marginLeft: 8,
+                  marginLeft: pixelSizeHorizontal(8),
                 }}>
                 <CheckBox
                   value={values.isAgreed}
@@ -216,13 +222,13 @@ const SignupScreen = () => {
                     setFieldValue('isAgreed', newValue)
                   }
                 />
-                <MyText style={{marginLeft: 4}}>
+                <MyText size={FONT_SIZE.sm}>
                   I agree to the{' '}
                   <Text
                     onPress={() => {
                       setShowTerms(true);
                     }}
-                    style={{color: '#056145', fontWeight: '600'}}>
+                    style={{color: '#056145', fontWeight: '600',fontSize:FONT_SIZE.lg}}>
                     Terms & Conditions
                   </Text>{' '}
                   and{' '}
@@ -230,7 +236,7 @@ const SignupScreen = () => {
                     onPress={() => {
                       setShowPrivacy(true);
                     }}
-                    style={{color: '#056145', fontWeight: '600'}}>
+                    style={{color: '#056145', fontWeight: '600',fontSize:FONT_SIZE.lg}}>
                     Privacy Policy
                   </Text>
                 </MyText>
@@ -244,7 +250,6 @@ const SignupScreen = () => {
             <View
               style={{
                 paddingVertical: 20,
-                gap: 20,
               }}>
               <PrimaryBtn
                 loading={loading}
@@ -260,13 +265,13 @@ const SignupScreen = () => {
                 gap: 6,
                 marginTop: 'auto',
               }}>
-              <MyText center size={FONT_SIZE.sm} style={{color: 'grey'}}>
+              <MyText center size={FONT_SIZE.lg} style={{color: 'grey'}}>
                 Already have an account?
               </MyText>
               <TouchableOpacity onPress={navigation.goBack}>
                 <MyText
                   bold={FONT_WEIGHT.medium}
-                  size={FONT_SIZE.sm}
+                  size={FONT_SIZE.lg}
                   style={{color: COLORS.greenDark}}>
                   Signin
                 </MyText>
