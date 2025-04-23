@@ -1,21 +1,22 @@
-import {StyleSheet, TextInput, View} from 'react-native';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import { StyleSheet, TextInput, View } from 'react-native';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import AllProductList from './AllProductList';
-import {COLORS, FONT_SIZE, FONT_WEIGHT, hp, wp} from '../../../styles';
-import {MyText} from '../../../components/MyText';
+import { BORDER_RADIUS, COLORS, FONT_SIZE, FONT_WEIGHT } from '../../../styles';
+import { MyText } from '../../../components/MyText';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MainLayout from '../../../components/layout/MainLayout';
 import MainHeader from '../../../components/header/MainHeader';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import AddActionButton from '../../../components/buttons/AddActionButton';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AllProductStackParams} from '../../../naviagtion/types';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AllProductStackParams } from '../../../naviagtion/types';
 import FullScreenLoader from '../../../components/FullScreenLoader';
-import {ProductType} from '../../../types';
-import {api_getSellerProduct} from '../../../api/product';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../../redux/store';
+import { ProductType } from '../../../types';
+import { api_getSellerProduct } from '../../../api/product';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
+import { heightPixel, pixelSizeVertical } from '../../../utils/sizeNormalization';
 
 const Tab = createMaterialTopTabNavigator();
 const topTabConfig = [
@@ -41,7 +42,7 @@ export const ProductSearch = () => {
     <View style={styles.searchInputWrapper}>
       <AntDesign name="search1" color={COLORS.grey} size={FONT_SIZE.xl} />
       <TextInput
-        style={{paddingVertical: 15, color: COLORS.black}}
+        style={{ paddingVertical: 15, color: COLORS.black }}
         placeholder="Search by Product name "
         placeholderTextColor={COLORS.grey}
       />
@@ -61,7 +62,7 @@ const AllProductScreen = () => {
   const [allProduct, setAllProduct] = useState<ProductType[]>([]);
   const [inReviewProduct, setInReviewProduct] = useState<ProductType[]>([]);
   const [rejectedProduct, setRejectedProduct] = useState<ProductType[]>([]);
-  const {token} = useSelector((s: RootState) => s.auth);
+  const { token } = useSelector((s: RootState) => s.auth);
   const [loading, setLoading] = useState(false);
   const isFocused = useIsFocused();
 
@@ -75,9 +76,9 @@ const AllProductScreen = () => {
           rejected: ProductType[];
         };
       };
-      setAllProduct(res.data.all);
-      setInReviewProduct(res.data.inReview);
-      setRejectedProduct(res.data.rejected);
+      setAllProduct(res.data?.all || []);
+      setInReviewProduct(res.data?.inReview || []);
+      setRejectedProduct(res.data?.rejected || []);
     } catch (err) {
       console.log(err);
     } finally {
@@ -89,7 +90,7 @@ const AllProductScreen = () => {
     requestApi();
   }, [isFocused]);
 
-  const tabBarLabel = useCallback(({children, focused}: TabLableProp) => {
+  const tabBarLabel = useCallback(({ children, focused }: TabLableProp) => {
     const color = focused ? COLORS.black : COLORS.grey;
     const bold = focused ? FONT_WEIGHT.bold : FONT_WEIGHT.normal;
     return (
@@ -115,8 +116,7 @@ const AllProductScreen = () => {
         style={{
           display: 'flex',
           position: 'absolute',
-          width: wp(100),
-          height: hp(100),
+          height: heightPixel(800),
           zIndex: 1,
           left: 0,
           top: 0,
@@ -129,10 +129,10 @@ const AllProductScreen = () => {
           }}
         />
       </View>
-      <MainLayout contentContainerStyle={{flex: 1}}>
+      <MainLayout contentContainerStyle={{ flex: 1 }}>
         <MainHeader />
 
-        <View style={{height: '100%'}}>
+        <View style={{ height: '100%' }}>
           <View style={styles.searchContainer} />
           <Tab.Navigator
             screenOptions={{
@@ -154,7 +154,7 @@ const AllProductScreen = () => {
                   key={item.id}
                   name={item.name}
                   options={{
-                    animationEnabled: false, // Disables the click animation
+                    animationEnabled: false,
                   }}
                   component={() => {
                     if (item.id === 1) {
@@ -193,22 +193,14 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   searchInputWrapper: {
-    height: 45,
+    height: heightPixel(45),
     backgroundColor: COLORS.lightgrey2,
-    marginVertical: 10,
-    borderRadius: 40,
+    marginVertical: pixelSizeVertical(10),
+    borderRadius: BORDER_RADIUS.Circle,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
     gap: 10,
     flex: 1,
-  },
-  locationBtn: {
-    backgroundColor: COLORS.darkBrown,
-    width: wp(12),
-    height: wp(12),
-    borderRadius: wp(12) / 2,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });

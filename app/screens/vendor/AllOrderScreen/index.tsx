@@ -6,18 +6,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import MainLayout from '../../../components/layout/MainLayout';
 import MainHeader from '../../../components/header/MainHeader';
-import {COLORS, FONT_WEIGHT, hp} from '../../../styles';
-import {MyText} from '../../../components/MyText';
+import { COLORS, FONT_WEIGHT, hp } from '../../../styles';
+import { MyText } from '../../../components/MyText';
 import OrderStatus from '../../../components/OrderStatus';
-import {api_getSellerOrders} from '../../../api/order';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../../redux/store';
-import {OrderType} from '../VendorHomeScreen/AllList';
+import { api_getSellerOrders } from '../../../api/order';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
+import { OrderType } from '../VendorHomeScreen/AllList';
 import FullScreenLoader from '../../../components/FullScreenLoader';
-import {useIsFocused} from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 
 type OrderStatus = {
   status: 'Packed' | 'Accepted' | 'Dispatched' | 'Completed' | 'Cancelled';
@@ -60,7 +60,7 @@ const completedData: OrderStatus[] = [
 ];
 
 const PendingList = () => {
-  const {token} = useSelector((s: RootState) => s.auth);
+  const { token } = useSelector((s: RootState) => s.auth);
   const [loading, setLoading] = useState(false);
   const [orders, setOrders] = useState<OrderType[]>([]);
   const requestApi = async () => {
@@ -84,8 +84,9 @@ const PendingList = () => {
     <React.Fragment>
       {loading && <FullScreenLoader />}
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={[...orders, ...orders]}
-        renderItem={({item}) => {
+        renderItem={({ item }) => {
           let statusBgColor = '';
           let statusTextColor = '';
 
@@ -119,7 +120,7 @@ const PendingList = () => {
 };
 
 const CompletedList = () => {
-  const {token} = useSelector((s: RootState) => s.auth);
+  const { token } = useSelector((s: RootState) => s.auth);
   const [loading, setLoading] = useState(false);
   const [orders, setOrders] = useState<OrderType[]>([]);
   const requestApi = async () => {
@@ -145,7 +146,8 @@ const CompletedList = () => {
       {loading && <FullScreenLoader />}
       <FlatList
         data={orders}
-        renderItem={({item}) => {
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => {
           let statusBgColor = '';
           let statusTextColor = '';
 
@@ -228,7 +230,7 @@ const AllOrderScreen = () => {
         })}
       </View>
 
-      <View style={{height: hp(100), paddingBottom: hp(10)}}>
+      <View style={{ height: hp(100), paddingBottom: hp(10) }}>
         {activeTab === Tabs[0] && <PendingList />}
         {activeTab === Tabs[1] && <CompletedList />}
       </View>

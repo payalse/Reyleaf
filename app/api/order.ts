@@ -13,7 +13,6 @@ export const api_orderPlace = (token: string, addressId: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -36,7 +35,6 @@ export const api_getMyOrders = (token: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -60,7 +58,6 @@ export const api_getOrderDetail = (token: string, orderId: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -83,7 +80,6 @@ export const api_getSellerHomeOrders = (token: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -112,7 +108,6 @@ export const api_sellerHomeOrderAction = (
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -137,7 +132,6 @@ export const api_getSellerOrders = (token: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -162,7 +156,6 @@ export const api_getInvoice = (token: string, orderId: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }

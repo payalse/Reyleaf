@@ -25,6 +25,7 @@ import {
 } from '../../redux/features/product/productSlice';
 import messaging from '@react-native-firebase/messaging';
 import {LocalNotification} from '../../utils/localNotification';
+import { fontPixel, pixelSizeVertical } from '../../utils/sizeNormalization';
 
 const RenderProducts = () => {
   const [loading, setLoading] = useState(false);
@@ -138,12 +139,12 @@ const HomeScreen = () => {
           onNotiPress={() => navigation.navigate('AppNotification')}
         />
       }
-      contentContainerStyle={{paddingBottom: 150}}>
+      contentContainerStyle={{paddingBottom: pixelSizeVertical(150)}}>
       <View style={{flex: 1}}>
         <MyText
           size={FONT_SIZE['3xl']}
           bold={FONT_WEIGHT.bold}
-          style={{lineHeight: 40, marginTop: 10,width:"80%"}}>
+          style={{lineHeight: fontPixel(42), marginTop: pixelSizeVertical(10),width:"80%"}}>
           Welcome, to our center for eco-friendly living 🛒
         </MyText>
         {/* Search */}
