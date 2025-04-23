@@ -48,30 +48,37 @@ interface VendorFormValues extends UserFormValues {
 }
 
 const nameValidator = Yup.string()
+  .trim()
   .min(4, ({ min }) => `Name must be at least ${min} characters`)
   .required('Name is Required!');
 
 const bioValidator = Yup.string()
+  .trim()
   .min(10, ({ min }) => `Bio must be at least ${min} characters`)
   .required('Bio is Required!');
 
 const phoneValidator = Yup.string()
+  .trim()
   .min(10, ({ min }) => `Phone must be at least ${min} characters`)
   .max(12, ({ max }) => `Phone must not exceed ${max} characters`);
 
 const addressValidator = Yup.string()
+  .trim()
   .min(10, ({ min }) => `Address must be at least ${min} characters`)
   .required('Address is Required!');
 
 const cityValidator = Yup.string()
+  .trim()
   .min(4, ({ min }) => `City must be at least ${min} characters`)
   .required('City is Required!');
 
 const stateValidator = Yup.string()
+  .trim()
   .min(4, ({ min }) => `State must be at least ${min} characters`)
   .required('State is Required!');
 
 const zipValidator = Yup.string()
+  .trim()
   .min(4, ({ min }) => `ZipCode must be at least ${min} characters`)
   .required('ZipCode is Required!');
 

@@ -110,7 +110,7 @@ function MainTab() {
                   ) : (
                     <HomeSvg width={TAB_ICON_SIZE} height={TAB_ICON_SIZE} />
                   )}
-                  <MyText color={color} size={FONT_SIZE.base} style={{ marginTop: pixelSizeVertical(2), textAlign: "center" }}>
+                  <MyText color={color} size={FONT_SIZE.base} style={{ marginTop: pixelSizeVertical(4), textAlign: "center" }}>
                     Home
                   </MyText>
                 </View>
@@ -133,7 +133,7 @@ function MainTab() {
                   ) : (
                     <CartSvg width={TAB_ICON_SIZE} height={TAB_ICON_SIZE} />
                   )}
-                  <MyText color={color} size={FONT_SIZE.base} style={{ marginTop: pixelSizeVertical(2), textAlign: "center" }}>
+                  <MyText color={color} size={FONT_SIZE.base} style={{ marginTop: pixelSizeVertical(4), textAlign: "center" }}>
                     Cart
                   </MyText>
                 </View>
@@ -159,7 +159,7 @@ function MainTab() {
                   ) : (
                     <EventSvg width={TAB_ICON_SIZE} height={TAB_ICON_SIZE} />
                   )}
-                  <MyText color={color} size={FONT_SIZE.base} style={{ marginTop: pixelSizeVertical(2), textAlign: "center" }}>
+                  <MyText color={color} size={FONT_SIZE.base} style={{ marginTop: pixelSizeVertical(4), textAlign: "center" }}>
                     Event
                   </MyText>
                 </View>
@@ -232,7 +232,7 @@ function MainTab() {
                     />
                   )}
 
-                  <MyText color={color} size={FONT_SIZE.base} style={{ marginTop: pixelSizeVertical(2), textAlign: "center" }}>
+                  <MyText color={color} size={FONT_SIZE.sm} style={{ marginTop: pixelSizeVertical(4), textAlign: "center" }}>
                     Awareness
                   </MyText>
                 </View>
@@ -256,7 +256,7 @@ function MainTab() {
                     <FeedSvg width={TAB_ICON_SIZE} height={TAB_ICON_SIZE} />
                   )}
 
-                  <MyText color={color} size={FONT_SIZE.base} style={{ marginTop: pixelSizeVertical(2), textAlign: "center" }}>
+                  <MyText color={color} size={FONT_SIZE.base} style={{ marginTop: pixelSizeVertical(4), textAlign: "center" }}>
                     Feeds
                   </MyText>
                 </View>

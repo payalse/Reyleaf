@@ -1,16 +1,21 @@
-import {SafeAreaView, Text, StyleSheet} from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
+import { SafeAreaView, Text, StyleSheet, Linking, TouchableOpacity } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
 import LayoutBG from '../../../components/layout/LayoutBG';
-import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AboutUsStackParams} from '../../../naviagtion/DrawerNavigator';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AboutUsStackParams } from '../../../naviagtion/DrawerNavigator';
 import { heightPixel, pixelSizeVertical } from '../../../utils/sizeNormalization';
 import { FONT_SIZE } from '../../../styles';
 
 const TermAndConditionScreen = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<AboutUsStackParams>>();
+
+  const handleEmailPress = () => {
+    Linking.openURL('mailto:contact@reynette.com');
+  };
+
   return (
     <LayoutBG type="bg-tr">
       <SafeAreaView />
@@ -159,8 +164,11 @@ const TermAndConditionScreen = () => {
         <Text style={styles.text}>
           10.1. Questions: If you have any questions or concerns about these
           Terms, please contact us at{' '}
-          <Text style={styles.link}>contact@reynette.com</Text>.
         </Text>
+        <TouchableOpacity onPress={handleEmailPress}>
+          <Text style={styles.link}>contact@reynette.com</Text>
+        </TouchableOpacity>
+        <Text style={styles.text}>.</Text>
       </ScrollView>
     </LayoutBG>
   );

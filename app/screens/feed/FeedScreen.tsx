@@ -28,7 +28,7 @@ const FeedScreen = () => {
   const route = useRoute();
   const navigation =
     useNavigation<NativeStackNavigationProp<FeedStackParams>>();
-  const [activeTab, setActiveTab] = useState(Tabs[1]);
+  const [activeTab, setActiveTab] = useState(Tabs[0]);
   const [text, setText] = useState('');
   const [isLoactionPermissionModalOpen, setIsLoactionPermissionModalOpen] =
     useState(false);
@@ -76,7 +76,6 @@ const FeedScreen = () => {
 
   useEffect(() => {
     requestApi();
-    setActiveTab(user?.role == 2 ? Tabs[0] : Tabs[1]);
   }, [isFocused]);
 
   return (

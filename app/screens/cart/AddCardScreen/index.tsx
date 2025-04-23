@@ -13,7 +13,7 @@ import {api_createCard} from '../../../api/payment';
 import {ShowAlert} from '../../../utils/alert';
 import {ALERT_TYPE} from 'react-native-alert-notification';
 import {Formik} from 'formik';
-import * as yup from 'yup';
+import * as Yup from 'yup';
 import InputErrorMsg from '../../../components/inputs/InputErrorMsg';
 import {STRIPE_PK} from '../../../../App';
 
@@ -26,43 +26,47 @@ type Values = {
 };
 
 const expirydateRegx = /^\d{2}\/\d{2}$/;
-const cvvRegx = /^\d{3}$/;
+const cvvRegx = /^\d{3}$/;              
+const onlyAlphanumericAndSpace = /^[a-zA-Z0-9 ]*$/;
 
-const validationSchema = yup.object().shape({
-  expirydate: yup
-    .string()
+const validationSchema = Yup.object().shape({
+  expirydate: Yup.string()
+    .trim()
     .matches(expirydateRegx, {
-      message: 'Expiry date must be in: MM/YY',
+      message: 'Expiry date must be in MM/YY format.',
     })
-    .required('Expiry Date is Required!'),
-  cardName: yup
-    .string()
-    .min(5, ({min}) => `Number must be at least ${min} characters`)
-    .required('Card name is Required!'),
-  name: yup
-    .string()
-    .min(5, ({min}) => `Name must be at least ${min} characters`)
-    .required('Card holder Name is Required!'),
-  number: yup
-    .string()
-    .min(16, ({min}) => `Card number must be at least ${min} characters`)
-    .max(16, ({max}) => `Card number must not be longer than ${max} characters`)
-    .required('Card number is required!'),
-  CVV: yup
-    .string()
-    .matches(cvvRegx, {
-      message: 'CVV must be exactly 3 digits',
-    })
-    .required('CVV is Required!'),
-});
+    .required('Expiry date is required.'),
 
+  cardName: Yup.string()
+    .trim()
+    .matches(onlyAlphanumericAndSpace, 'Card name must not contain special characters.')
+    .min(5, ({ min }) => `Card name must be at least ${min} characters long.`)
+    .required('Card name is required.'),
+
+  name: Yup.string()
+    .trim()
+    .matches(onlyAlphanumericAndSpace, 'Card holder name must not contain special characters.')
+    .min(5, ({ min }) => `Card holder name must be at least ${min} characters long.`)
+    .required('Card holder name is required.'),
+
+  number: Yup.string()
+    .trim()
+    .matches(/^\d{16}$/, 'Card number must be exactly 16 digits.')
+    .required('Card number is required.'),
+
+  CVV: Yup.string()
+    .trim()
+    .matches(cvvRegx, {
+      message: 'CVV must be exactly 3 digits.',
+    })
+    .required('CVV is required.'),
+});
 const AddCardScreen = () => {
   const {user: auth, token: authToken} = useSelector((s: RootState) => s.auth);
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
 
   const getToken = async (values: Values) => {
-    console.log('HERE');
     const apiKey = STRIPE_PK;
     const [exm, exy] = values.expirydate.split('/');
     try {
@@ -91,7 +95,6 @@ const AddCardScreen = () => {
         },
         authToken!,
       );
-      console.log(res);
       ShowAlert({
         textBody: res?.message || 'success',
         type: ALERT_TYPE.SUCCESS,

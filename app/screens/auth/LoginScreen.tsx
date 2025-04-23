@@ -49,11 +49,13 @@ type LoginValues = {
 const loginValidationSchema = yup.object().shape({
   email: yup
     .string()
+    .trim()
     .email('Invalid email address')
     .required('Required')
     .required('Email is Required!'),
   password: yup
     .string()
+    .trim()
     .min(6, ({ min }) => `Password must be at least ${min} characters`)
     .required('Password is Required!'),
 });

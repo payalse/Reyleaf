@@ -1,4 +1,4 @@
-import {  ScrollView, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { useState } from 'react';
 import LayoutBG from '../../components/layout/LayoutBG';
 import BackBtn from '../../components/buttons/BackBtn';
@@ -30,6 +30,7 @@ type FormValues = {
 };
 const validationSchema = Yup.object().shape({
   email: Yup.string()
+    .trim()
     .email('Invalid email address')
     .required('Required')
     .required('Email is Required!'),

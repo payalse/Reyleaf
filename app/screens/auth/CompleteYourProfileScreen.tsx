@@ -7,37 +7,37 @@ import {
   Image,
   Platform,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import LayoutBG from '../../components/layout/LayoutBG';
 import BackBtn from '../../components/buttons/BackBtn';
-import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {MyText} from '../../components/MyText';
-import {BORDER_RADIUS, COLORS, FONT_SIZE, FONT_WEIGHT} from '../../styles';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { MyText } from '../../components/MyText';
+import { BORDER_RADIUS, COLORS, FONT_SIZE, FONT_WEIGHT } from '../../styles';
 import InputWrapper from '../../components/inputs/InputWrapper';
 import MyInput from '../../components/inputs/MyInput';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import PrimaryBtn from '../../components/buttons/PrimaryBtn';
 import TextArea from '../../components/inputs/TextArea';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootStackParams} from '../../naviagtion/types';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParams } from '../../naviagtion/types';
 import DatePicker from 'react-native-date-picker';
-import {Formik} from 'formik';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
 import InputErrorMsg from '../../components/inputs/InputErrorMsg';
 import SelectInput from '../../components/inputs/SelectInput';
-import {api_completeProfile} from '../../api/auth';
-import {useDispatch} from 'react-redux';
-import {AppDispatch} from '../../redux/store';
-import {updateUser} from '../../redux/features/auth/authSlice';
-import {ShowAlert} from '../../utils/alert';
-import {ALERT_TYPE} from 'react-native-alert-notification';
-import {Asset} from 'react-native-image-picker';
-import {AvatarDefaultType} from '../../utils/defaultAvatar';
+import { api_completeProfile } from '../../api/auth';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../redux/store';
+import { updateUser } from '../../redux/features/auth/authSlice';
+import { ShowAlert } from '../../utils/alert';
+import { ALERT_TYPE } from 'react-native-alert-notification';
+import { Asset } from 'react-native-image-picker';
+import { AvatarDefaultType } from '../../utils/defaultAvatar';
 import moment from 'moment';
-import {SelectedImage} from '../../types';
-import {SHEETS} from '../../sheets/sheets';
-import {SheetManager} from 'react-native-actions-sheet';
+import { SelectedImage } from '../../types';
+import { SHEETS } from '../../sheets/sheets';
+import { SheetManager } from 'react-native-actions-sheet';
 import {
   heightPixel,
   pixelSizeHorizontal,
@@ -53,15 +53,18 @@ type FormValues = {
 };
 const validationSchema = Yup.object().shape({
   name: Yup.string()
-    .min(4, ({min}) => `Name must be at least ${min} characters`)
+    .trim()
+    .min(4, ({ min }) => `Name must be at least ${min} characters`)
     .required('Required')
     .required('Name is Required!'),
   bio: Yup.string()
-    .min(10, ({min}) => `Bio must be at least ${min} characters`)
+    .trim()
+    .min(10, ({ min }) => `Bio must be at least ${min} characters`)
     .required('Bio is Required!'),
   phone: Yup.string()
-    .min(10, ({min}) => `Phone must be at least ${min} characters`)
-    .max(12, ({max}) => `Phone must not exceed ${max} characters`),
+    .trim()
+    .min(10, ({ min }) => `Phone must be at least ${min} characters`)
+    .max(12, ({ max }) => `Phone must not exceed ${max} characters`),
   // pronouns: Yup.string(),
 });
 
@@ -73,7 +76,7 @@ const CompleteYourProfileScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [date, setDate] = useState<Date | null>(null);
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
-  const [extraError, setExtraError] = useState({date: ''});
+  const [extraError, setExtraError] = useState({ date: '' });
   const [pronoun, setPronoun] = useState('');
   const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<any>(null);
@@ -117,9 +120,9 @@ const CompleteYourProfileScreen = () => {
         )) as any;
         console.log(res);
         dispatch(updateUser(res.data));
-        navigation.navigate('AddYourAddress', {authToken: params.authToken});
+        navigation.navigate('AddYourAddress', { authToken: params.authToken });
       } catch (error: any) {
-        ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
+        ShowAlert({ textBody: error.message, type: ALERT_TYPE.DANGER });
       } finally {
         setLoading(false);
       }
@@ -147,7 +150,7 @@ const CompleteYourProfileScreen = () => {
           touched,
         }) => (
           <ScrollView
-            contentContainerStyle={{marginHorizontal: pixelSizeHorizontal(20), paddingBottom: pixelSizeVertical(40)}}>
+            contentContainerStyle={{ marginHorizontal: pixelSizeHorizontal(20), paddingBottom: pixelSizeVertical(40) }}>
             <BackBtn onPress={navigation.goBack} />
             <DatePicker
               modal
@@ -160,7 +163,7 @@ const CompleteYourProfileScreen = () => {
               onConfirm={date => {
                 setDate(() => date);
                 setIsDateModalOpen(false);
-                setExtraError(prev => ({...prev, date: ''}));
+                setExtraError(prev => ({ ...prev, date: '' }));
               }}
               onCancel={() => setIsDateModalOpen(false)}
             />
@@ -169,7 +172,7 @@ const CompleteYourProfileScreen = () => {
                 bold={FONT_WEIGHT.bold}
                 size={FONT_SIZE['2xl']}
                 center
-                style={{marginTop: pixelSizeVertical(24), marginBottom: pixelSizeVertical(8)}}>
+                style={{ marginTop: pixelSizeVertical(24), marginBottom: pixelSizeVertical(8) }}>
                 Complete Your Profile
               </MyText>
               <View
@@ -202,7 +205,7 @@ const CompleteYourProfileScreen = () => {
                   />
                 ) : (
                   <Image
-                    source={{uri: selectedImage.path}}
+                    source={{ uri: selectedImage.path }}
                     style={{
                       width: '100%',
                       height: '100%',
@@ -237,7 +240,7 @@ const CompleteYourProfileScreen = () => {
                 Upload profile or Choose avatar
               </MyText>
             </View>
-            <View style={{marginTop: pixelSizeVertical(20)}}>
+            <View style={{ marginTop: pixelSizeVertical(20) }}>
               <InputWrapper title="Name">
                 <MyInput
                   hasError={Boolean(errors.name && touched.name)}
@@ -299,7 +302,7 @@ const CompleteYourProfileScreen = () => {
                 loading={loading}
                 onPress={handleSubmit}
                 text="Next"
-                conatinerStyle={{marginTop: pixelSizeVertical(10)}}
+                conatinerStyle={{ marginTop: pixelSizeVertical(10) }}
               />
             </View>
           </ScrollView>

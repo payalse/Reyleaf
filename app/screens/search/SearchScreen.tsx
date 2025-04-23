@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
   FlatList,
   Pressable,
   SafeAreaView,
@@ -106,7 +107,6 @@ const SearchScreen = () => {
 
   return (
     <>
-      {loading && <FullScreenLoader />}
       <SafeAreaView />
       <View style={styles.headerWrapper}>
         <MainHeader
@@ -120,6 +120,8 @@ const SearchScreen = () => {
           onFilterBtnPress={() => navigation.navigate('SearchFilter')}
         />
       </View>
+
+      {loading && <ActivityIndicator size={widthPixel(32)} color={COLORS.greenDark} style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }} />}
 
       <FlatList
         data={resultProduct}

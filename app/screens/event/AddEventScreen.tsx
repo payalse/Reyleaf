@@ -7,39 +7,39 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import MainLayout from '../../components/layout/MainLayout';
 import SecondaryHeader from '../../components/header/SecondaryHeader';
 import InputWrapper from '../../components/inputs/InputWrapper';
 import MyInput from '../../components/inputs/MyInput';
 import TextArea from '../../components/inputs/TextArea';
 import PrimaryBtn from '../../components/buttons/PrimaryBtn';
-import {COLORS, FONT_SIZE} from '../../styles';
-import {MyText} from '../../components/MyText';
+import { COLORS, FONT_SIZE } from '../../styles';
+import { MyText } from '../../components/MyText';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {useNavigation} from '@react-navigation/native';
-import {useHideBottomBar} from '../../hook/useHideBottomBar';
-import {Formik} from 'formik';
+import { useNavigation } from '@react-navigation/native';
+import { useHideBottomBar } from '../../hook/useHideBottomBar';
+import { Formik } from 'formik';
 import * as yup from 'yup';
-import {ShowAlert} from '../../utils/alert';
-import {ALERT_TYPE} from 'react-native-alert-notification';
+import { ShowAlert } from '../../utils/alert';
+import { ALERT_TYPE } from 'react-native-alert-notification';
 import InputErrorMsg from '../../components/inputs/InputErrorMsg';
 import ImageCropPicker, {
   Image as ImageType,
 } from 'react-native-image-crop-picker';
 import FullScreenLoader from '../../components/FullScreenLoader';
-import {api_addResource} from '../../api/awareness';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../redux/store';
-import {useAppAlert} from '../../context/AppAlertContext';
+import { api_addResource } from '../../api/awareness';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
+import { useAppAlert } from '../../context/AppAlertContext';
 import SelectInput from '../../components/inputs/SelectInput';
-import {SHEETS} from '../../sheets/sheets';
-import {SheetManager} from 'react-native-actions-sheet';
-import {CategoryType} from '../../types';
+import { SHEETS } from '../../sheets/sheets';
+import { SheetManager } from 'react-native-actions-sheet';
+import { CategoryType } from '../../types';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
-import {api_addEvent} from '../../api/event';
+import { api_addEvent } from '../../api/event';
 
 type Values = {
   description: string;
@@ -47,14 +47,17 @@ type Values = {
   location: string;
 };
 const validationSchema = yup.object().shape({
-  description: yup.string().required('Description is Required!'),
-  title: yup.string().required('Title is Required!'),
-  location: yup.string().required('Location is Required!'),
+  description: yup.string().trim()
+    .required('Description is Required!'),
+  title: yup.string().trim()
+    .required('Title is Required!'),
+  location: yup.string().trim()
+    .required('Location is Required!'),
 });
 
 const AddEventScreen = () => {
   useHideBottomBar({});
-  const {token} = useSelector((s: RootState) => s.auth);
+  const { token } = useSelector((s: RootState) => s.auth);
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
   const [selectedImage, setSelectedImage] = useState<ImageType | null>(null);
@@ -63,8 +66,8 @@ const AddEventScreen = () => {
   const [selectCategory, setSelectCategory] = useState<null | CategoryType>(
     null,
   );
-  const [extraError, setExtraError] = useState({image: '', date: ''});
-  const {showModal} = useAppAlert()!;
+  const [extraError, setExtraError] = useState({ image: '', date: '' });
+  const { showModal } = useAppAlert()!;
 
   const handlePickImage = () => {
     ImageCropPicker.openPicker({
@@ -75,18 +78,18 @@ const AddEventScreen = () => {
         setSelectedImage(res);
       })
       .catch(err => console.log(err))
-      .finally(() => setExtraError({...extraError, image: ''}));
+      .finally(() => setExtraError({ ...extraError, image: '' }));
   };
 
   const onSubmit = async (values: Values) => {
     console.log(date, 'dat');
     if (!selectedImage) {
-      setExtraError({...extraError, image: 'Please select image'});
+      setExtraError({ ...extraError, image: 'Please select image' });
       return;
     }
 
     if (selectCategory === null) {
-      showModal({text: 'Please select a category'});
+      showModal({ text: 'Please select a category' });
       return;
     }
 
@@ -117,9 +120,9 @@ const AddEventScreen = () => {
       );
       const res = await api_addEvent(token!, formData);
       navigation.goBack();
-      showModal({text: 'Event Created!'});
+      showModal({ text: 'Event Created!' });
     } catch (error: any) {
-      showModal({text: error.message, isError: true});
+      showModal({ text: error.message, isError: true });
     } finally {
       setLoading(false);
     }
@@ -133,11 +136,11 @@ const AddEventScreen = () => {
         location: '',
       }}
       onSubmit={onSubmit}>
-      {({handleChange, handleBlur, handleSubmit, values, errors, touched}) => (
+      {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
         <MainLayout
           headerComp={
             <SecondaryHeader
-              backBtnContainerStyle={{left: 0}}
+              backBtnContainerStyle={{ left: 0 }}
               onBack={navigation.goBack}
               title="Create New Event"
             />
@@ -154,13 +157,13 @@ const AddEventScreen = () => {
             onConfirm={date => {
               setDate(() => date);
               setIsDateModalOpen(false);
-              setExtraError(prev => ({...prev, date: ''}));
+              setExtraError(prev => ({ ...prev, date: '' }));
             }}
             onCancel={() => setIsDateModalOpen(false)}
           />
           {loading && <FullScreenLoader />}
-          <View style={{marginVertical: 30}}>
-            <View style={{marginVertical: 20}}>
+          <View style={{ marginVertical: 30 }}>
+            <View style={{ marginVertical: 20 }}>
               <TouchableOpacity
                 onPress={handlePickImage}
                 style={{
@@ -176,7 +179,7 @@ const AddEventScreen = () => {
                 }}>
                 {selectedImage ? (
                   <Image
-                    source={{uri: selectedImage.path}}
+                    source={{ uri: selectedImage.path }}
                     style={{
                       ...StyleSheet.absoluteFillObject,
                       backgroundColor: COLORS.white,
@@ -281,7 +284,7 @@ const AddEventScreen = () => {
           </View>
           <PrimaryBtn
             onPress={handleSubmit}
-            conatinerStyle={{marginBottom: 50}}
+            conatinerStyle={{ marginBottom: 50 }}
             text="Create"
           />
         </MainLayout>

@@ -40,15 +40,19 @@ type FormValues = {
 };
 const validationSchema = Yup.object().shape({
   address: Yup.string()
+    .trim()
     .min(10, ({ min }) => `Address must be at least ${min} characters`)
     .required('Address is Required!'),
   city: Yup.string()
+    .trim()
     .min(4, ({ min }) => `City must be at least ${min} characters`)
     .required('City is Required!'),
   state: Yup.string()
+    .trim()
     .min(4, ({ min }) => `State must be at least ${min} characters`)
     .required('State is Required!'),
   zipcode: Yup.string()
+    .trim()
     .min(4, ({ min }) => `ZipCode must be at least ${min} characters`)
     .required('ZipCode is Required!'),
 });

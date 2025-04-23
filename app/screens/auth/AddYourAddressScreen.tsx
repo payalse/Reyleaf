@@ -1,28 +1,28 @@
-import React, {useState} from 'react';
-import {Alert, SafeAreaView, ScrollView, View} from 'react-native';
+import React, { useState } from 'react';
+import { Alert, SafeAreaView, ScrollView, View } from 'react-native';
 import LayoutBG from '../../components/layout/LayoutBG';
 import BackBtn from '../../components/buttons/BackBtn';
-import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {MyText} from '../../components/MyText';
-import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../styles';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { MyText } from '../../components/MyText';
+import { COLORS, FONT_SIZE, FONT_WEIGHT } from '../../styles';
 import InputWrapper from '../../components/inputs/InputWrapper';
 import MyInput from '../../components/inputs/MyInput';
 import PrimaryBtn from '../../components/buttons/PrimaryBtn';
 import SelectInput from '../../components/inputs/SelectInput';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootStackParams} from '../../naviagtion/types';
-import {Formik} from 'formik';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParams } from '../../naviagtion/types';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
 import InputErrorMsg from '../../components/inputs/InputErrorMsg';
-import {api_addUpdateAddress} from '../../api/auth';
-import {useDispatch} from 'react-redux';
-import {AppDispatch} from '../../redux/store';
-import {updateUser} from '../../redux/features/auth/authSlice';
-import {SheetManager} from 'react-native-actions-sheet';
-import {SHEETS} from '../../sheets/sheets';
-import {CountryType} from '../../utils/countryTable';
-import {ShowAlert} from '../../utils/alert';
-import {ALERT_TYPE} from 'react-native-alert-notification';
+import { api_addUpdateAddress } from '../../api/auth';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../redux/store';
+import { updateUser } from '../../redux/features/auth/authSlice';
+import { SheetManager } from 'react-native-actions-sheet';
+import { SHEETS } from '../../sheets/sheets';
+import { CountryType } from '../../utils/countryTable';
+import { ShowAlert } from '../../utils/alert';
+import { ALERT_TYPE } from 'react-native-alert-notification';
 import {
   pixelSizeHorizontal,
   pixelSizeVertical,
@@ -37,18 +37,25 @@ type FormValues = {
 };
 const validationSchema = Yup.object().shape({
   address: Yup.string()
-    .min(10, ({min}) => `Address must be at least ${min} characters`)
-    .required('Address is Required!'),
+    .trim()
+    .min(10, ({ min }) => `Address must be at least ${min} characters long.`)
+    .required('Address is required.'),
+
   city: Yup.string()
-    .min(4, ({min}) => `City must be at least ${min} characters`)
-    .required('City is Required!'),
+    .trim()
+    .min(4, ({ min }) => `City must be at least ${min} characters long.`)
+    .required('City is required.'),
+
   state: Yup.string()
-    .min(4, ({min}) => `State must be at least ${min} characters`)
-    .required('State is Required!'),
+    .trim()
+    .min(4, ({ min }) => `State must be at least ${min} characters long.`)
+    .required('State is required.'),
+
   zipcode: Yup.string()
-    .min(4, ({min}) => `ZipCode must be at least ${min} characters`)
-    .max(10, ({max}) => `ZipCode must not exceed ${max} characters`)
-    .required('ZipCode is Required!'),
+    .trim()
+    .min(4, ({ min }) => `Zip code must be at least ${min} characters long.`)
+    .max(10, ({ max }) => `Zip code must not exceed ${max} characters.`)
+    .required('Zip code is required.'),
 });
 
 const AddYourAddressScreen = () => {
@@ -66,7 +73,7 @@ const AddYourAddressScreen = () => {
   const onSubmit = async (values: FormValues) => {
     let isValid = true;
     if (country === null) {
-      setExtraErr(e => ({...e, country: 'Please Choose Country!'}));
+      setExtraErr(e => ({ ...e, country: 'Please Choose Country!' }));
       isValid = false;
     }
 
@@ -88,7 +95,7 @@ const AddYourAddressScreen = () => {
       navigation.navigate('AccountCreatedSuccess');
 
     } catch (error: any) {
-      ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
+      ShowAlert({ textBody: error.message, type: ALERT_TYPE.DANGER });
     } finally {
       setLoading(false);
     }
@@ -113,20 +120,20 @@ const AddYourAddressScreen = () => {
           touched,
         }) => (
           <ScrollView
-            contentContainerStyle={{marginHorizontal:  pixelSizeHorizontal(20), paddingBottom:  pixelSizeVertical(20)}}>
+            contentContainerStyle={{ marginHorizontal: pixelSizeHorizontal(20), paddingBottom: pixelSizeVertical(20) }}>
             <BackBtn onPress={navigation.goBack} />
             <View>
               <MyText
                 bold={FONT_WEIGHT.bold}
                 size={FONT_SIZE['2xl']}
-                style={{marginTop: pixelSizeVertical(28), marginBottom: pixelSizeVertical(8)}}>
+                style={{ marginTop: pixelSizeVertical(28), marginBottom: pixelSizeVertical(8) }}>
                 Add your Address
               </MyText>
               <MyText size={FONT_SIZE.lg} color={COLORS.grey}>
                 Please enter your address to ensure accurate delivery.
               </MyText>
             </View>
-            <View style={{marginTop: pixelSizeHorizontal(20)}}>
+            <View style={{ marginTop: pixelSizeHorizontal(20) }}>
               <InputWrapper title="Address">
                 <MyInput
                   hasError={Boolean(errors.address && touched.address)}
@@ -173,7 +180,7 @@ const AddYourAddressScreen = () => {
                       payload: {
                         onSelect: (e: CountryType) => {
                           setCoutry(e);
-                          setExtraErr(prev => ({...prev, country: ''}));
+                          setExtraErr(prev => ({ ...prev, country: '' }));
                         },
                       },
                     });
@@ -198,7 +205,7 @@ const AddYourAddressScreen = () => {
                 loading={loading}
                 onPress={handleSubmit}
                 text="Next"
-                conatinerStyle={{marginTop: pixelSizeVertical(10), marginBottom: pixelSizeVertical(40)}}
+                conatinerStyle={{ marginTop: pixelSizeVertical(10), marginBottom: pixelSizeVertical(40) }}
               />
             </View>
           </ScrollView>

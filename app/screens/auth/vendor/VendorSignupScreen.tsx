@@ -41,13 +41,16 @@ type FormValues = {
 };
 const validationSchema = Yup.object().shape({
   email: Yup.string()
+    .trim()
     .email('Invalid email address')
     .required('Required')
     .required('Email is Required!'),
   password: Yup.string()
+    .trim()
     .min(8, ({ min }) => `Password must be at least ${min} characters`)
     .required('Password is Required!'),
   confirmPassword: Yup.string()
+    .trim()
     .oneOf([Yup.ref('password')], 'Passwords must match')
     .required('Confirm Password is Required!'),
 });

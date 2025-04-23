@@ -1,8 +1,8 @@
-import {Image, Platform, TouchableOpacity, View} from 'react-native';
-import React, {useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
-import {MyText} from '../../../components/MyText';
-import {COLORS, FONT_SIZE} from '../../../styles';
+import { Image, Platform, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { MyText } from '../../../components/MyText';
+import { COLORS, FONT_SIZE } from '../../../styles';
 import InputWrapper from '../../../components/inputs/InputWrapper';
 import MyInput from '../../../components/inputs/MyInput';
 import Feather from 'react-native-vector-icons/Feather';
@@ -10,25 +10,25 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import PrimaryBtn from '../../../components/buttons/PrimaryBtn';
 import TextArea from '../../../components/inputs/TextArea';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootStackParams} from '../../../naviagtion/types';
-import {Formik} from 'formik';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParams } from '../../../naviagtion/types';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
-import {ShowAlert} from '../../../utils/alert';
-import {ALERT_TYPE} from 'react-native-alert-notification';
+import { ShowAlert } from '../../../utils/alert';
+import { ALERT_TYPE } from 'react-native-alert-notification';
 import InputErrorMsg from '../../../components/inputs/InputErrorMsg';
 import MainLayout from '../../../components/layout/MainLayout';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
-import {TAB_BAR_BG_HEIGHT} from '../../../naviagtion/MainTab';
+import { TAB_BAR_BG_HEIGHT } from '../../../naviagtion/MainTab';
 import SelectInput from '../../../components/inputs/SelectInput';
-import {SheetManager} from 'react-native-actions-sheet';
-import {SHEETS} from '../../../sheets/sheets';
-import {CategoryType, SelectedImage} from '../../../types';
+import { SheetManager } from 'react-native-actions-sheet';
+import { SHEETS } from '../../../sheets/sheets';
+import { CategoryType, SelectedImage } from '../../../types';
 import ImageCropPicker from 'react-native-image-crop-picker';
-import {api_productCreate} from '../../../api/product';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../../redux/store';
-import {useHideBottomBar} from '../../../hook/useHideBottomBar';
+import { api_productCreate } from '../../../api/product';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
+import { useHideBottomBar } from '../../../hook/useHideBottomBar';
 
 type FormValues = {
   name: string;
@@ -38,21 +38,25 @@ type FormValues = {
 };
 const validationSchema = Yup.object().shape({
   name: Yup.string()
-    .min(4, ({min}) => `Name must be at least ${min} characters`)
+    .trim()
+    .min(4, ({ min }) => `Name must be at least ${min} characters`)
     .required('Required')
     .required('Name is Required!'),
   bio: Yup.string()
-    .min(10, ({min}) => `Bio must be at least ${min} characters`)
+    .trim()
+    .min(10, ({ min }) => `Bio must be at least ${min} characters`)
     .required('Description is Required!'),
-  price: Yup.string().required('price is Required!'),
-  discountPrice: Yup.string().required('Discount Price is Required!'),
+  price: Yup.string().trim()
+    .required('price is Required!'),
+  discountPrice: Yup.string().trim()
+    .required('Discount Price is Required!'),
 });
 
 const ProductCreateScreen = () => {
   useHideBottomBar({});
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParams>>();
-  const {token} = useSelector((s: RootState) => s.auth);
+  const { token } = useSelector((s: RootState) => s.auth);
   const [loading, setLoading] = useState(false);
 
   const [selectCategory, setSelectCategory] = useState<null | CategoryType>(
@@ -89,7 +93,7 @@ const ProductCreateScreen = () => {
     let isValid = true;
 
     if (selectCategory === null) {
-      setExtraErr({...extraErr, category: 'please Select Category'});
+      setExtraErr({ ...extraErr, category: 'please Select Category' });
       isValid = false;
     }
 
@@ -120,7 +124,7 @@ const ProductCreateScreen = () => {
       console.log(res);
       navigation.goBack();
     } catch (error: any) {
-      ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
+      ShowAlert({ textBody: error.message, type: ALERT_TYPE.DANGER });
     } finally {
       setLoading(false);
     }
@@ -136,12 +140,12 @@ const ProductCreateScreen = () => {
         discountPrice: '',
       }}
       onSubmit={onSubmit}>
-      {({handleChange, handleBlur, handleSubmit, values, errors, touched}) => (
+      {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
         <MainLayout
           headerComp={
             <SecondaryHeader
               onBack={navigation.goBack}
-              backBtnContainerStyle={{left: 0}}
+              backBtnContainerStyle={{ left: 0 }}
               title="Create New Product"
             />
           }>
@@ -180,10 +184,10 @@ const ProductCreateScreen = () => {
             </MyText>
           </View>
 
-          <View style={{flexDirection: 'row', marginTop: 20}}>
+          <View style={{ flexDirection: 'row', marginTop: 20 }}>
             {selectedImages?.map((item, index) => {
               return (
-                <View style={{marginRight: 10}} key={index}>
+                <View style={{ marginRight: 10 }} key={index}>
                   <TouchableOpacity
                     onPress={() => removeSelectedImage(index)}
                     style={{
@@ -203,14 +207,14 @@ const ProductCreateScreen = () => {
                     />
                   </TouchableOpacity>
                   <Image
-                    source={{uri: item.path}}
-                    style={{width: 50, height: 50, borderRadius: 5}}
+                    source={{ uri: item.path }}
+                    style={{ width: 50, height: 50, borderRadius: 5 }}
                   />
                 </View>
               );
             })}
           </View>
-          <View style={{marginTop: 20}}>
+          <View style={{ marginTop: 20 }}>
             <InputWrapper title="Product Title">
               <MyInput
                 hasError={Boolean(errors.name && touched.name)}
@@ -232,7 +236,7 @@ const ProductCreateScreen = () => {
                     payload: {
                       onSelect: (data: any) => {
                         setSelectCategory(data);
-                        setExtraErr({...extraErr, category: ''});
+                        setExtraErr({ ...extraErr, category: '' });
                       },
                     },
                   });

@@ -1,10 +1,10 @@
-import {useState} from 'react';
-import {Alert, ScrollView, TouchableOpacity, View} from 'react-native';
-import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../styles';
-import {useNavigation} from '@react-navigation/native';
+import { useState } from 'react';
+import { Alert, ScrollView, TouchableOpacity, View } from 'react-native';
+import { COLORS, FONT_SIZE, FONT_WEIGHT } from '../../styles';
+import { useNavigation } from '@react-navigation/native';
 
 // COMPONENTS
-import {MyText} from '../../components/MyText';
+import { MyText } from '../../components/MyText';
 import PrimaryBtn from '../../components/buttons/PrimaryBtn';
 import MyInput from '../../components/inputs/MyInput';
 import InputWrapper from '../../components/inputs/InputWrapper';
@@ -15,22 +15,22 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import BackBtn from '../../components/buttons/BackBtn';
 import APPLOGO from '../../../assets/svg/icons/icon.svg';
 import LayoutBG from '../../components/layout/LayoutBG';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootStackParams} from '../../naviagtion/types';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParams } from '../../naviagtion/types';
 
-import {Formik} from 'formik';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
 import InputErrorMsg from '../../components/inputs/InputErrorMsg';
-import {api_signup} from '../../api/auth';
-import {SignupResponse} from '../../types/apiResponse';
-import {useDispatch} from 'react-redux';
-import {AppDispatch} from '../../redux/store';
-import {login} from '../../redux/features/auth/authSlice';
-import {ALERT_TYPE} from 'react-native-alert-notification';
-import {ShowAlert} from '../../utils/alert';
-import {fetchFcmTokenFromLocal} from '../../utils/fetchFcmTokenFromLocal';
+import { api_signup } from '../../api/auth';
+import { SignupResponse } from '../../types/apiResponse';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../redux/store';
+import { login } from '../../redux/features/auth/authSlice';
+import { ALERT_TYPE } from 'react-native-alert-notification';
+import { ShowAlert } from '../../utils/alert';
+import { fetchFcmTokenFromLocal } from '../../utils/fetchFcmTokenFromLocal';
 import CheckBox from '@react-native-community/checkbox';
-import {Text} from 'react-native';
+import { Text } from 'react-native';
 import TnC from '../../components/modal/TnC';
 import PrivacyPolicy from '../../components/modal/PrivacyPolicy';
 import { LOGO_HEIGHT, LOGO_WIDTH } from '../Welcome/WelcomeScreen';
@@ -52,9 +52,11 @@ const validationSchema = Yup.object().shape({
     .required('Required')
     .required('Email is Required!'),
   password: Yup.string()
-    .min(8, ({min}) => `Password must be at least ${min} characters`)
+    .trim()
+    .min(8, ({ min }) => `Password must be at least ${min} characters`)
     .required('Password is Required!'),
   confirmPassword: Yup.string()
+    .trim()
     .oneOf([Yup.ref('password')], 'Passwords must match')
     .required('Confirm Password is Required!'),
   isAgreed: Yup.boolean().oneOf(
@@ -89,13 +91,13 @@ const SignupScreen = () => {
         textBody: 'OTP sent successfully, Please check your inbox!',
         type: ALERT_TYPE.SUCCESS,
       });
-      dispatch(login({...res.data, token: res.token}));
+      dispatch(login({ ...res.data, token: res.token }));
       navigation.navigate('OtpVerification', {
         verifyToken: res.data._id,
         authToken: res.token,
       });
     } catch (error: any) {
-      ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
+      ShowAlert({ textBody: error.message, type: ALERT_TYPE.DANGER });
     } finally {
       setLoading(false);
     }
@@ -122,15 +124,15 @@ const SignupScreen = () => {
         }) => (
           <ScrollView
             showsVerticalScrollIndicator={false}
-            style={{flex: 1, marginHorizontal: 20}}>
+            style={{ flex: 1, marginHorizontal: 20 }}>
             <View>
               <BackBtn onPress={navigation.goBack} />
-              <View style={{alignItems: 'center'}}>
+              <View style={{ alignItems: 'center' }}>
                 <APPLOGO width={LOGO_WIDTH} height={LOGO_HEIGHT} />
               </View>
             </View>
 
-            <View style={{width: '100%'}}>
+            <View style={{ width: '100%' }}>
               <MyText
                 style={{
                   fontSize: FONT_SIZE['2xl'],
@@ -157,8 +159,8 @@ const SignupScreen = () => {
                   placeholder="Type your email"
                   leftIcon={() => (
                     <Ionicons
-                    size={widthPixel(24)}
-                    color={COLORS.lightgrey}
+                      size={widthPixel(24)}
+                      color={COLORS.lightgrey}
                       name="mail-outline"
                     />
                   )}
@@ -175,8 +177,8 @@ const SignupScreen = () => {
                   value={values.password}
                   leftIcon={() => (
                     <AntDesign
-                    size={widthPixel(24)}
-                    color={COLORS.lightgrey}
+                      size={widthPixel(24)}
+                      color={COLORS.lightgrey}
                       name="lock1"
                     />
                   )}
@@ -197,8 +199,8 @@ const SignupScreen = () => {
                   value={values.confirmPassword}
                   leftIcon={() => (
                     <AntDesign
-                    size={widthPixel(24)}
-                    color={COLORS.lightgrey}
+                      size={widthPixel(24)}
+                      color={COLORS.lightgrey}
                       name="lock1"
                     />
                   )}
@@ -228,7 +230,7 @@ const SignupScreen = () => {
                     onPress={() => {
                       setShowTerms(true);
                     }}
-                    style={{color: '#056145', fontWeight: '600',fontSize:FONT_SIZE.lg}}>
+                    style={{ color: '#056145', fontWeight: '600', fontSize: FONT_SIZE.lg }}>
                     Terms & Conditions
                   </Text>{' '}
                   and{' '}
@@ -236,7 +238,7 @@ const SignupScreen = () => {
                     onPress={() => {
                       setShowPrivacy(true);
                     }}
-                    style={{color: '#056145', fontWeight: '600',fontSize:FONT_SIZE.lg}}>
+                    style={{ color: '#056145', fontWeight: '600', fontSize: FONT_SIZE.lg }}>
                     Privacy Policy
                   </Text>
                 </MyText>
@@ -265,14 +267,14 @@ const SignupScreen = () => {
                 gap: 6,
                 marginTop: 'auto',
               }}>
-              <MyText center size={FONT_SIZE.lg} style={{color: 'grey'}}>
+              <MyText center size={FONT_SIZE.lg} style={{ color: 'grey' }}>
                 Already have an account?
               </MyText>
               <TouchableOpacity onPress={navigation.goBack}>
                 <MyText
                   bold={FONT_WEIGHT.medium}
                   size={FONT_SIZE.lg}
-                  style={{color: COLORS.greenDark}}>
+                  style={{ color: COLORS.greenDark }}>
                   Signin
                 </MyText>
               </TouchableOpacity>

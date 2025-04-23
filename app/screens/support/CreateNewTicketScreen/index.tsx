@@ -31,9 +31,11 @@ type FormValues = {
 
 const validationSchema = Yup.object().shape({
   title: Yup.string().required('Required')
+    .trim()
     .min(5, ({ min }) => `Number must be at least ${min} characters`)
     .required('Title is Required!'),
   description: Yup.string()
+    .trim()
     .min(14, ({ min }) => `Number must be at least ${min} characters`)
     .required('Required')
     .required('Description is Required!'),

@@ -1,5 +1,5 @@
 import { ScrollView, TouchableOpacity, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import LayoutBG from '../../../components/layout/LayoutBG';
 import BackBtn from '../../../components/buttons/BackBtn';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
@@ -23,8 +23,8 @@ const VendorOtpVerificationScreen = () => {
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(false);
   const [code, setCode] = useState<string>('');
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
+  const [minutes, setMinutes] = useState(2);
+  const [seconds, setSeconds] = useState(59);
 
   const resendOTPStartTimmer = () => {
     setMinutes(2);
@@ -42,10 +42,14 @@ const VendorOtpVerificationScreen = () => {
     try {
       setLoading(true);
       const res = (await api_verifyEmail(payload)) as VerifyEmailResponse;
-      console.log(res);
-      navigation.navigate('CompleteYourBusinessProfile', {
-        authToken: params.authToken,
-      });
+
+      if (res?.status === 200) {
+        navigation.navigate('CompleteYourBusinessProfile', { authToken: params.authToken });
+        ShowAlert({ type: ALERT_TYPE.SUCCESS, textBody: res.message || 'Email verified successfully!' });
+      } else {
+        const message = res?.message || 'Verification failed. Please try again.';
+        ShowAlert({ type: ALERT_TYPE.DANGER, textBody: message });
+      }
       ShowAlert({ type: ALERT_TYPE.SUCCESS, textBody: res.message });
     } catch (error: any) {
       ShowAlert({ type: ALERT_TYPE.DANGER, textBody: error.message });

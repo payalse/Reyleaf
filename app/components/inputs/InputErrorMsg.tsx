@@ -1,7 +1,7 @@
-import {StyleProp, StyleSheet, TextStyle, View, ViewStyle} from 'react-native';
-import React from 'react';
-import {MyText} from '../MyText';
-import {COLORS, FONT_SIZE} from '../../styles';
+import { StyleProp, TextStyle, View, ViewStyle } from 'react-native';
+import { MyText } from '../MyText';
+import { COLORS, FONT_SIZE } from '../../styles';
+import { pixelSizeHorizontal, pixelSizeVertical } from '../../utils/sizeNormalization';
 
 type Props = {
   msg: string;
@@ -9,10 +9,10 @@ type Props = {
   textStyle?: StyleProp<TextStyle>;
 };
 
-const InputErrorMsg = ({msg, textStyle, containerStyle}: Props) => {
+const InputErrorMsg = ({ msg, textStyle, containerStyle }: Props) => {
   return (
-    <View style={[{marginBottom: 5}, containerStyle]}>
-      <MyText center color={COLORS.red} size={FONT_SIZE.sm} style={[textStyle]}>
+    <View style={[{ marginBottom: pixelSizeVertical(4) }, containerStyle]}>
+      <MyText center color={COLORS.red} size={FONT_SIZE.base} style={[textStyle, { textAlign: "left", marginLeft: pixelSizeHorizontal(12) }]}>
         {msg}
       </MyText>
     </View>

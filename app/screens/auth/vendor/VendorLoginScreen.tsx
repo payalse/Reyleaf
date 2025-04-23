@@ -49,11 +49,13 @@ type LoginValues = {
 const loginValidationSchema = yup.object().shape({
   email: yup
     .string()
+    .trim()
     .email('Invalid email address')
     .required('Required')
     .required('Email is Required!'),
   password: yup
     .string()
+    .trim()
     .min(8, ({ min }) => `Password must be at least ${min} characters`)
     .required('Password is Required!'),
 });
@@ -230,7 +232,7 @@ const VendorLoginScreen = () => {
               <TouchableOpacity
                 onPress={() => navigation.navigate('VendorSignup')}>
                 <MyText
-                  bold={FONT_WEIGHT.medium} 
+                  bold={FONT_WEIGHT.medium}
                   style={{ color: COLORS.greenDark }}>
                   Signup
                 </MyText>
