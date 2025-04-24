@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import RootStack from './app/naviagtion/RootStack';
 import LoadingScreen from './app/screens/Loading/LoadingScreen';
 import { Provider, useDispatch } from 'react-redux';
@@ -13,19 +13,20 @@ import {
 import { getUserFromLocal } from './app/redux/features/auth/helper';
 import { login, setIsAuthenticated } from './app/redux/features/auth/authSlice';
 import { SheetProvider } from 'react-native-actions-sheet';
-import './app/sheets/sheets';
 import { AlertNotificationRoot } from 'react-native-alert-notification';
 import { DefaultAvatar } from './app/utils/defaultAvatar';
 import { StripeProvider } from '@stripe/stripe-react-native';
 import { AppAlertProvider } from './app/context/AppAlertContext';
 import requestUserPermission from './app/utils/notifiactionService';
+import './app/sheets/sheets';
+import { AppConfig } from './app/config/env';
 
-export const STRIPE_PK = "pk_test_51OcfYUEJs3bbNiuc0gCyyArVknf1IsZQbxXRWFHEFGmbflpPGPIHf2kAOIcdlc6bdmc1aicyV7VPjfe50IJn6VDi00coecLuIo"
-// 'pk_live_51OcfYUEJs3bbNiucZZXsDHvPXnXUVit1gAOv6VRJ7JAS6IVU40DjPqmW8Ea5MHLJMsqUDn2qDtZhtrROqwRzK1dQ0022i5oY5k';
+export const STRIPE_PK = AppConfig.STRIPE_KEY
 
 const AppInit = () => {
   const [isReady, setIsReady] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
+
   const run = async () => {
     try {
       const res = await StorageHelper.hasFirstLaunched();
@@ -35,6 +36,7 @@ const AppInit = () => {
       if (res) {
         dispatch(setFirstLaunched(true));
       }
+
       if (loacalUser !== null) {
         if (loacalUser.role === 2) {
           dispatch(changeAppMode('VENDOR'));
@@ -46,11 +48,12 @@ const AppInit = () => {
         dispatch(updateDefaultAvatar(defaultAvatar));
       }
     } catch (error) {
-      console.log(error);
+      console.log("Error:AppInit");
     } finally {
       setIsReady(true);
     }
   };
+
   useEffect(() => {
     run();
   }, []);

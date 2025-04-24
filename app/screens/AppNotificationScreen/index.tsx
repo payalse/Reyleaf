@@ -112,12 +112,7 @@ const AppNotificationScreen = () => {
   const fetchNotifications = async () => {
     try {
       setLoading(true);
-      const body = {
-        skip: 0,
-        take: 20,
-      };
       const res: any = await api_getNotifications(token!);
-      // console.log(res);
       setNotification(res.data);
     } catch (error) {
       console.log(error);

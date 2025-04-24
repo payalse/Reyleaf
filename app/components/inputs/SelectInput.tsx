@@ -17,7 +17,6 @@ const SelectInput = ({
   hasError,
   value,
 }: Props) => {
-  console.log(value);
   return (
     <TouchableOpacity onPress={onPress}>
       <View

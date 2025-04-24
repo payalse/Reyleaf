@@ -176,7 +176,7 @@ function MainTab() {
               position: 'absolute',
               zIndex: 10,
               left: '50%',
-              top: heightPixel(40),
+              top: heightPixel(36),
             },
             tabBarLabel: '',
             tabBarIcon: ({ focused }) => {
@@ -232,7 +232,7 @@ function MainTab() {
                     />
                   )}
 
-                  <MyText color={color} size={FONT_SIZE.sm} style={{ marginTop: pixelSizeVertical(4), textAlign: "center" }}>
+                  <MyText color={color} size={FONT_SIZE.base} style={{ marginTop: pixelSizeVertical(4), textAlign: "center" }}>
                     Awareness
                   </MyText>
                 </View>
@@ -284,8 +284,10 @@ const styles = StyleSheet.create({
   tabItemContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    padding: heightPixel(6),
+    padding: heightPixel(4),
     marginTop: heightPixel(72),
+    marginHorizontal: "auto",
+    width: Dimensions.get("window").width / 5
   },
 });
 

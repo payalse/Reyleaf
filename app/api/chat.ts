@@ -13,7 +13,6 @@ export const api_createOrGetRoom = (token: string, data: any) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -37,7 +36,6 @@ export const api_getAllRoom = (token: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }

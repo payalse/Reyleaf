@@ -12,7 +12,6 @@ export const api_getFeeds = (token: string, description: string = '') => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 'OK') {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -37,7 +36,6 @@ export const api_feedCreate = (token: string, formData: FormData) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(
             data.message || data.error || 'something went wrong!',
@@ -63,7 +61,6 @@ export const api_getFeedsByZipCode = (token: string, zipCode: string = '') => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 'OK') {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -91,7 +88,6 @@ export const api_likeDislikeFeed = (token: string, feedId: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -122,7 +118,6 @@ export const api_addComment = (
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }

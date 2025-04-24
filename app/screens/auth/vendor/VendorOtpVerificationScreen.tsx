@@ -38,7 +38,7 @@ const VendorOtpVerificationScreen = () => {
       refId: params.verifyToken,
       otp: code,
     };
-    console.log(payload);
+
     try {
       setLoading(true);
       const res = (await api_verifyEmail(payload)) as VerifyEmailResponse;
@@ -63,7 +63,6 @@ const VendorOtpVerificationScreen = () => {
     try {
       setLoading2(true);
       const res = (await api_OtpResend(params.verifyToken)) as any;
-      console.log(res);
       ShowAlert({ type: ALERT_TYPE.SUCCESS, textBody: 'Otp Send!' });
       resendOTPStartTimmer();
     } catch (error: any) {

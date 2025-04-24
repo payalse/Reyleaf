@@ -89,11 +89,6 @@ const CompleteYourBusinessProfileScreen = () => {
         formData.append('picture', tempImg);
       }
     }
-    console.log({
-      values,
-      date,
-      params,
-    });
 
     try {
       setLoading(true);
@@ -101,7 +96,6 @@ const CompleteYourBusinessProfileScreen = () => {
         formData,
         params.authToken,
       )) as any;
-      console.log(res);
       dispatch(updateUser(res.data));
       navigation.navigate('AddYourBusinessAddress', {
         authToken: params.authToken,

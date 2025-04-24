@@ -66,8 +66,6 @@ const VendorLoginScreen = () => {
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (values: LoginValues) => {
-    console.log(values);
-
     try {
       setLoading(true);
       const res = (await api_login({

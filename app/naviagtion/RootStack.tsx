@@ -40,7 +40,6 @@ const RootStack = () => {
   const { isAuthenticated } = useSelector((s: RootState) => s.auth);
   const { firstLaunched } = useSelector((s: RootState) => s.app);
 
-  console.log({ isAuthenticated });
   const [splashEnable, setSplashEnable] = useState(true);
 
   useEffect(() => {

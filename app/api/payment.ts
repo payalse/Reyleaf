@@ -22,7 +22,6 @@ export const api_chargePayment = (
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.Status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -52,7 +51,6 @@ export const api_createCard = (
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.success !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -66,7 +64,6 @@ export const api_createCard = (
 
 export const api_getCard = (customerId: string, token: string) => {
   const uri = `${BASE_URL}/api/v1/payment/get-cards`;
-  console.log(token);
   return new Promise((resolve, reject) => {
     fetch(uri, {
       method: 'POST',
@@ -81,7 +78,6 @@ export const api_getCard = (customerId: string, token: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data, 'datddda');
         if (data?.Status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -95,7 +91,6 @@ export const api_getCard = (customerId: string, token: string) => {
 
 export const api_getAllTransactions = (token: string) => {
   const uri = `${BASE_URL}/api/v1/payment/all-transactions`;
-  console.log(token);
   return new Promise((resolve, reject) => {
     fetch(uri, {
       method: 'GET',

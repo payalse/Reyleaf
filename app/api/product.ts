@@ -13,7 +13,6 @@ export const api_getHomeProducts = (
   }
 
   return new Promise((resolve, reject) => {
-    console.log(uri);
     fetch(uri, {
       method: 'GET',
       headers: {
@@ -22,14 +21,12 @@ export const api_getHomeProducts = (
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data, 'hzghdsjdh');
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
         resolve(data);
       })
       .catch(err => {
-        console.log(err, 'hhhhh');
         reject(err);
       });
   });
@@ -48,7 +45,6 @@ export const api_productGetById = (token: string, productId: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -73,7 +69,6 @@ export const api_productCreate = (formData: FormData, token: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(
             data.message || data.error || 'something went wrong!',
@@ -100,7 +95,6 @@ export const api_getSellerProduct = (token: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -123,7 +117,6 @@ export const api_searchProduct = (token: string, query: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -148,7 +141,6 @@ export const api_searchProductWithFilters = (token: string, body: any) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -172,7 +164,6 @@ export const api_addProductToFavourite = (token: string, productId: any) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -196,7 +187,6 @@ export const api_getFavouriteList = (token: string, body: any) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -220,7 +210,6 @@ export const api_getReviewList = (token: string, productId: any) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -244,7 +233,6 @@ export const apiSimilarProductList = (token: string, productId: any) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }

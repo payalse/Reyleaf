@@ -23,7 +23,6 @@ export const api_getSellers = () => {
 };
 
 export const api_getSellersOrders = (token: any) => {
-  console.log(token);
   const uri = `${BASE_URL}/api/v1/user/orders`;
   return new Promise((resolve, reject) => {
     fetch(uri, {

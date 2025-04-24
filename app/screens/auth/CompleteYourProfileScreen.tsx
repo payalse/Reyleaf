@@ -118,7 +118,6 @@ const CompleteYourProfileScreen = () => {
           formData,
           params.authToken,
         )) as any;
-        console.log(res);
         dispatch(updateUser(res.data));
         navigation.navigate('AddYourAddress', { authToken: params.authToken });
       } catch (error: any) {

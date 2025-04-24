@@ -68,7 +68,7 @@ const AddYourBusinessAddressScreen = () => {
   const [extraErr, setExtraErr] = useState({
     country: '',
   });
-  console.log({ country });
+
   const onSubmit = async (values: FormValues) => {
     let isValid = true;
     if (country === null) {
@@ -84,7 +84,6 @@ const AddYourBusinessAddressScreen = () => {
       country: country?.name,
       zipcode: values.zipcode,
     };
-    console.log(payload, params);
     try {
       setLoading(true);
       const res = (await api_addUpdateAddress(

@@ -47,7 +47,6 @@ const ChooseProfileImageScreen = () => {
       setSelectedImage(result);
     } catch (error) {
       Alert.alert("Error", "Error Opening Gallery")
-      console.log(error);
     }
   };
 

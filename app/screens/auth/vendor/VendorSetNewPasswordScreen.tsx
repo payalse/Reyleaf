@@ -47,12 +47,11 @@ const VendorSetNewPasswordScreen = () => {
   const onSubmit = async (values: FormValues) => {
     try {
       setLoading(true);
-      const res = (await api_setNewPassword({
+      (await api_setNewPassword({
         refId: params.verifyToken,
         newPassword: values.password,
         otp: params.otp,
       })) as any;
-      console.log(res);
       setIsModalOpen(true);
     } catch (error: any) {
       ShowAlert({ textBody: error.message, type: ALERT_TYPE.DANGER });

@@ -71,7 +71,6 @@ const VendorSignupScreen = () => {
     try {
       setLoading(true);
       const res = (await api_signup(payload as any)) as SignupResponse;
-      console.log(res);
       ShowAlert({
         textBody: 'OTP sent successfully, Please check your inbox!',
         type: ALERT_TYPE.SUCCESS,

@@ -1,4 +1,4 @@
-import { TouchableOpacity, View } from 'react-native';
+import { Alert, TouchableOpacity, View } from 'react-native';
 import { useState } from 'react';
 import { BORDER_RADIUS, COLORS, FONT_SIZE, FONT_WEIGHT } from '../styles';
 import { MyText } from './MyText';
@@ -46,7 +46,7 @@ const OrderStatus = ({
       setStatus(action);
       setActionNeeded(false);
     } catch (error) {
-      console.log(error);
+      Alert.alert("Error", "Something Went Wrong!")
     } finally {
       setLoading(false);
     }

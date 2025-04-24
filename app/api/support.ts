@@ -83,7 +83,6 @@ export const api_getSupportTicketsChats = (token: any, id: any) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data, 'chat');
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }

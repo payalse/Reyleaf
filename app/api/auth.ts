@@ -16,7 +16,6 @@ export const api_login = (payload: {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -45,7 +44,6 @@ export const api_signup = (payload: {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(
             data.message || data.error || 'something went wrong!',
@@ -67,7 +65,6 @@ export const api_socialLogin = (payload: {
   fcmToken: string;
 }) => {
   const uri = `${BASE_URL}/api/v1/sociallogin`;
-  console.log(payload, '---');
   return new Promise((resolve, reject) => {
     fetch(uri, {
       method: 'POST',
@@ -78,7 +75,6 @@ export const api_socialLogin = (payload: {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.error || 'something went wrong!');
         }
@@ -102,7 +98,6 @@ export const api_verifyEmail = (payload: {refId: string; otp: string}) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(
             data.message || data.error || 'something went wrong!',
@@ -118,7 +113,6 @@ export const api_verifyEmail = (payload: {refId: string; otp: string}) => {
 
 export const api_completeProfile = (formData: FormData, token: string) => {
   const uri = `${BASE_URL}/api/v1/user`;
-  console.log(uri, token);
   return new Promise((resolve, reject) => {
     fetch(uri, {
       method: 'PUT',
@@ -130,7 +124,6 @@ export const api_completeProfile = (formData: FormData, token: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(
             data.message || data.error || 'something went wrong!',
@@ -157,7 +150,6 @@ export const api_addUpdateAddress = (payload: any, token: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data, '---->');
         // if (data?.status !== 200) {
         //   throw new Error(
         //     data.message || data.error || 'something went wrong!',
@@ -205,7 +197,6 @@ export const api_OtpResend = (refId: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data, '---->');
         // if (data?.status !== 200) {
         //   throw new Error(
         //     data.message || data.error || 'something went wrong!',
@@ -231,7 +222,6 @@ export const api_forgetPassword = (email: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(
             data.message || data.error || 'something went wrong!',
@@ -260,7 +250,6 @@ export const api_verifyForgetPasswordOTP = (payload: {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(
             data.message || data.error || 'something went wrong!',
@@ -290,7 +279,6 @@ export const api_setNewPassword = (paylaod: {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(
             data.message || data.error || 'something went wrong!',

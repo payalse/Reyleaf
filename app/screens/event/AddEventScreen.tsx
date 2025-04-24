@@ -240,8 +240,7 @@ const AddEventScreen = () => {
                     // @ts-ignore
                     payload: {
                       onSelect: (data: any) => {
-                        console.log(data);
-                        setSelectCategory(data);
+                                        setSelectCategory(data);
                       },
                     },
                   });

@@ -149,7 +149,6 @@ const CheckOutScreen = () => {
       // ToastAndroid.show('Order placed successfully!', ToastAndroid.SHORT);
       navigation.navigate('OrderSuccess');
     } catch (error: any) {
-      console.log(error, "api_orderPlace");
       ShowAlert({
         textBody: error.message,
         title: 'Alert',
