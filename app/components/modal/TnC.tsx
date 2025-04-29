@@ -7,13 +7,13 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
+import { widthPixel, heightPixel, pixelSizeVertical, fontPixel, pixelSizeHorizontal } from '../../utils/sizeNormalization';
 interface ITNC {
   open: boolean;
   handleClose: () => void;
 }
 
-const TnC = ({open, handleClose}: ITNC) => {
+const TnC = ({ open, handleClose }: ITNC) => {
   return (
     <Modal visible={open} animationType="slide" transparent={true}>
       <View style={styles.modalOverlay}>
@@ -21,7 +21,7 @@ const TnC = ({open, handleClose}: ITNC) => {
           <View style={styles.header}>
             <Text style={styles.heading}>Terms & Conditions</Text>
             <TouchableOpacity onPress={handleClose}>
-              <Icon name="close" size={24} color="#333" />
+              <Icon name="close" size={widthPixel(24)} color="#333" />
             </TouchableOpacity>
           </View>
 
@@ -29,10 +29,10 @@ const TnC = ({open, handleClose}: ITNC) => {
             showsVerticalScrollIndicator={false}
             style={styles.content}>
             <Text style={styles.paragraph}>
-              These Terms & Conditions ("Terms") govern the use of the Reynette
+              These Terms & Conditions ("Terms") govern the use of the Reyleaf Rescue Refill Ltd
               mobile applications, websites, and related services (collectively
-              referred to as the "Service"), provided by Reynette Inc.
-              ("Reynette," "we," "us," or "our"). By accessing or using the
+              referred to as the "Service"), provided by Reyleaf Rescue Refill Ltd.
+              ("Reyleaf Rescue Refill Ltd," "we," "us," or "our"). By accessing or using the
               Service, you agree to be bound by these Terms. If you do not agree
               to these Terms, please do not use the Service.
             </Text>
@@ -41,7 +41,7 @@ const TnC = ({open, handleClose}: ITNC) => {
             <Text style={styles.paragraph}>
               1.1. <Text style={styles.bold}>Eligibility:</Text> You must be at
               least 18 years old and a resident of the United States to create
-              an account with Reynette. By registering an account, you represent
+              an account with Reyleaf Rescue Refill Ltd. By registering an account, you represent
               and warrant that you meet these eligibility criteria.
             </Text>
             <Text style={styles.paragraph}>
@@ -100,12 +100,12 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '80%',
     backgroundColor: '#fff',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 16,
+    borderTopLeftRadius: heightPixel(20),
+    borderTopRightRadius: heightPixel(20),
+    padding: heightPixel(16),
     marginTop: 'auto',
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
@@ -114,37 +114,37 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: pixelSizeVertical(10),
     borderBottomWidth: 1,
     borderColor: '#ddd',
-    paddingBottom: 12,
+    paddingBottom: pixelSizeVertical(12),
   },
   heading: {
-    fontSize: 24,
+    fontSize: fontPixel(24),
     fontWeight: 'bold',
     color: '#444',
   },
   content: {
     flex: 1,
-    marginTop: 5,
+    marginTop: pixelSizeVertical(5),
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: fontPixel(18),
     fontWeight: '700',
     color: '#056145',
-    marginTop: 10,
-    marginBottom: 5,
+    marginTop: pixelSizeVertical(10),
+    marginBottom: pixelSizeVertical(5),
   },
   paragraph: {
-    fontSize: 16,
+    fontSize: fontPixel(16),
     lineHeight: 24,
-    marginBottom: 10,
+    marginBottom: pixelSizeVertical(10),
     color: '#555',
   },
   listItem: {
-    fontSize: 16,
-    marginLeft: 20,
-    marginBottom: 5,
+    fontSize: fontPixel(16),
+    marginLeft: pixelSizeHorizontal(20),
+    marginBottom: pixelSizeVertical(5),
     color: '#444',
   },
   bold: {

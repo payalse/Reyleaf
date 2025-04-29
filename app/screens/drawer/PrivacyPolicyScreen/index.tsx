@@ -15,7 +15,7 @@ const PrivacyPolicyScreen = () => {
 
 
   const handleEmailPress = () => {
-    Linking.openURL('mailto:contact@reynette.com');
+    Linking.openURL('mailto:info@reyleaf.com');
   };
 
   return (
@@ -30,7 +30,7 @@ const PrivacyPolicyScreen = () => {
           gap: 10,
         }}>
         <Text style={styles.text}>
-          At Reynette, we are committed to protecting your privacy and ensuring
+          At Reyleaf Rescue Refill Ltd, we are committed to protecting your privacy and ensuring
           the security of your personal information. This Privacy Policy
           outlines how we collect, use, disclose, and safeguard your data when
           you use our mobile applications, websites, and related services
@@ -39,7 +39,7 @@ const PrivacyPolicyScreen = () => {
 
         <Text style={styles.heading}>Information Collection and Use</Text>
         <Text style={styles.listItem}>
-          - Personal Information: When you register an account with Reynette, we
+          - Personal Information: When you register an account with Reyleaf Rescue Refill Ltd, we
           may collect certain personal information, such as your name, email
           address, location (with your permission), and other details provided
           voluntarily.
@@ -50,7 +50,7 @@ const PrivacyPolicyScreen = () => {
           interactions with other users or content.
         </Text>
         <Text style={styles.listItem}>
-          - Payment Information: If you make purchases through Reynette, we may
+          - Payment Information: If you make purchases through Reyleaf Rescue Refill Ltd, we may
           collect payment information such as credit card details or other
           payment method details. However, we do not store this information on
           our servers. It is securely processed by our third-party payment
@@ -71,7 +71,7 @@ const PrivacyPolicyScreen = () => {
         <Text style={styles.listItem}>
           - Communication: We may use your email address to send you important
           updates, newsletters, promotional materials, and other communications
-          related to Reynette. You can opt out of receiving promotional emails
+          related to Reyleaf Rescue Refill Ltd. You can opt out of receiving promotional emails
           at any time.
         </Text>
         <Text style={styles.listItem}>
@@ -98,7 +98,7 @@ const PrivacyPolicyScreen = () => {
 
         <Text style={styles.heading}>Children's Privacy</Text>
         <Text style={styles.text}>
-          Reynette is not intended for use by individuals under the age of 13.
+          Reyleaf Rescue Refill Ltd is not intended for use by individuals under the age of 13.
           We do not knowingly collect personal information from children under
           13. If you are a parent or guardian and believe that your child has
           provided us with personal information, please contact us so that we
@@ -118,7 +118,7 @@ const PrivacyPolicyScreen = () => {
           If you have any questions or concerns about our Privacy Policy, please contact us at{' '}
         </Text>
         <TouchableOpacity onPress={handleEmailPress}>
-          <Text style={styles.link}>contact@reynette.com</Text>
+          <Text style={styles.link}>info@reyleaf.com</Text>
         </TouchableOpacity>
         <Text style={styles.text}>.</Text>
       </ScrollView>

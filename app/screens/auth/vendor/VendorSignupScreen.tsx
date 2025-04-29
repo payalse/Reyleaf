@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ScrollView, TouchableOpacity, View } from 'react-native';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { COLORS, FONT_SIZE, FONT_WEIGHT } from '../../../styles';
 import { useNavigation } from '@react-navigation/native';
 
@@ -33,11 +33,15 @@ import {
   widthPixel,
 } from '../../../utils/sizeNormalization';
 import { LOGO_HEIGHT, LOGO_WIDTH } from '../../Welcome/WelcomeScreen';
+import TnC from '../../../components/modal/TnC';
+import PrivacyPolicy from '../../../components/modal/PrivacyPolicy';
+import CheckBox from '@react-native-community/checkbox';
 
 type FormValues = {
   email: string;
   password: string;
   confirmPassword: string;
+  isAgreed: boolean
 };
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -53,6 +57,10 @@ const validationSchema = Yup.object().shape({
     .trim()
     .oneOf([Yup.ref('password')], 'Passwords must match')
     .required('Confirm Password is Required!'),
+  isAgreed: Yup.boolean().oneOf(
+    [true],
+    'You must accept the Terms & Conditions and Privacy Policy to register!',
+  ),
 });
 
 const VendorSignupScreen = () => {
@@ -61,6 +69,9 @@ const VendorSignupScreen = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
+
   const onSubmit = async (values: FormValues) => {
     const payload = {
       email: values.email,
@@ -94,12 +105,14 @@ const VendorSignupScreen = () => {
           email: '',
           password: '',
           confirmPassword: '',
+          isAgreed: false
         }}
         onSubmit={onSubmit}>
         {({
           handleChange,
           handleBlur,
           handleSubmit,
+          setFieldValue,
           values,
           errors,
           touched,
@@ -192,6 +205,41 @@ const VendorSignupScreen = () => {
               {errors.confirmPassword && touched.confirmPassword && (
                 <InputErrorMsg msg={errors.confirmPassword} />
               )}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginLeft: pixelSizeHorizontal(8),
+                }}>
+                <CheckBox
+                  value={values.isAgreed}
+                  onValueChange={newValue =>
+                    setFieldValue('isAgreed', newValue)
+                  }
+                />
+                <MyText size={FONT_SIZE.sm}>
+                  I agree to the{' '}
+                  <Text
+                    onPress={() => {
+                      setShowTerms(true);
+                    }}
+                    style={{ color: '#056145', fontWeight: '600', fontSize: FONT_SIZE.lg }}>
+                    Terms & Conditions
+                  </Text>{' '}
+                  and{' '}
+                  <Text
+                    onPress={() => {
+                      setShowPrivacy(true);
+                    }}
+                    style={{ color: '#056145', fontWeight: '600', fontSize: FONT_SIZE.lg }}>
+                    Privacy Policy
+                  </Text>
+                </MyText>
+              </View>
+
+              {errors.isAgreed && touched.isAgreed && (
+                <InputErrorMsg msg={errors.isAgreed} />
+              )}
             </View>
 
             <View
@@ -226,6 +274,12 @@ const VendorSignupScreen = () => {
           </ScrollView>
         )}
       </Formik>
+
+      <TnC open={showTerms} handleClose={() => setShowTerms(!showTerms)} />
+      <PrivacyPolicy
+        open={showPrivacy}
+        handleClose={() => setShowPrivacy(!showPrivacy)}
+      />
     </LayoutBG>
   );
 };

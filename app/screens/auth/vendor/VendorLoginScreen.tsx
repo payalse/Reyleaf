@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { View, TouchableOpacity, ScrollView, Image, Text } from 'react-native';
 import { COLORS, FONT_SIZE, FONT_WEIGHT } from '../../../styles';
 import { useNavigation } from '@react-navigation/native';
 
@@ -41,6 +41,8 @@ import {
   widthPixel,
 } from '../../../utils/sizeNormalization';
 import { LOGO_HEIGHT, LOGO_WIDTH } from '../../Welcome/WelcomeScreen';
+import TnC from '../../../components/modal/TnC';
+import PrivacyPolicy from '../../../components/modal/PrivacyPolicy';
 
 type LoginValues = {
   email: string;
@@ -64,6 +66,8 @@ const VendorLoginScreen = () => {
     useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
 
   const onSubmit = async (values: LoginValues) => {
     try {
@@ -236,9 +240,41 @@ const VendorLoginScreen = () => {
                 </MyText>
               </TouchableOpacity>
             </View>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <MyText style={{ textAlign: "center" }}>
+                I agree to the{' '}
+                <Text
+                  onPress={() => {
+                    setShowTerms(true);
+                  }}
+                  style={{ color: '#056145', fontWeight: '600' }}>
+                  Terms & Conditions
+                </Text>{' '}
+                and{' '}
+                <Text
+                  onPress={() => {
+                    setShowPrivacy(true);
+                  }}
+                  style={{ color: '#056145', fontWeight: '600' }}>
+                  Privacy Policy
+                </Text>
+              </MyText>
+            </View>
           </ScrollView>
         )}
       </Formik>
+
+      <TnC open={showTerms} handleClose={() => setShowTerms(!showTerms)} />
+      <PrivacyPolicy
+        open={showPrivacy}
+        handleClose={() => setShowPrivacy(!showPrivacy)}
+      />
     </LayoutBG>
   );
 };

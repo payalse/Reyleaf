@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { widthPixel, heightPixel, pixelSizeVertical, fontPixel, pixelSizeHorizontal } from '../../utils/sizeNormalization';
 
 interface IPrivacyPolicy {
   open: boolean;
@@ -21,7 +22,7 @@ const PrivacyPolicy = ({open, handleClose}: IPrivacyPolicy) => {
           <View style={styles.header}>
             <Text style={styles.heading}>Privacy Policy</Text>
             <TouchableOpacity onPress={handleClose}>
-              <Icon name="close" size={24} color="#333" />
+              <Icon name="close" size={widthPixel(24)} color="#333" />
             </TouchableOpacity>
           </View>
 
@@ -29,7 +30,7 @@ const PrivacyPolicy = ({open, handleClose}: IPrivacyPolicy) => {
             showsVerticalScrollIndicator={false}
             style={styles.content}>
             <Text style={styles.paragraph}>
-              At Reynette, we are committed to protecting your privacy and
+              At Reyleaf Rescue Refill Ltd, we are committed to protecting your privacy and
               ensuring the security of your personal information. This Privacy
               Policy outlines how we collect, use, disclose, and safeguard your
               data when you use our mobile applications, websites, and related
@@ -82,7 +83,7 @@ const PrivacyPolicy = ({open, handleClose}: IPrivacyPolicy) => {
 
             <Text style={styles.sectionTitle}>Children's Privacy</Text>
             <Text style={styles.paragraph}>
-              Reynette is not intended for children under 13, and we do not
+            Reyleaf Rescue Refill Ltd is not intended for children under 13, and we do not
               knowingly collect their data.
             </Text>
 
@@ -114,9 +115,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '80%',
     backgroundColor: '#fff',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 16,
+    borderTopLeftRadius: heightPixel(20),
+    borderTopRightRadius: heightPixel(20),
+    padding: heightPixel(16),
     marginTop: 'auto',
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
@@ -128,37 +129,37 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: pixelSizeVertical(10),
     borderBottomWidth: 1,
     borderColor: '#ddd',
-    paddingBottom: 12,
+    paddingBottom: pixelSizeVertical(12),
   },
   heading: {
-    fontSize: 24,
+    fontSize: fontPixel(24),
     fontWeight: 'bold',
     color: '#444',
   },
   content: {
     flex: 1,
-    marginTop: 5,
+    marginTop: pixelSizeVertical(5),
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: fontPixel(18),
     fontWeight: '700',
     color: '#056145',
-    marginTop: 10,
-    marginBottom: 5,
+    marginTop: pixelSizeVertical(10),
+    marginBottom: pixelSizeVertical(5),
   },
   paragraph: {
-    fontSize: 16,
+    fontSize: fontPixel(16),
     lineHeight: 24,
-    marginBottom: 10,
+    marginBottom: pixelSizeVertical(10),
     color: '#555',
   },
   listItem: {
-    fontSize: 16,
-    marginLeft: 20,
-    marginBottom: 5,
+    fontSize: fontPixel(16),
+    marginLeft: pixelSizeHorizontal(20),
+    marginBottom: pixelSizeVertical(5),
     color: '#444',
   },
   link: {

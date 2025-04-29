@@ -251,7 +251,7 @@ const SignupScreen = () => {
 
             <View
               style={{
-                paddingVertical: 20,
+                paddingVertical: pixelSizeVertical(16),
               }}>
               <PrimaryBtn
                 loading={loading}

@@ -246,7 +246,7 @@ const LoginScreen = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <MyText>
+              <MyText style={{ textAlign: "center" }}>
                 I agree to the{' '}
                 <Text
                   onPress={() => {
