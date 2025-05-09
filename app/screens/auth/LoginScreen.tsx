@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 import {View, TouchableOpacity, ScrollView} from 'react-native';
 import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../styles';
 import {useNavigation} from '@react-navigation/native';
@@ -32,6 +32,9 @@ import {LoginResponseType} from '../../types/apiResponse';
 import {ShowAlert} from '../../utils/alert';
 import {ALERT_TYPE} from 'react-native-alert-notification';
 import {fetchFcmTokenFromLocal} from '../../utils/fetchFcmTokenFromLocal';
+import {Text} from 'react-native';
+import TnC from '../../components/modal/TnC';
+import PrivacyPolicy from '../../components/modal/PrivacyPolicy';
 
 type LoginValues = {
   email: string;
@@ -54,6 +57,8 @@ const LoginScreen = () => {
     useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
 
   const onSubmit = async (values: LoginValues) => {
     console.log(values);
@@ -61,7 +66,7 @@ const LoginScreen = () => {
     try {
       setLoading(true);
       let fcmToken = await fetchFcmTokenFromLocal();
-      const res = (await api_login({
+      const res: any = (await api_login({
         ...values,
         email: values.email.toLocaleLowerCase(),
         fcmToken,
@@ -99,6 +104,7 @@ const LoginScreen = () => {
       <Formik
         validationSchema={loginValidationSchema}
         initialValues={{
+          // email: 'girimi9092@dmener.com',
           email: '',
           password: '',
         }}
@@ -136,7 +142,7 @@ const LoginScreen = () => {
                 }}>
                 Let's get Started
               </MyText>
-              <MyText size={FONT_SIZE.sm} color={'grey'}>
+              <MyText size={FONT_SIZE.base} color={'grey'}>
                 Give credentails to sign in your Account
               </MyText>
             </View>
@@ -212,24 +218,59 @@ const LoginScreen = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 flexDirection: 'row',
-                gap: 6,
+                gap: 4,
                 marginVertical: 50,
               }}>
-              <MyText center size={FONT_SIZE.sm} style={{color: 'grey'}}>
+              <MyText
+                center
+                size={FONT_SIZE.base}
+                style={{color: 'grey', width: 'auto'}}>
                 Don’t have an account?
               </MyText>
               <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
                 <MyText
                   bold={FONT_WEIGHT.medium}
-                  size={FONT_SIZE.sm}
+                  size={FONT_SIZE.base}
                   style={{color: COLORS.greenDark}}>
                   Signup
                 </MyText>
               </TouchableOpacity>
             </View>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <MyText>
+                I agree to the{' '}
+                <Text
+                  onPress={() => {
+                    setShowTerms(true);
+                  }}
+                  style={{color: '#056145', fontWeight: '600'}}>
+                  Terms & Conditions
+                </Text>{' '}
+                and{' '}
+                <Text
+                  onPress={() => {
+                    setShowPrivacy(true);
+                  }}
+                  style={{color: '#056145', fontWeight: '600'}}>
+                  Privacy Policy
+                </Text>
+              </MyText>
+            </View>
           </ScrollView>
         )}
       </Formik>
+
+      <TnC open={showTerms} handleClose={() => setShowTerms(!showTerms)} />
+      <PrivacyPolicy
+        open={showPrivacy}
+        handleClose={() => setShowPrivacy(!showPrivacy)}
+      />
     </LayoutBG>
   );
 };

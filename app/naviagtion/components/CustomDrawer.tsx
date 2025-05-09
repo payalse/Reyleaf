@@ -152,7 +152,7 @@ const GeneralList: ListNodeType[] = [
     icon: <Image source={feedbackImg} style={styles2.sideBarIconImg} />,
   },
   {
-    title: 'About Reynette',
+    title: 'About Reyleaf',
     navigateTo: 'AboutUsStack',
     icon: <Image source={aboutImg} style={styles2.sideBarIconImg} />,
   },

@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {MyText} from '../../components/MyText';
 import {COLORS} from '../../styles';
 import {api_getCategories} from '../../api/category';

@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import LayoutBG from '../../components/layout/LayoutBG';
 import BackBtn from '../../components/buttons/BackBtn';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
@@ -64,7 +64,7 @@ const OtpVerificationScreen = () => {
       setLoading2(true);
       const res = (await api_OtpResend(params.verifyToken)) as any;
       console.log(res);
-      ShowAlert({type: ALERT_TYPE.SUCCESS, textBody: 'Otp Send!'});
+      ShowAlert({type: ALERT_TYPE.SUCCESS, textBody: 'Otp Sent!'});
       resendOTPStartTimmer();
     } catch (error: any) {
       ShowAlert({type: ALERT_TYPE.DANGER, textBody: error.message});
@@ -122,13 +122,17 @@ const OtpVerificationScreen = () => {
               </MyText>
             </View>
           ) : (
-            <View style={{flexDirection: 'row', gap: 5, alignSelf: 'center'}}>
-              <MyText center size={FONT_SIZE.sm} color={COLORS.grey}>
-                Didn’t Receive the Code{' '}
+            <View style={{flexDirection: 'row', gap: 4, alignSelf: 'center'}}>
+              <MyText
+                center
+                size={FONT_SIZE.base}
+                style={{width: 'auto'}}
+                color={COLORS.grey}>
+                Didn’t Receive the Code?{' '}
               </MyText>
               <TouchableOpacity onPress={onResendOtp}>
                 <MyText
-                  size={FONT_SIZE.sm}
+                  size={FONT_SIZE.base}
                   color={COLORS.greenDark}
                   bold={FONT_WEIGHT.bold}>
                   {loading ? 'loading...' : 'Resend'}

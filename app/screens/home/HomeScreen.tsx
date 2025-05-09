@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import {Fragment, useCallback, useEffect, useState} from 'react';
 import MainHeader from '../../components/header/MainHeader';
 import MainLayout from '../../components/layout/MainLayout';
 import {ActivityIndicator, View} from 'react-native';
@@ -43,6 +43,7 @@ const RenderProducts = () => {
         token!,
         categoryId,
       )) as GetHomeProductResponse;
+      console.warn(res,"res api_getHomeProducts")
       if ('bestSeller' in res.data) {
         dispatch(setBestSellingProduct(res.data.bestSeller));
       }
@@ -67,12 +68,12 @@ const RenderProducts = () => {
     return <ActivityIndicator size={'small'} color={COLORS.greenDark} />;
   }
   return (
-    <React.Fragment>
+    <Fragment>
       <TrendingProducts />
       <NewlyArrivalList />
       <BestSellingList />
       <RecentlyViewedList />
-    </React.Fragment>
+    </Fragment>
   );
 };
 

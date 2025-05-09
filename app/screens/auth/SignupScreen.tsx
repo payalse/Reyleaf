@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 import {Alert, ScrollView, TouchableOpacity, View} from 'react-native';
 import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../styles';
 import {useNavigation} from '@react-navigation/native';
@@ -29,11 +29,16 @@ import {login} from '../../redux/features/auth/authSlice';
 import {ALERT_TYPE} from 'react-native-alert-notification';
 import {ShowAlert} from '../../utils/alert';
 import {fetchFcmTokenFromLocal} from '../../utils/fetchFcmTokenFromLocal';
+import CheckBox from '@react-native-community/checkbox';
+import {Text} from 'react-native';
+import TnC from '../../components/modal/TnC';
+import PrivacyPolicy from '../../components/modal/PrivacyPolicy';
 
 type FormValues = {
   email: string;
   password: string;
   confirmPassword: string;
+  isAgreed: boolean;
 };
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -46,6 +51,10 @@ const validationSchema = Yup.object().shape({
   confirmPassword: Yup.string()
     .oneOf([Yup.ref('password')], 'Passwords must match')
     .required('Confirm Password is Required!'),
+  isAgreed: Yup.boolean().oneOf(
+    [true],
+    'You must accept the Terms & Conditions and Privacy Policy to register!',
+  ),
 });
 
 const SignupScreen = () => {
@@ -54,6 +63,9 @@ const SignupScreen = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
+
   const onSubmit = async (values: FormValues) => {
     let fcmToken = await fetchFcmTokenFromLocal();
     const payload = {
@@ -66,7 +78,7 @@ const SignupScreen = () => {
     try {
       setLoading(true);
 
-      const res = (await api_signup(payload)) as SignupResponse;
+      const res: any = (await api_signup(payload)) as SignupResponse;
       ShowAlert({
         textBody: 'OTP sent successfully, Please check your inbox!',
         type: ALERT_TYPE.SUCCESS,
@@ -90,12 +102,14 @@ const SignupScreen = () => {
           email: '',
           password: '',
           confirmPassword: '',
+          isAgreed: false,
         }}
         onSubmit={onSubmit}>
         {({
           handleChange,
           handleBlur,
           handleSubmit,
+          setFieldValue,
           values,
           errors,
           touched,
@@ -116,10 +130,11 @@ const SignupScreen = () => {
                   fontSize: FONT_SIZE['2xl'],
                   fontWeight: FONT_WEIGHT.bold,
                   marginVertical: 5,
+                  width: '90%',
                 }}>
                 Let’s Open your Account
               </MyText>
-              <MyText size={FONT_SIZE.sm} color={'grey'}>
+              <MyText size={FONT_SIZE.base} color={'grey'}>
                 Enter your information to create a new account
               </MyText>
             </View>
@@ -188,6 +203,42 @@ const SignupScreen = () => {
               {errors.confirmPassword && touched.confirmPassword && (
                 <InputErrorMsg msg={errors.confirmPassword} />
               )}
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginLeft: 8,
+                }}>
+                <CheckBox
+                  value={values.isAgreed}
+                  onValueChange={newValue =>
+                    setFieldValue('isAgreed', newValue)
+                  }
+                />
+                <MyText style={{marginLeft: 4}}>
+                  I agree to the{' '}
+                  <Text
+                    onPress={() => {
+                      setShowTerms(true);
+                    }}
+                    style={{color: '#056145', fontWeight: '600'}}>
+                    Terms & Conditions
+                  </Text>{' '}
+                  and{' '}
+                  <Text
+                    onPress={() => {
+                      setShowPrivacy(true);
+                    }}
+                    style={{color: '#056145', fontWeight: '600'}}>
+                    Privacy Policy
+                  </Text>
+                </MyText>
+              </View>
+
+              {errors.isAgreed && touched.isAgreed && (
+                <InputErrorMsg msg={errors.isAgreed} />
+              )}
             </View>
 
             <View
@@ -198,7 +249,7 @@ const SignupScreen = () => {
               <PrimaryBtn
                 loading={loading}
                 onPress={handleSubmit}
-                text="Sign Up"
+                text="Signup"
               />
             </View>
             <View
@@ -224,6 +275,11 @@ const SignupScreen = () => {
           </ScrollView>
         )}
       </Formik>
+      <TnC open={showTerms} handleClose={() => setShowTerms(!showTerms)} />
+      <PrivacyPolicy
+        open={showPrivacy}
+        handleClose={() => setShowPrivacy(!showPrivacy)}
+      />
     </LayoutBG>
   );
 };

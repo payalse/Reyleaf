@@ -1,4 +1,3 @@
-import React from 'react';
 import MainTab from './MainTab';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import CustomDrawer from './components/CustomDrawer';

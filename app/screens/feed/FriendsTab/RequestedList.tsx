@@ -29,6 +29,8 @@ import {
   requestsList,
   suggestedList,
 } from '../../../redux/features/friends/friendsSlice';
+import { ShowAlert } from '../../../utils/alert';
+import { ALERT_TYPE } from 'react-native-alert-notification';
 const RequestedList = () => {
   const navigationState = useNavigationState(state => state);
   console.log(navigationState, 'navigationState');
@@ -89,6 +91,7 @@ const RequestedList = () => {
       };
       const res: any = await api_requestAcceptReject(token!, payload);
       console.log(res, 'api_requestAcceptReject res');
+      ShowAlert({textBody: 'Request Updated!', type: ALERT_TYPE.SUCCESS});
       requestApi();
       getMyFriends();
       getSuggestedList();

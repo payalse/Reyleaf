@@ -40,7 +40,7 @@ const ForgetPasswordScreen = () => {
       const res = (await api_forgetPassword(
         values.email,
       )) as ForgetPasswordResponse;
-      ShowAlert({textBody: res?.message});
+      ShowAlert({textBody: 'Otp Successfully Sent'});
       navigation.navigate('ForgetPasswordOtpVerification', {
         verifyToken: res.refData,
       });

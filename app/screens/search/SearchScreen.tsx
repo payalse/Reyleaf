@@ -19,8 +19,7 @@ import {api_searchProduct} from '../../api/product';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/store';
 import FullScreenLoader from '../../components/FullScreenLoader';
-import ProductItem2 from '../../components/ProductItem2';
-import ProductItem from '../../components/ProductItem';
+import Product from '../../components/Product';
 import {ProductType} from '../../types';
 import {TAB_BAR_BG_HEIGHT} from '../../naviagtion/MainTab';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -63,6 +62,7 @@ const SearchScreen = () => {
 
     try {
       setLoading(true);
+      console.log(token);
       const res: any = await api_searchProduct(token!, text);
       console.log(res);
       setResultProduct(res.data.searched);
@@ -93,6 +93,7 @@ const SearchScreen = () => {
 
   useEffect(() => {
     getHistory();
+    setText('')
   }, []);
 
   return (
@@ -162,7 +163,7 @@ const SearchScreen = () => {
         renderItem={({item}) => {
           return (
             <View style={{marginBottom: 10}}>
-              <ProductItem2
+              <Product
                 id={item._id}
                 photos={item.photos}
                 title={item.title}
@@ -171,6 +172,7 @@ const SearchScreen = () => {
                 category={item.categoryId.name}
                 rating={item?.rating}
                 isFav={item.isFavourite}
+                layout='horizontal'
               />
             </View>
           );
