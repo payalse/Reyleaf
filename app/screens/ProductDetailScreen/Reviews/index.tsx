@@ -6,6 +6,9 @@ import {useHideBottomBar} from '../../../hook/useHideBottomBar';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../redux/store';
 import Review from '../../../components/Reviews';
+import {MyText} from '../../../components/MyText';
+import {FONT_SIZE} from '../../../styles';
+import {COLORS} from '../../../styles';
 
 const ReviewsScreen = () => {
   useHideBottomBar({});
@@ -13,7 +16,23 @@ const ReviewsScreen = () => {
   const {reviews} = useSelector((s: RootState) => s.product);
 
   if (!reviews.length) {
-    return null;
+    return (
+      <View style={{paddingHorizontal: 20}}>
+        <SafeAreaView />
+        <SecondaryHeader
+          backBtnContainerStyle={{left: 0}}
+          onBack={navigation.goBack}
+          title="All Reviews"
+        />
+        <MyText
+          size={FONT_SIZE.lg}
+          color={COLORS.grey}
+          center
+          style={{marginTop: 20}}>
+          No reviews found
+        </MyText>
+      </View>
+    );
   }
   return (
     <FlatList

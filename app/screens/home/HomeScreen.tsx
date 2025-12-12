@@ -32,8 +32,9 @@ const RenderProducts = () => {
   const {homeActiveCategory} = useSelector((s: RootState) => s.category);
   const {token} = useSelector((s: RootState) => s.auth);
   const dispatch = useDispatch<AppDispatch>();
+  
   const requestApi = useCallback(async () => {
-    console.log(token, 'hghh');
+    // console.log(token, 'hghh');
     let categoryId = null;
     if (homeActiveCategory._id !== DEFAULT_ALL_CATEGORY._id) {
       categoryId = homeActiveCategory._id;
@@ -44,7 +45,7 @@ const RenderProducts = () => {
         token!,
         categoryId,
       )) as GetHomeProductResponse;
-      console.warn(res,"res api_getHomeProducts")
+      // console.warn(res,"res api_getHomeProducts")
       if ('bestSeller' in res.data) {
         dispatch(setBestSellingProduct(res.data.bestSeller));
       }

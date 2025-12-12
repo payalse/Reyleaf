@@ -51,6 +51,7 @@ export const api_createCard = (
     })
       .then(res => res.json())
       .then(data => {
+        console.log(data, "from create card");
         if (data?.success !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -75,6 +76,30 @@ export const api_getCard = (customerId: string, token: string) => {
         customerId: customerId,
         limit: 10,
       }),
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data?.Status !== 200) {
+          throw new Error(data.message || 'something went wrong!');
+        }
+        resolve(data);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
+};
+
+export const api_deleteCard = (token: string, payload: any) => {
+  const uri = `${BASE_URL}/api/v1/payment/delete-card/`;
+  return new Promise((resolve, reject) => {
+    fetch(uri, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+      body: JSON.stringify(payload),
     })
       .then(res => res.json())
       .then(data => {

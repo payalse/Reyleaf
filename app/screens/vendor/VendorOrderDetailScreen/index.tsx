@@ -192,6 +192,13 @@ const VendorOrderDetailScreen = () => {
           gap: 10,
         }}
         renderItem={({ item }: any) => {
+          // Calculate effective price (discounted if available, otherwise original)
+          const discountedPrice = item?.product?.discountedProce || 0;
+          const originalPrice = item?.product?.price || 0;
+          const effectivePrice =
+            discountedPrice > 0 ? discountedPrice : originalPrice;
+          const hasDiscount = discountedPrice > 0 && originalPrice > discountedPrice;
+
           return (
             <TouchableOpacity
               style={{
@@ -242,10 +249,12 @@ const VendorOrderDetailScreen = () => {
                     justifyContent: 'space-between',
                   }}>
                   <MyText bold={FONT_WEIGHT.semibold}>
-                    {item?.product?.title.length > 30 ? `${item?.product?.title.substring(0, 30)}...` : item?.product?.title}
+                    {item?.product?.title.length > 30
+                      ? `${item?.product?.title.substring(0, 30)}...`
+                      : item?.product?.title}
                   </MyText>
                   <MyText bold={FONT_WEIGHT.semibold}>
-                    ${item?.product?.discountedProce}
+                    ${effectivePrice.toFixed(2)}
                   </MyText>
                 </View>
 
@@ -268,11 +277,14 @@ const VendorOrderDetailScreen = () => {
                   <MyText size={FONT_SIZE.base}>
                     {item?.product?.categoryId?.name}
                   </MyText>
-                  <MyText
-                    style={{ textDecorationLine: 'line-through' }}
-                    size={FONT_SIZE.base}>
-                    ${item?.product?.price}
-                  </MyText>
+                  {hasDiscount && (
+                    <MyText
+                      style={{ textDecorationLine: 'line-through' }}
+                      size={FONT_SIZE.base}
+                      color={COLORS.grey}>
+                      ${originalPrice.toFixed(2)}
+                    </MyText>
+                  )}
                 </View>
               </View>
             </TouchableOpacity>
@@ -344,15 +356,25 @@ const VendorOrderDetailScreen = () => {
             Sub total
           </MyText>
           <MyText color={COLORS.grey} size={FONT_SIZE.base}>
-            ${orderData?.totalAmount}
+            ${(orderData?.subtotal || orderData?.totalAmount || 0).toFixed(2)}
           </MyText>
         </View>
+        {(orderData?.taxAmount || 0) > 0 && (
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <MyText color={COLORS.grey} size={FONT_SIZE.base}>
+              Tax
+            </MyText>
+            <MyText color={COLORS.grey} size={FONT_SIZE.base}>
+              ${(orderData?.taxAmount || 0).toFixed(2)}
+            </MyText>
+          </View>
+        )}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <MyText color={COLORS.grey} size={FONT_SIZE.base}>
             Shipping fee
           </MyText>
           <MyText color={COLORS.grey} size={FONT_SIZE.base}>
-            ${0}
+            ${(orderData?.shippingCost || 0).toFixed(2)}
           </MyText>
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -366,7 +388,7 @@ const VendorOrderDetailScreen = () => {
             color={COLORS.black}
             bold={FONT_WEIGHT.bold}
             size={FONT_SIZE.xl}>
-            ${orderData?.totalAmount}
+            ${(orderData?.totalAmount || 0).toFixed(2)}
           </MyText>
         </View>
       </View>

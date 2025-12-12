@@ -44,7 +44,7 @@ const Product = ({
   onValueChange,
 }: Props) => {
   const [isLiked, setIsLiked] = useState(isFav);
-  const { token } = useSelector((state: RootState) => state.auth);
+  const { token ,user} = useSelector((state: RootState) => state.auth);
   const navigation =
     useNavigation<NativeStackNavigationProp<any>>();
   const photo = photos?.[0]?.url ? BUILD_IMAGE_URL(photos[0].url) : '';
@@ -94,7 +94,7 @@ const Product = ({
           style={[styles.image, imageStyle]}
           resizeMode={FastImage.resizeMode[photo ? 'contain' : "stretch"]}
         />
-        {layout === 'vertical' && (
+        {layout === 'vertical' && user?.role !== 2 && (
           <TouchableOpacity onPress={addToFavourite} style={styles.likeButton}>
             <GradientBox conatinerStyle={styles.likeButtonContainer}>
               <AntDesign
@@ -149,7 +149,7 @@ const Product = ({
               {category}
             </MyText>
           </View>
-          {layout === 'horizontal' && (
+          {layout === 'horizontal' && user?.role !== 2 && (
             <TouchableOpacity onPress={addToFavourite}>
               <GradientBox conatinerStyle={styles.likeButtonContainer}>
                 <AntDesign
@@ -177,15 +177,34 @@ const Product = ({
           </View>
         )}
         <View style={styles.priceContainer}>
-          <MyText size={FONT_SIZE.xl} bold={FONT_WEIGHT.semibold}>
-            ${price}
-          </MyText>
-          <MyText
-            size={FONT_SIZE.base}
-            color={COLORS.grey}
-            style={{ textDecorationLine: 'line-through' }}>
-            ${oldPrice}
-          </MyText>
+          {(() => {
+            // Convert to numbers for comparison
+            const discountedPrice = parseFloat(price) || 0;
+            const originalPrice = parseFloat(oldPrice) || 0;
+            // Check if there's a valid discount
+            const hasDiscount =
+              discountedPrice > 0 &&
+              originalPrice > 0 &&
+              discountedPrice < originalPrice;
+            // Use discounted price if available, otherwise use original
+            const effectivePrice = hasDiscount ? discountedPrice : originalPrice;
+
+            return (
+              <>
+                <MyText size={FONT_SIZE.xl} bold={FONT_WEIGHT.semibold}>
+                  ${effectivePrice.toFixed(2)}
+                </MyText>
+                {hasDiscount && (
+                  <MyText
+                    size={FONT_SIZE.base}
+                    color={COLORS.grey}
+                    style={{ textDecorationLine: 'line-through' }}>
+                    ${originalPrice.toFixed(2)}
+                  </MyText>
+                )}
+              </>
+            );
+          })()}
         </View>
       </View>
     </TouchableOpacity>

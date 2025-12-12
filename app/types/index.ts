@@ -103,6 +103,9 @@ export type OrderType = {
   status: string;
   rating: number;
   totalAmount: number;
+  subtotal?: number;
+  shippingCost?: number;
+  taxAmount?: number;
   user: AuthUserType;
   _id: string;
 };

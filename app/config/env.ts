@@ -15,7 +15,7 @@ const CONFIG_MAP: Record<AppEnvironment, AppConfig> = {
     APP_NAME: 'ReyLeaf Dev',
     STRIPE_KEY:
       'pk_test_51OcfYUEJs3bbNiuc0gCyyArVknf1IsZQbxXRWFHEFGmbflpPGPIHf2kAOIcdlc6bdmc1aicyV7VPjfe50IJn6VDi00coecLuIo',
-    ENABLE_DEBUGGING: true,
+    ENABLE_DEBUGGING: false,
   },
   production: {
     BASE_URL: 'https://api.reyleaf.com',

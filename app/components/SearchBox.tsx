@@ -29,7 +29,7 @@ const SearchBox = ({
       <View
         style={{
           backgroundColor: '#EBEBEB',
-          height: heightPixel(60),
+          height: heightPixel(64),
           flex: 1,
           borderRadius: BORDER_RADIUS.Circle,
           flexDirection: 'row',

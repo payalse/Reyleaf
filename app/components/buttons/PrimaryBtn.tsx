@@ -11,6 +11,7 @@ type Props = {
   onPress?: () => void;
   conatinerStyle?: StyleProp<ViewStyle>;
   loading?: boolean;
+  disabled?: boolean;
   colors?: [string, string]
 };
 const PrimaryBtn = ({
@@ -20,11 +21,12 @@ const PrimaryBtn = ({
   onPress,
   conatinerStyle,
   loading,
+  disabled,
   colors
 }: Props) => {
   return (
     <TouchableOpacity onPress={onPress}
-      disabled={loading}
+      disabled={loading || disabled}
       style={conatinerStyle}>
       <LinearGradient
         colors={colors ? colors : [COLORS.greenDark, COLORS.greenLight]}

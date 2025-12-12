@@ -33,7 +33,7 @@ const MyOrdersScreen = () => {
     try {
       setLoading(true);
       const res = (await api_getMyOrders(token!)) as GetMyOrderResponse;
-      // console.log(res);
+      console.log(res.data.pending);
       setPendingOrders(res?.data?.pending || []);
       setCompletedOrders(res?.data?.completed || []);
     } catch (error) {

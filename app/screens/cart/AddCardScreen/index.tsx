@@ -26,7 +26,7 @@ type Values = {
 };
 
 const expirydateRegx = /^\d{2}\/\d{2}$/;
-const cvvRegx = /^\d{3}$/;              
+const cvvRegx = /^\d{3,4}$/;
 const onlyAlphanumericAndSpace = /^[a-zA-Z0-9 ]*$/;
 
 const validationSchema = Yup.object().shape({
@@ -39,14 +39,23 @@ const validationSchema = Yup.object().shape({
 
   cardName: Yup.string()
     .trim()
-    .matches(onlyAlphanumericAndSpace, 'Card name must not contain special characters.')
-    .min(5, ({ min }) => `Card name must be at least ${min} characters long.`)
-    .required('Card name is required.'),
+    .matches(
+      onlyAlphanumericAndSpace,
+      'Card name must not contain special characters.',
+    )
+    .min(5, ({min}) => `Card name must be at least ${min} characters long.`),
+  // .required('Card name is required.'),
 
   name: Yup.string()
     .trim()
-    .matches(onlyAlphanumericAndSpace, 'Card holder name must not contain special characters.')
-    .min(5, ({ min }) => `Card holder name must be at least ${min} characters long.`)
+    .matches(
+      onlyAlphanumericAndSpace,
+      'Card holder name must not contain special characters.',
+    )
+    .min(
+      5,
+      ({min}) => `Card holder name must be at least ${min} characters long.`,
+    )
     .required('Card holder name is required.'),
 
   number: Yup.string()
@@ -56,28 +65,29 @@ const validationSchema = Yup.object().shape({
 
   CVV: Yup.string()
     .trim()
-    .matches(cvvRegx, {
-      message: 'CVV must be exactly 3 digits.',
-    })
+    .matches(cvvRegx, {message: 'CVV must be 3 or 4 digits.'})
     .required('CVV is required.'),
 });
+
 const AddCardScreen = () => {
   const {user: auth, token: authToken} = useSelector((s: RootState) => s.auth);
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
 
+  // console.log(authToken)
   const getToken = async (values: Values) => {
     const apiKey = STRIPE_PK;
     const [exm, exy] = values.expirydate.split('/');
     try {
       setLoading(true);
       const client = new Stripe(apiKey);
+      // console.log(values, 'values');
       const token = await client.createToken({
-        name: values.name,
-        number: values.number,
+        name: values.name?.trim(),
+        number: values.number?.trim(),
         exp_month: Number(exm),
         exp_year: Number(exy),
-        cvc: values.CVV,
+        cvc: values.CVV?.trim(),
         address_zip: '12345',
       });
       if (token.error) {
@@ -88,6 +98,7 @@ const AddCardScreen = () => {
         throw new Error('this user have not stripeCustomerId');
       }
       const source = token.id;
+      // console.log(auth?.stripeCustomerId,source)
       const res: any = await api_createCard(
         {
           customerId: stripeCustomerId,
@@ -95,13 +106,14 @@ const AddCardScreen = () => {
         },
         authToken!,
       );
+      // console.log(res, "from add card screen");
       ShowAlert({
         textBody: res?.message || 'success',
         type: ALERT_TYPE.SUCCESS,
       });
       navigation.goBack();
     } catch (error: any) {
-      console.log(error);
+      // console.log(error, "from add card screen");
       ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
     } finally {
       setLoading(false);
@@ -125,7 +137,7 @@ const AddCardScreen = () => {
           <SafeAreaView />
           <SecondaryHeader onBack={navigation.goBack} title="Add New Card" />
           <ScrollView contentContainerStyle={{padding: 20, marginTop: 10}}>
-            <InputWrapper title="Bank Name">
+            {/* <InputWrapper title="Bank Name">
               <MyInput
                 placeholder="Type Here"
                 // value={cardName}
@@ -138,7 +150,7 @@ const AddCardScreen = () => {
               {errors.cardName && touched.cardName && (
                 <InputErrorMsg msg={errors.cardName} />
               )}
-            </InputWrapper>
+            </InputWrapper> */}
             <InputWrapper title="Cardholder Name">
               <MyInput
                 placeholder="Type Here"

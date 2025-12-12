@@ -18,34 +18,33 @@ import FastImage from 'react-native-fast-image';
 
 type Props = {
   id: string;
-  title: string;
-  category: string;
-  price: string;
-  oldPrice: string;
   qty: number;
-  productId: string;
+  product: {
+    _id: string;
+    title: string;
+    price: number;
+    discountedProce: number;
+    categoryId: {
+      name: string;
+    };
+    photos: { url: string }[];
+  };
   setCartItems: any;
-  photos: { url: string }[];
 };
 
 const CartItem = ({
   id,
-  title,
   qty,
-  category,
-  price,
-  oldPrice,
+  product,
   setCartItems,
-  productId,
-  photos,
 }: Props) => {
   const [decrementLoading, setDecrementLoading] = useState(false);
   const [incrementLoading, setIncrementLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const { token } = useSelector((s: RootState) => s.auth);
 
-  const productImage = photos?.[0]?.url
-    ? BUILD_IMAGE_URL(photos?.[0]?.url)
+  const productImage = product.photos?.[0]?.url
+    ? BUILD_IMAGE_URL(product.photos[0].url)
     : null;
 
   const handleDecrementPress = useCallback(async () => {
@@ -96,6 +95,14 @@ const CartItem = ({
     }
   }, [id]);
 
+  const discountedPrice = product.discountedProce || 0;
+  const originalPrice = product.price || 0;
+  const effectivePrice = discountedPrice > 0 ? discountedPrice : originalPrice;
+  const totalPrice = effectivePrice * qty;
+  const totalOldPrice = originalPrice * qty;
+  const hasDiscount = discountedPrice > 0 && originalPrice > discountedPrice;
+  const shouldShowPrice = effectivePrice > 0;
+
   return (
     <View
       style={{
@@ -125,10 +132,10 @@ const CartItem = ({
       <View style={{ flex: 1, padding: heightPixel(10), justifyContent: 'space-between' }}>
         <View>
           <MyText size={FONT_SIZE.xl} bold={FONT_WEIGHT.bold}>
-            {title.length > 28 ? `${title.substring(0, 28)}...` : title}
+            {product.title.length > 28 ? `${product.title.substring(0, 28)}...` : product.title}
           </MyText>
           <MyText size={FONT_SIZE.base} color={COLORS.grey} style={{ marginVertical: pixelSizeVertical(4.4) }}>
-            {category}
+            {product.categoryId.name}
           </MyText>
         </View>
         <View style={{ flexDirection: 'row', gap: 10, alignItems: "center" }}>
@@ -184,17 +191,21 @@ const CartItem = ({
           }}>
           {deleteLoading ? <ActivityIndicator /> : <DeleteSvg />}
         </TouchableOpacity>
-        <View style={{ gap: 4, alignItems: 'flex-end' }}>
-          <MyText size={FONT_SIZE.xl} bold={FONT_WEIGHT.bold}>
-            ${price}
-          </MyText>
-          <MyText
-            size={FONT_SIZE.base}
-            color={COLORS.grey}
-            style={{ textDecorationLine: 'line-through' }}>
-            ${price}
-          </MyText>
-        </View>
+        {shouldShowPrice && (
+          <View style={{ gap: 4, alignItems: 'flex-end' }}>
+            <MyText size={FONT_SIZE.xl} bold={FONT_WEIGHT.bold}>
+              ${totalPrice.toFixed(2)}
+            </MyText>
+            {hasDiscount && (
+              <MyText
+                size={FONT_SIZE.base}
+                color={COLORS.grey}
+                style={{ textDecorationLine: 'line-through' }}>
+                ${totalOldPrice.toFixed(2)}
+              </MyText>
+            )}
+          </View>
+        )}
       </View>
     </View>
   );

@@ -1,4 +1,4 @@
-import { StyleSheet, TextInput, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, TextInput, View } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import AllProductList from './AllProductList';
 import { BORDER_RADIUS, COLORS, FONT_SIZE, FONT_WEIGHT } from '../../../styles';
@@ -23,29 +23,112 @@ const topTabConfig = [
   {
     id: 1,
     name: 'All Product',
-    comp: (data: ProductType[]) => <AllProductList data={data} />,
+    comp: (
+      data: ProductType[], 
+      isSearching?: boolean,
+      searchText?: string,
+      onSearchTextChange?: (text: string) => void,
+      onSearch?: (query: string) => void,
+      searchLoading?: boolean
+    ) => 
+      <AllProductList 
+        data={data} 
+        isSearching={isSearching}
+        searchText={searchText || ''}
+        onSearchTextChange={onSearchTextChange || (() => {})}
+        onSearch={onSearch || (() => {})}
+        searchLoading={searchLoading || false}
+      />,
   },
   {
     id: 2,
     name: 'In Review',
-    comp: (data: ProductType[]) => <AllProductList data={data} />,
+    comp: (
+      data: ProductType[], 
+      isSearching?: boolean,
+      searchText?: string,
+      onSearchTextChange?: (text: string) => void,
+      onSearch?: (query: string) => void,
+      searchLoading?: boolean
+    ) => 
+      <AllProductList 
+        data={data} 
+        isSearching={isSearching}
+        searchText={searchText || ''}
+        onSearchTextChange={onSearchTextChange || (() => {})}
+        onSearch={onSearch || (() => {})}
+        searchLoading={searchLoading || false}
+      />,
   },
   {
     id: 3,
     name: 'Rejected Product',
-    comp: (data: ProductType[]) => <AllProductList data={data} />,
+    comp: (
+      data: ProductType[], 
+      isSearching?: boolean,
+      searchText?: string,
+      onSearchTextChange?: (text: string) => void,
+      onSearch?: (query: string) => void,
+      searchLoading?: boolean
+    ) => 
+      <AllProductList 
+        data={data} 
+        isSearching={isSearching}
+        searchText={searchText || ''}
+        onSearchTextChange={onSearchTextChange || (() => {})}
+        onSearch={onSearch || (() => {})}
+        searchLoading={searchLoading || false}
+      />,
   },
 ];
 
-export const ProductSearch = () => {
+type ProductSearchProps = {
+  searchText: string;
+  onSearchTextChange: (text: string) => void;
+  onSearch: (query: string) => void;
+  loading: boolean;
+};
+
+export const ProductSearch = ({ searchText, onSearchTextChange, onSearch, loading }: ProductSearchProps) => {
+  const debounce = (fn: (...args: any[]) => void, delay: number) => {
+    let timer: NodeJS.Timeout;
+    return (...args: any[]) => {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => fn(...args), delay);
+    };
+  };
+
+  const debouncedSearch = useCallback(debounce(onSearch, 1000), [onSearch]);
+
+  const handleInputChange = (s: string) => {
+    onSearchTextChange(s);
+    debouncedSearch(s);
+  };
+
   return (
     <View style={styles.searchInputWrapper}>
       <AntDesign name="search1" color={COLORS.grey} size={FONT_SIZE.xl} />
       <TextInput
-        style={{ paddingVertical: 15, color: COLORS.black }}
+        style={{ 
+          paddingVertical: 15, 
+          color: COLORS.black,
+          flex: 1,
+          fontSize: FONT_SIZE.base
+        }}
         placeholder="Search by Product name "
         placeholderTextColor={COLORS.grey}
+        value={searchText}
+        onChangeText={handleInputChange}
+        autoCorrect={false}
+        autoCapitalize="none"
+        returnKeyType="search"
+        clearButtonMode="while-editing"
       />
+      {loading && (
+        <View style={{ marginLeft: 10 }}>
+          <ActivityIndicator size="small" color={COLORS.greenDark} />
+        </View>
+      )}
     </View>
   );
 };
@@ -66,10 +149,15 @@ const AllProductScreen = () => {
   const [loading, setLoading] = useState(false);
   const isFocused = useIsFocused();
 
-  const requestApi = useCallback(async () => {
+  // Search state
+  const [searchText, setSearchText] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
+
+  const requestApi = useCallback(async (searchQuery?: string) => {
     try {
       setLoading(true);
-      const res = (await api_getSellerProduct(token!)) as {
+      const res = (await api_getSellerProduct(token!, searchQuery)) as {
         data: {
           all: ProductType[];
           inReview: ProductType[];
@@ -85,6 +173,31 @@ const AllProductScreen = () => {
       setLoading(false);
     }
   }, [token]);
+
+  const handleSearch = useCallback(async (query: string) => {
+    if (!query.trim()) {
+      setIsSearching(false);
+      setSearchLoading(false);
+      await requestApi('');
+      return;
+    }
+
+    setIsSearching(true);
+    setSearchLoading(true);
+    try {
+      await requestApi(query);
+    } finally {
+      setSearchLoading(false);
+    }
+  }, [requestApi]);
+
+  const handleSearchTextChange = useCallback((text: string) => {
+    setSearchText(text);
+    if (!text.trim()) {
+      setIsSearching(false);
+      setSearchLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     requestApi();
@@ -106,7 +219,7 @@ const AllProductScreen = () => {
     );
   }, []);
 
-  if (loading) {
+  if (loading && !searchLoading) {
     return <FullScreenLoader />;
   }
 
@@ -158,12 +271,33 @@ const AllProductScreen = () => {
                   }}
                   component={() => {
                     if (item.id === 1) {
-                      return item.comp(allProduct);
+                      return item.comp(
+                        allProduct, 
+                        isSearching, 
+                        searchText, 
+                        handleSearchTextChange, 
+                        handleSearch, 
+                        searchLoading
+                      );
                     }
                     if (item.id === 2) {
-                      return item.comp(inReviewProduct);
+                      return item.comp(
+                        inReviewProduct, 
+                        isSearching, 
+                        searchText, 
+                        handleSearchTextChange, 
+                        handleSearch, 
+                        searchLoading
+                      );
                     }
-                    return item.comp(rejectedProduct);
+                    return item.comp(
+                      rejectedProduct, 
+                      isSearching, 
+                      searchText, 
+                      handleSearchTextChange, 
+                      handleSearch, 
+                      loading
+                    );
                   }}
                 />
               );
@@ -193,7 +327,7 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   searchInputWrapper: {
-    height: heightPixel(45),
+    height: heightPixel(52),
     backgroundColor: COLORS.lightgrey2,
     marginVertical: pixelSizeVertical(10),
     borderRadius: BORDER_RADIUS.Circle,

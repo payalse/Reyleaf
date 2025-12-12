@@ -1,7 +1,25 @@
 import {BASE_URL} from './index';
 
-export const api_orderPlace = (token: string, addressId: string) => {
+export const api_orderPlace = (
+  token: string,
+  addressId: string,
+  orderData?: {
+    subtotal: number;
+    shippingCost: number;
+    taxAmount: number;
+    totalAmount: number;
+  },
+) => {
   let uri = `${BASE_URL}/api/v1/product/orderPlace`;
+  const body: any = {addressId};
+  
+  if (orderData) {
+    body.subtotal = orderData.subtotal;
+    body.shippingCost = orderData.shippingCost;
+    body.taxAmount = orderData.taxAmount;
+    body.totalAmount = orderData.totalAmount;
+  }
+  
   return new Promise((resolve, reject) => {
     fetch(uri, {
       method: 'POST',
@@ -9,7 +27,7 @@ export const api_orderPlace = (token: string, addressId: string) => {
         Authorization: token,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({addressId}),
+      body: JSON.stringify(body),
     })
       .then(res => res.json())
       .then(data => {

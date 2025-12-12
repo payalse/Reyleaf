@@ -127,7 +127,7 @@ const EditProfileScreen = () => {
 
     if (isValid) {
       const formData = new FormData();
-      formData.append('fullname', values.name);
+      formData.append('fullname', values?.name);
       formData.append('bio', values.bio);
       formData.append('phone', values.phone);
       formData.append('dob', date?.toISOString());
@@ -249,6 +249,8 @@ const EditProfileScreen = () => {
       setIsDeleting(false);
     }
   };
+
+  console.log(authUser?.data?.country, 'country');
   return (
     <MainLayout
       headerComp={
@@ -378,26 +380,26 @@ const EditProfileScreen = () => {
               <View style={{ marginTop: 20 }}>
                 <InputWrapper title="Business Name">
                   <MyInput
-                    hasError={Boolean(errors.name && touched.name)}
+                    hasError={Boolean(errors?.name && touched?.name)}
                     onBlur={handleBlur('name')}
                     onChangeText={handleChange('name')}
-                    value={values.name}
+                    value={values?.name}
                     placeholder="Type your name"
                   />
                 </InputWrapper>
-                {errors.name && touched.name && (
+                {errors?.name && touched?.name && (
                   <InputErrorMsg msg={errors.name} />
                 )}
                 <InputWrapper title="Description">
                   <TextArea
-                    hasError={Boolean(errors.bio && touched.bio)}
+                    hasError={Boolean(errors?.bio && touched?.bio)}
                     onBlur={handleBlur('bio')}
                     onChangeText={handleChange('bio')}
-                    value={values.bio}
+                    value={values?.bio}
                     placeholder="Type here"
                   />
                 </InputWrapper>
-                {errors.bio && touched.bio && (
+                {errors?.bio && touched?.bio && (
                   <InputErrorMsg msg={errors.bio} />
                 )}
 
@@ -431,7 +433,7 @@ const EditProfileScreen = () => {
                   />
                 </InputWrapper>
                 {errors.city && touched.city && (
-                  <InputErrorMsg msg={errors.city} />
+                  <InputErrorMsg msg={errors.city as string} />
                 )}
                 <InputWrapper title="State">
                   <MyInput
@@ -443,12 +445,12 @@ const EditProfileScreen = () => {
                   />
                 </InputWrapper>
                 {errors.state && touched.state && (
-                  <InputErrorMsg msg={errors.state} />
+                  <InputErrorMsg msg={errors.state as string} />
                 )}
                 <InputWrapper title="Country">
                   <SelectInput
-                    placeholder={authUser?.data?.country}
-                    value={country !== null ? country.name : ''}
+                    placeholder={authUser?.data?.country || 'Select from here'}
+                    value={country ? country?.name : ''}
                     onPress={() => {
                       SheetManager.show(SHEETS.CountrySelectSheet, {
                         //@ts-ignore
@@ -474,7 +476,7 @@ const EditProfileScreen = () => {
                   />
                 </InputWrapper>
                 {errors.zipcode && touched.zipcode && (
-                  <InputErrorMsg msg={errors.zipcode} />
+                  <InputErrorMsg msg={errors.zipcode as string} />
                 )}
 
                 <PrimaryBtn
@@ -604,7 +606,7 @@ const EditProfileScreen = () => {
               <View style={{ marginTop: 20 }}>
                 <InputWrapper title="Name">
                   <MyInput
-                    hasError={Boolean(errors.name && touched.name)}
+                    hasError={Boolean(errors?.name && touched?.name)}
                     onBlur={handleBlur('name')}
                     onChangeText={handleChange('name')}
                     value={values.name}

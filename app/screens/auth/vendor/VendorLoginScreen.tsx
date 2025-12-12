@@ -53,7 +53,6 @@ const loginValidationSchema = yup.object().shape({
     .string()
     .trim()
     .email('Invalid email address')
-    .required('Required')
     .required('Email is Required!'),
   password: yup
     .string()

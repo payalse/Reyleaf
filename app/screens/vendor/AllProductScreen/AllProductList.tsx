@@ -1,4 +1,4 @@
-import {FlatList, Image, View} from 'react-native';
+import {FlatList, Image, View, ActivityIndicator} from 'react-native';
 import React from 'react';
 import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../../styles';
 import {MyText} from '../../../components/MyText';
@@ -7,81 +7,115 @@ import {ProductSearch} from '.';
 import {ProductType} from '../../../types';
 import DummyProductImage from '../../../../assets/img/productPlaceholder.jpeg';
 import {BUILD_IMAGE_URL} from '../../../api';
+import Product from '../../../components/Product';
+import {
+  pixelSizeHorizontal,
+  pixelSizeVertical,
+} from '../../../utils/sizeNormalization';
 
-const listHeaderComponent = () => {
-  return <ProductSearch />;
+type AllProductListProps = {
+  data: ProductType[];
+  isSearching?: boolean;
+  searchText: string;
+  onSearchTextChange: (text: string) => void;
+  onSearch: (query: string) => void;
+  searchLoading: boolean;
 };
 
-const AllProductList = ({data}: {data: ProductType[]}) => {
+const listHeaderComponent = (props: {
+  searchText: string;
+  onSearchTextChange: (text: string) => void;
+  onSearch: (query: string) => void;
+  searchLoading: boolean;
+}) => {
+  return <ProductSearch {...props} loading={props.searchLoading} />;
+};
+
+const AllProductList = ({
+  data,
+  isSearching = false,
+  searchText,
+  onSearchTextChange,
+  onSearch,
+  searchLoading,
+}: AllProductListProps) => {
+  const displayData = data;
+  const isEmpty = displayData.length === 0;
+
+  const renderEmptyComponent = () => {
+    if (isSearching && searchLoading) {
+      return (
+        <View style={{ padding: 20, alignItems: 'center' }}>
+          <ActivityIndicator size="large" color={COLORS.greenDark} />
+          <MyText style={{ marginTop: 10, color: COLORS.grey }}>
+            Searching for "{searchText}"...
+          </MyText>
+        </View>
+      );
+    }
+
+    if (isSearching && !searchLoading && searchText.trim()) {
+      return (
+        <View style={{ padding: 20, alignItems: 'center' }}>
+          <MyText size={FONT_SIZE.lg} color={COLORS.grey}>
+            No products found for "{searchText}"
+          </MyText>
+          <MyText size={FONT_SIZE.sm} color={COLORS.grey} style={{ marginTop: 5 }}>
+            Try a different search term
+          </MyText>
+        </View>
+      );
+    }
+
+    return (
+      <View style={{ padding: 20, alignItems: 'center' }}>
+        <MyText size={FONT_SIZE.lg} color={COLORS.grey}>
+          No products available
+        </MyText>
+      </View>
+    );
+  };
+
   return (
     <FlatList
       showsVerticalScrollIndicator={false}
-      ListHeaderComponent={listHeaderComponent}
-      data={data}
+      ListHeaderComponent={() => 
+        listHeaderComponent({
+          searchText,
+          onSearchTextChange,
+          onSearch,
+          searchLoading,
+        })
+      }
+      contentContainerStyle={{
+        paddingBottom: pixelSizeVertical(100),
+        flexGrow: 1,
+      }}
+      ItemSeparatorComponent={() => (
+        <View style={{ height: pixelSizeVertical(16) }} />
+      )}
+      ListFooterComponent={() => (
+        <View style={{ height: pixelSizeVertical(200) }} />
+      )}
+      data={displayData}
       renderItem={({item}) => {
         return (
-          <View
-            style={{
-              backgroundColor: COLORS.white,
-              padding: 8,
-              marginBottom: 20,
-              borderRadius: 10,
-              flexDirection: 'row',
-              gap: 10,
-            }}>
-            <View
-              style={{
-                backgroundColor: COLORS.grey,
-                width: 100,
-                height: 100,
-                borderRadius: 10,
-              }}>
-              <Image
-                source={
-                  item?.photos[0]
-                    ? {uri: BUILD_IMAGE_URL(item?.photos[0].url)}
-                    : DummyProductImage
-                }
-                style={{
-                  width: 100,
-                  height: 100,
-                  borderRadius: 10,
-                  resizeMode: 'cover',
-                }}
-              />
-            </View>
-            <View>
-              <MyText bold={FONT_WEIGHT.bold}>{item?.title}</MyText>
-              <MyText>{item?.categoryId?.name}</MyText>
-              <View style={{flexDirection: 'row', gap: 10, marginVertical: 10}}>
-                <View style={{flexDirection: 'row', gap: 5}}>
-                  <AntDesign name="star" color={'gold'} size={FONT_SIZE.base} />
-                  <AntDesign name="star" color={'gold'} size={FONT_SIZE.base} />
-                  <AntDesign name="star" color={'gold'} size={FONT_SIZE.base} />
-                  <AntDesign name="star" color={'gold'} size={FONT_SIZE.base} />
-                  <AntDesign
-                    name="star"
-                    color={'lightgrey'}
-                    size={FONT_SIZE.base}
-                  />
-                </View>
-                <MyText size={FONT_SIZE.sm}> 4.6 Reviews</MyText>
-              </View>
-              <View
-                style={{flexDirection: 'row', gap: 10, alignItems: 'center'}}>
-                <MyText bold={FONT_WEIGHT.bold}>
-                  $ {item?.discountedProce}
-                </MyText>
-                <MyText
-                  size={FONT_SIZE.sm}
-                  style={{textDecorationLine: 'line-through'}}>
-                  ${item?.price}
-                </MyText>
-              </View>
-            </View>
+          <View style={{ width: '100%' }}>
+            <Product
+              photos={item?.photos}
+              id={item?._id}
+              title={item?.title}
+              rating={item?.rating}
+              price={String(item?.discountedProce || 0)}
+              oldPrice={String(item?.price || 0)}
+              category={item?.categoryId?.name}
+              isFav={item.isFavourite}
+              layout="horizontal"
+            />
           </View>
         );
       }}
+      ListEmptyComponent={renderEmptyComponent}
     />
   );
 };

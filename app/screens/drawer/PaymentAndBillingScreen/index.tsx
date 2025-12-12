@@ -92,7 +92,7 @@ const PaymentAndBillingScreen = () => {
     requestApi();
   }, [isFocused]);
 
-  console.log(data, 'data');
+  // console.log(data, 'data');
 
   return (
     <>
@@ -145,7 +145,9 @@ const PaymentAndBillingScreen = () => {
                   return (
                     <OptionBox
                       key={item?.id}
-                      // onPress={() => navigation.navigate('EditCard')}
+                      // onPress={() =>
+                      //   navigation.navigate('EditCard', {params: item})
+                      // }
                       text={'**** **** **** ' + item?.last4}
                       subText="Visa"
                       leftIcon={

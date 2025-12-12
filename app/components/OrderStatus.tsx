@@ -94,22 +94,28 @@ const OrderStatus = ({
         marginVertical: pixelSizeVertical(8),
       }}>
 
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <MyText bold={FONT_WEIGHT.bold} size={FONT_SIZE.xl}>Order id {orderId}</MyText>
-        <MyText bold={FONT_WEIGHT.bold}>${total}</MyText>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <MyText bold={FONT_WEIGHT.bold} size={FONT_SIZE.xl}>OrderID #{orderId}</MyText>
+        <View style={{ alignItems: 'flex-end' }}>
+          <MyText bold={FONT_WEIGHT.bold} size={FONT_SIZE.xl}>
+            ${typeof total === 'number' ? total.toFixed(2) : total}
+          </MyText>
+        </View>
       </View>
 
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <View style={{ flexDirection: 'row', gap: 10 }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
           <AntDesign name="clockcircle" size={FONT_SIZE.base} color={COLORS.grey} />
           <MyText size={FONT_SIZE.base} color={COLORS.grey}>
             {moment(new Date(date)).format('YYYY-MM-DD HH:mm')}
           </MyText>
         </View>
-        <MyText size={FONT_SIZE.base} color={COLORS.grey}>Order Total</MyText>
+        <View style={{ alignItems: 'flex-end' }}>
+          <MyText size={FONT_SIZE.base} color={COLORS.grey}>Order Total</MyText>
+        </View>
       </View>
 
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <View
           style={{
             paddingVertical: pixelSizeVertical(10),
@@ -117,7 +123,7 @@ const OrderStatus = ({
             backgroundColor: COLORS.darkBrown,
             borderRadius: BORDER_RADIUS['Semi-Large'],
           }}>
-          <View style={{ flexDirection: 'row', gap: 10 }}>
+          <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
             <FontAwesome5 name="shopping-bag" color={COLORS.white} size={FONT_SIZE.base} />
             <MyText size={FONT_SIZE.base} color={COLORS.white}>
               Total Order {numberOfItems || 0} Items

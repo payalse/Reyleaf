@@ -1,4 +1,4 @@
-import {CommentType} from '../types';
+import {CommentType, ProductType} from '../types';
 
 export type RootStackParams = {
   Splash: undefined;
@@ -99,10 +99,19 @@ export type VendorAllOrdersStackStackParams = {
 
 export type CartStackParams = {
   Cart: undefined;
-  CheckOut: {total: number};
+  CheckOut: {total: number, subtotal: number, shippingTotal: number, taxTotal: number};
   AddAddress: undefined;
   EditAddress: undefined;
-  EditCard: undefined;
+  EditCard: {
+    params: {
+      params: {
+        last4: string;
+        name: string;
+        exp_month: string;
+        cvc: string;
+      };
+    };
+  };
   AddCard: undefined;
   OrderSuccess: undefined;
   AppNotification: undefined;
@@ -192,6 +201,13 @@ export type ProfileEditStackParams = {
 export type AllProductStackParams = {
   AllProduct: undefined;
   ProductCreate: undefined;
+  ProductEdit: {
+    product: ProductType;
+  };
+  ProductDetail: {
+    product: ProductType;
+  };
+  Reviews: undefined;
 };
 
 export type ProductDetailParams = {
