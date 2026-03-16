@@ -39,7 +39,10 @@ const PrimaryBtn = ({
             justifyContent: 'center',
             alignItems: 'center',
             flexDirection: 'row',
-            gap: 20,
+            gap: leftComp || rightComp ? 20 : 0,
+          },
+          disabled && {
+            opacity: 0.8,
           },
           conatinerStyle,
         ]}>

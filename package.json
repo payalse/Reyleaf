@@ -32,7 +32,7 @@
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
     "@reduxjs/toolkit": "^2.1.0",
-    "@stripe/stripe-react-native": "^0.37.1",
+    "@stripe/stripe-react-native": "^0.37.3",
     "emoji-picker-react": "^4.11.1",
     "formik": "^2.4.5",
     "moment": "^2.30.1",

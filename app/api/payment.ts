@@ -74,7 +74,7 @@ export const api_getCard = (customerId: string, token: string) => {
       },
       body: JSON.stringify({
         customerId: customerId,
-        limit: 10,
+        limit: 100,
       }),
     })
       .then(res => res.json())
@@ -103,9 +103,6 @@ export const api_deleteCard = (token: string, payload: any) => {
     })
       .then(res => res.json())
       .then(data => {
-        if (data?.Status !== 200) {
-          throw new Error(data.message || 'something went wrong!');
-        }
         resolve(data);
       })
       .catch(err => {

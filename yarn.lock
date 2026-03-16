@@ -2028,7 +2028,7 @@
   dependencies:
     "@sinonjs/commons" "^3.0.0"
 
-"@stripe/stripe-react-native@^0.37.1":
+"@stripe/stripe-react-native@^0.37.3":
   version "0.37.3"
   resolved "https://registry.npmjs.org/@stripe/stripe-react-native/-/stripe-react-native-0.37.3.tgz"
   integrity sha512-9OReixY4bP3ogHUoAmDs+FRKxTCCDz6APep6fn8LAzs5xG5IGDetFb7UlZkigFYqtJgbe3+n4kMS5wIcxKgnLQ==

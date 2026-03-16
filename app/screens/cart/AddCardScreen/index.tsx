@@ -1,220 +1,127 @@
-import {SafeAreaView, ScrollView, View} from 'react-native';
-import {useState} from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { useState } from 'react';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
 import PrimaryBtn from '../../../components/buttons/PrimaryBtn';
-import InputWrapper from '../../../components/inputs/InputWrapper';
-import MyInput from '../../../components/inputs/MyInput';
-import {useNavigation} from '@react-navigation/native';
-// @ts-ignore
-import Stripe from 'react-native-stripe-api';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../../redux/store';
-import {api_createCard} from '../../../api/payment';
-import {ShowAlert} from '../../../utils/alert';
-import {ALERT_TYPE} from 'react-native-alert-notification';
-import {Formik} from 'formik';
-import * as Yup from 'yup';
-import InputErrorMsg from '../../../components/inputs/InputErrorMsg';
-import {STRIPE_PK} from '../../../../App';
-
-type Values = {
-  expirydate: string;
-  cardName: string;
-  name: string;
-  CVV: string;
-  number: string;
-};
-
-const expirydateRegx = /^\d{2}\/\d{2}$/;
-const cvvRegx = /^\d{3,4}$/;
-const onlyAlphanumericAndSpace = /^[a-zA-Z0-9 ]*$/;
-
-const validationSchema = Yup.object().shape({
-  expirydate: Yup.string()
-    .trim()
-    .matches(expirydateRegx, {
-      message: 'Expiry date must be in MM/YY format.',
-    })
-    .required('Expiry date is required.'),
-
-  cardName: Yup.string()
-    .trim()
-    .matches(
-      onlyAlphanumericAndSpace,
-      'Card name must not contain special characters.',
-    )
-    .min(5, ({min}) => `Card name must be at least ${min} characters long.`),
-  // .required('Card name is required.'),
-
-  name: Yup.string()
-    .trim()
-    .matches(
-      onlyAlphanumericAndSpace,
-      'Card holder name must not contain special characters.',
-    )
-    .min(
-      5,
-      ({min}) => `Card holder name must be at least ${min} characters long.`,
-    )
-    .required('Card holder name is required.'),
-
-  number: Yup.string()
-    .trim()
-    .matches(/^\d{16}$/, 'Card number must be exactly 16 digits.')
-    .required('Card number is required.'),
-
-  CVV: Yup.string()
-    .trim()
-    .matches(cvvRegx, {message: 'CVV must be 3 or 4 digits.'})
-    .required('CVV is required.'),
-});
+import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
+import { api_createCard } from '../../../api/payment';
+import { ShowAlert } from '../../../utils/alert';
+import { ALERT_TYPE } from 'react-native-alert-notification';
+import { CardField, useStripe } from '@stripe/stripe-react-native';
+import { BORDER_RADIUS, COLORS, FONT_SIZE, FONT_WEIGHT } from '../../../styles';
+import { MyText } from '../../../components/MyText';
+import { heightPixel, pixelSizeHorizontal, pixelSizeVertical } from '../../../utils/sizeNormalization';
 
 const AddCardScreen = () => {
-  const {user: auth, token: authToken} = useSelector((s: RootState) => s.auth);
+  const { user: auth, token: authToken } = useSelector((s: RootState) => s.auth);
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
+  const [cardDetails, setCardDetails] = useState<any>(null);
+  const { createToken } = useStripe();
 
-  // console.log(authToken)
-  const getToken = async (values: Values) => {
-    const apiKey = STRIPE_PK;
-    const [exm, exy] = values.expirydate.split('/');
+  const handleSave = async () => {
+    if (!cardDetails?.complete) {
+      ShowAlert({ textBody: 'Please complete card details.', type: ALERT_TYPE.DANGER });
+      return;
+    }
     try {
       setLoading(true);
-      const client = new Stripe(apiKey);
-      // console.log(values, 'values');
-      const token = await client.createToken({
-        name: values.name?.trim(),
-        number: values.number?.trim(),
-        exp_month: Number(exm),
-        exp_year: Number(exy),
-        cvc: values.CVV?.trim(),
-        address_zip: '12345',
+
+      const { token, error } = await createToken({
+        type: 'Card',
       });
-      if (token.error) {
-        throw new Error(token.error.message);
+
+      if (error) {
+        throw new Error(error.message || 'Invalid card details');
       }
+      if (!token) {
+        throw new Error('Unable to create token');
+      }
+
       const stripeCustomerId = auth?.stripeCustomerId;
-      if (!stripeCustomerId) {
-        throw new Error('this user have not stripeCustomerId');
-      }
-      const source = token.id;
-      // console.log(auth?.stripeCustomerId,source)
+      if (!stripeCustomerId) throw new Error('Customer not found');
+
       const res: any = await api_createCard(
-        {
-          customerId: stripeCustomerId,
-          source,
-        },
+        { customerId: stripeCustomerId, source: token.id },
         authToken!,
       );
-      // console.log(res, "from add card screen");
-      ShowAlert({
-        textBody: res?.message || 'success',
-        type: ALERT_TYPE.SUCCESS,
-      });
-      navigation.goBack();
+
+      if (res?.success === 200) {
+        ShowAlert({ textBody: res?.message || 'Card added successfully', type: ALERT_TYPE.SUCCESS });
+        navigation.goBack();
+      } else {
+        ShowAlert({ textBody: res?.message || 'Unable to add card', type: ALERT_TYPE.DANGER });
+      }
     } catch (error: any) {
-      // console.log(error, "from add card screen");
-      ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
+      console.log(JSON.stringify(error, null, 2));
+      ShowAlert({ textBody: error.message || 'Unable to add card', type: ALERT_TYPE.DANGER });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Formik
-      validationSchema={validationSchema}
-      initialValues={{
-        cardName: '',
-        CVV: '',
-        expirydate: '',
-        name: '',
-        number: '',
-      }}
-      onSubmit={getToken}>
-      {({handleChange, handleBlur, handleSubmit, values, errors, touched}) => (
-        <View style={{flex: 1}}>
-          {/* ------ */}
-          <SafeAreaView />
-          <SecondaryHeader onBack={navigation.goBack} title="Add New Card" />
-          <ScrollView contentContainerStyle={{padding: 20, marginTop: 10}}>
-            {/* <InputWrapper title="Bank Name">
-              <MyInput
-                placeholder="Type Here"
-                // value={cardName}
-                // onChangeText={setCardName}
-                hasError={Boolean(errors.cardName && touched.cardName)}
-                onBlur={handleBlur('cardName')}
-                onChangeText={handleChange('cardName')}
-                value={values.cardName}
-              />
-              {errors.cardName && touched.cardName && (
-                <InputErrorMsg msg={errors.cardName} />
-              )}
-            </InputWrapper> */}
-            <InputWrapper title="Cardholder Name">
-              <MyInput
-                placeholder="Type Here"
-                // value={name}
-                // onChangeText={setName}
-                hasError={Boolean(errors.name && touched.name)}
-                onBlur={handleBlur('name')}
-                onChangeText={handleChange('name')}
-                value={values.name}
-              />
-              {errors.name && touched.name && (
-                <InputErrorMsg msg={errors.name} />
-              )}
-            </InputWrapper>
-            <InputWrapper title="Card Number">
-              <MyInput
-                keyboardType="numeric"
-                placeholder="Type Here"
-                // value={number}
-                // onChangeText={setNumber}
-                hasError={Boolean(errors.number && touched.number)}
-                onBlur={handleBlur('number')}
-                onChangeText={handleChange('number')}
-                value={values.number}
-              />
-              {errors.number && touched.number && (
-                <InputErrorMsg msg={errors.number} />
-              )}
-            </InputWrapper>
-            <InputWrapper title="Expiry Date">
-              <MyInput
-                placeholder="Type Here"
-                // value={expirydate}
-                // onChangeText={setExpirydate}
-                hasError={Boolean(errors.expirydate && touched.expirydate)}
-                onBlur={handleBlur('expirydate')}
-                onChangeText={handleChange('expirydate')}
-                value={values.expirydate}
-              />
-              {errors.expirydate && touched.CVV && (
-                <InputErrorMsg msg={errors.expirydate} />
-              )}
-            </InputWrapper>
-            <InputWrapper title="CVV">
-              <MyInput
-                keyboardType="numeric"
-                placeholder="Type Here"
-                // value={CVV}
-                // onChangeText={setCVV}
-                hasError={Boolean(errors.CVV && touched.CVV)}
-                onBlur={handleBlur('CVV')}
-                onChangeText={handleChange('CVV')}
-                value={values.CVV}
-              />
-              {errors.CVV && touched.CVV && <InputErrorMsg msg={errors.CVV} />}
-            </InputWrapper>
-          </ScrollView>
-          <View style={{marginBottom: 30, gap: 10, marginHorizontal: 20}}>
-            <PrimaryBtn text="Save" loading={loading} onPress={handleSubmit} />
+    <View style={{ flex: 1 }}>
+      <SafeAreaView />
+      <SecondaryHeader onBack={navigation.goBack} title="Add New Card" />
+      <ScrollView contentContainerStyle={styles.scroll}>
+        <View style={styles.cardFieldWrapper}>
+          <MyText style={styles.label}>Card Details</MyText>
+          <View style={{ width: '100%', height: 50 }}>
+            <CardField
+              postalCodeEnabled={false}
+              placeholders={{
+                number: '**** **** **** ****',
+                cvc: 'CVV',
+                expiration: 'MM/YY',
+              }}
+              cardStyle={{
+                textColor: '#1E1E1E',
+                placeholderColor: '#A0A0A0',
+              }}
+              style={{ width: '100%', height: 50 }}
+              onCardChange={details => {
+                setCardDetails(details);
+              }}
+            />
           </View>
         </View>
-      )}
-    </Formik>
+      </ScrollView>
+
+      <View style={styles.footer}>
+        <PrimaryBtn text="Save Card" loading={loading} onPress={handleSave} disabled={loading || !cardDetails?.complete} />
+      </View>
+    </View>
   );
 };
 
 export default AddCardScreen;
+
+const styles = StyleSheet.create({
+  scroll: {
+    padding: heightPixel(20),
+    marginTop: pixelSizeVertical(10),
+  },
+  label: {
+    fontSize: FONT_SIZE.base,
+    fontWeight: FONT_WEIGHT.medium,
+    color: COLORS.black,
+    marginBottom: pixelSizeVertical(6),
+  },
+  inputBox: {
+    borderWidth: 1,
+    borderColor: COLORS.lightgrey2,
+    borderRadius: BORDER_RADIUS.Small,
+    backgroundColor: COLORS.white,
+    paddingHorizontal: pixelSizeHorizontal(4),
+  },
+  cardFieldWrapper: {
+    marginTop: pixelSizeVertical(16),
+  },
+  footer: {
+    marginBottom: pixelSizeVertical(30),
+    gap: 10,
+    marginHorizontal: pixelSizeHorizontal(20),
+  },
+});

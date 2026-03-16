@@ -57,8 +57,8 @@ android {
         applicationId "com.reyleaf.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 16
-        versionName "1.1.6"
+        versionCode 18
+        versionName "1.1.8"
     }
     signingConfigs {
         debug {

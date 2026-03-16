@@ -20,7 +20,7 @@ const formatMonthWithZero = (month: number) => {
 const EditCardScreen = () => {
   const navigation = useNavigation();
   const {params}: any = useRoute<RouteProp<CartStackParams>>();
-  const {token: authToken} = useSelector((s: RootState) => s.auth);
+  const {token: authToken, user} = useSelector((s: RootState) => s.auth);
   const cardParams = params?.params || {};
   const {last4, name, exp_month, exp_year} = cardParams;
   const [isDeleting, setisDeleting] = useState(false);
@@ -29,6 +29,7 @@ const EditCardScreen = () => {
     try {
       setisDeleting(true);
       const res: any = await api_deleteCard(authToken!, {
+        customerId: user?.stripeCustomerId,
         cardId: cardParams?.id,
       });
       // console.log(res);

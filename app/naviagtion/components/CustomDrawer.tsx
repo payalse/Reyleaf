@@ -112,11 +112,11 @@ const GeneralList: ListNodeType[] = [
     navigateTo: 'PaymentAndBillingStack',
     icon: <Image source={paymentBillingImg} style={iconStyle} />,
   },
-  {
-    title: 'My Earning',
-    navigateTo: 'EarningStack',
-    icon: <Image source={myEarningImg} style={iconStyle} />,
-  },
+  // {
+  //   title: 'My Earning',
+  //   navigateTo: 'EarningStack',
+  //   icon: <Image source={myEarningImg} style={iconStyle} />,
+  // },
   {
     title: 'Notification',
     navigateTo: 'Notification',
@@ -149,7 +149,7 @@ const CustomDrawer = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const handleClose = () => navigation.dispatch(DrawerActions.toggleDrawer());
- 
+
   const handleLogout = () => {
     Alert.alert(
       'Logout Confirmation',
