@@ -103,6 +103,9 @@ export type OrderType = {
   status: string;
   rating: number;
   totalAmount: number;
+  subtotal?: number;
+  shippingCost?: number;
+  taxAmount?: number;
   user: AuthUserType;
   _id: string;
 };
@@ -212,3 +215,44 @@ export type SupportTicketChat = {
   lastActive: string;
   updatedAt: string;
 };
+
+export interface Product {
+  _id: string;
+  categoryId: Category;
+  updatedAt?: string;
+  createdAt?: string;
+  description: string;
+  photos: any;
+  discountedPrice?: number;
+  isFavourite?: boolean;
+  price: number;
+  rating?: number;
+  status?: string;
+  title: string;
+  userId: Vendor | string;
+}
+
+export interface Category {
+  name: string;
+  updated_at?: string;
+  _id: string;
+}
+export interface Vendor {
+  _id: string;
+  email: string;
+  encryptedPassword?: string;
+  eventNotification?: boolean;
+  fcmToken?: string;
+  fullname: string;
+  gender?: number;
+  lastActive?: string;
+  messageNotification?: boolean;
+  orderNotification?: boolean;
+  phone?: string;
+  profileStatus?: number;
+  role?: number;
+  stripeCustomerId?: string;
+  updatedAt?: string;
+  vendorStatus?: number;
+  createdAt?: string;
+}

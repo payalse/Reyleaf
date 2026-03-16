@@ -1,36 +1,32 @@
-import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import { Image, StyleSheet, TouchableOpacity, View, FlatList } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import MainLayout from '../../../components/layout/MainLayout';
 import MainHeader from '../../../components/header/MainHeader';
-import {MyText} from '../../../components/MyText';
-import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../../styles';
+import { MyText } from '../../../components/MyText';
+import { BORDER_RADIUS, COLORS, FONT_SIZE, FONT_WEIGHT } from '../../../styles';
 import OrderChart from './components/OrderChart';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import {FlatList} from 'react-native';
 import AllList from './AllList';
 import AcceptedList from './AcceptedList';
 import DispatchedList from './DispatchedList';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {VendorHomeStackParams} from '../../../naviagtion/types';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../../redux/store';
-import {Rating} from 'react-native-ratings';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { VendorHomeStackParams } from '../../../naviagtion/types';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
+import { Rating } from 'react-native-ratings';
 import FullScreenLoader from '../../../components/FullScreenLoader';
 import {
   api_getSellersIncomeGraph,
   api_getSellersOrders,
   api_getSellersReviews,
 } from '../../../api/seller';
+import { fontPixel, heightPixel, pixelSizeHorizontal, pixelSizeVertical, widthPixel } from '../../../utils/sizeNormalization';
 
 const VendorHomeScreen = () => {
-  const [activeTab, setActiveTab] = useState('All');
   const navigaion =
     useNavigation<NativeStackNavigationProp<VendorHomeStackParams>>();
-  const isFocused = useIsFocused();
-
-  const {token, user} = useSelector((s: RootState) => s.auth);
-  console.log(user);
+  const [activeTab, setActiveTab] = useState('All');
+  const { token, user } = useSelector((s: RootState) => s.auth);
   const [loading, setLoading] = useState(false);
   const [allOrders, setAllOrders] = useState({
     totalOrdersReceived: 0,
@@ -46,7 +42,9 @@ const VendorHomeScreen = () => {
     averageRating: 0,
   });
 
-  const requestApi = async () => {
+  const isFocused = useIsFocused();
+
+  const fetchSellerInfo = async () => {
     try {
       setLoading(true);
       const incomeData: any = await api_getSellersIncomeGraph(token!);
@@ -56,7 +54,7 @@ const VendorHomeScreen = () => {
       setAllIncome(incomeData?.data);
       setAllReviews(reviewsData?.data);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       setLoading(false);
     } finally {
       setLoading(false);
@@ -65,7 +63,7 @@ const VendorHomeScreen = () => {
 
   useEffect(() => {
     const temp = activeTab;
-    requestApi();
+    fetchSellerInfo();
     setActiveTab(() => '');
     setTimeout(() => {
       setActiveTab(() => temp);
@@ -87,7 +85,7 @@ const VendorHomeScreen = () => {
           />
         }>
         <View style={styles.mainContainer}>
-          <MyText size={FONT_SIZE['2xl']} bold={FONT_WEIGHT.bold}>
+          <MyText size={FONT_SIZE['3xl']} style={{ width: "78%", lineHeight: fontPixel(40) }} bold={FONT_WEIGHT.bold}>
             Let's manage all of your Orders, {user?.fullname} 🎯
           </MyText>
           {/* Charts */}
@@ -98,7 +96,7 @@ const VendorHomeScreen = () => {
                 completedOrders={allOrders?.totalOrdersDelivered || 0}
               />
               <View>
-                <MyText center size={FONT_SIZE.sm} color={COLORS.grey}>
+                <MyText center size={FONT_SIZE.base} color={COLORS.grey}>
                   Total Order Received
                 </MyText>
                 <MyText center bold={FONT_WEIGHT.bold} size={FONT_SIZE.xl}>
@@ -106,7 +104,7 @@ const VendorHomeScreen = () => {
                 </MyText>
               </View>
               <View>
-                <MyText center size={FONT_SIZE.sm} color={COLORS.grey}>
+                <MyText center size={FONT_SIZE.base} color={COLORS.grey}>
                   Total Order Deliverd
                 </MyText>
                 <MyText center bold={FONT_WEIGHT.bold} size={FONT_SIZE.xl}>
@@ -116,24 +114,24 @@ const VendorHomeScreen = () => {
             </View>
             <View style={styles.chartRightView}>
               <View style={styles.chartRightTopView}>
-                <View style={{gap: 5}}>
+                <View style={{ gap: 5 }}>
                   <MyText bold={FONT_WEIGHT.bold} size={FONT_SIZE.xl}>
                     {reviews?.totalReviews}
                   </MyText>
-                  <MyText color={COLORS.grey} size={FONT_SIZE.sm}>
+                  <MyText color={COLORS.grey} size={FONT_SIZE.base}>
                     Total Review
                   </MyText>
                 </View>
-                <View style={{gap: 5}}>
+                <View style={{ gap: 5 }}>
                   <Rating
-                    style={{marginRight: 'auto'}}
+                    style={{ marginRight: 'auto' }}
                     type="star"
                     ratingCount={5}
                     imageSize={15}
                     readonly
                     startingValue={reviews?.averageRating}
                   />
-                  <MyText color={COLORS.grey} size={FONT_SIZE.sm}>
+                  <MyText color={COLORS.grey} size={FONT_SIZE.base}>
                     {reviews?.averageRating} Rating
                   </MyText>
                 </View>
@@ -141,15 +139,15 @@ const VendorHomeScreen = () => {
               <View style={styles.chartRightBottomView}>
                 <Image
                   source={require('../../../../assets/img/icons/income.png')}
-                  style={{width: 40, height: 40, borderRadius: 10}}
+                  style={{ width: widthPixel(40), height: heightPixel(40), borderRadius: BORDER_RADIUS.XMedium, marginBottom: pixelSizeVertical(8) }}
                   resizeMode="cover"
                 />
-                <View style={{flexDirection: 'row', gap: 10}}>
+                <View style={{ flexDirection: 'row', gap: 12 }}>
                   <View>
                     <MyText size={FONT_SIZE.base} bold={FONT_WEIGHT.bold}>
                       ${income?.totalIncome || 0}
                     </MyText>
-                    <MyText color={COLORS.grey} size={FONT_SIZE.sm}>
+                    <MyText color={COLORS.grey} size={FONT_SIZE.base} style={{ marginTop: pixelSizeVertical(2) }}>
                       Total Income
                     </MyText>
                   </View>
@@ -157,7 +155,7 @@ const VendorHomeScreen = () => {
                     <MyText size={FONT_SIZE.base} bold={FONT_WEIGHT.bold}>
                       ${income?.todayIncome || 0}
                     </MyText>
-                    <MyText color={COLORS.grey} size={FONT_SIZE.sm}>
+                    <MyText color={COLORS.grey} size={FONT_SIZE.base} style={{ marginTop: pixelSizeVertical(2) }}>
                       Today
                     </MyText>
                   </View>
@@ -169,7 +167,8 @@ const VendorHomeScreen = () => {
           {/*  Orders */}
           <View
             style={{
-              marginTop: 20,
+              marginTop: pixelSizeVertical(20),
+              marginBottom: pixelSizeVertical(8),
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
@@ -177,13 +176,13 @@ const VendorHomeScreen = () => {
             <MyText bold={FONT_WEIGHT.bold} size={FONT_SIZE.xl}>
               Latest Orders
             </MyText>
-            <MyText size={FONT_SIZE.sm}>View all</MyText>
+            <MyText >View all</MyText>
           </View>
           <FlatList
             data={['All', 'Accepted', 'Dispatched']}
             horizontal
-            contentContainerStyle={{marginVertical: 10}}
-            renderItem={({item}) => {
+            contentContainerStyle={{ marginVertical: pixelSizeVertical(10) }}
+            renderItem={({ item }) => {
               const isActive = item === activeTab;
               return (
                 <TouchableOpacity
@@ -191,11 +190,11 @@ const VendorHomeScreen = () => {
                   style={{
                     backgroundColor: isActive
                       ? COLORS.darkBrown
-                      : COLORS.lightgrey,
-                    paddingHorizontal: 20,
-                    marginRight: 20,
-                    paddingVertical: 10,
-                    borderRadius: 20,
+                      : COLORS.lightgrey2,
+                    paddingHorizontal: pixelSizeHorizontal(20),
+                    marginRight: pixelSizeHorizontal(20),
+                    paddingVertical: pixelSizeVertical(10),
+                    borderRadius: BORDER_RADIUS['Semi-Large'],
                   }}>
                   <MyText color={isActive ? COLORS.white : COLORS.grey}>
                     {item}
@@ -221,21 +220,21 @@ export default VendorHomeScreen;
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    paddingTop: 10,
+    paddingTop: pixelSizeVertical(10),
   },
   chartContainer: {
     // height: hp(35),
-    marginTop: 20,
+    marginTop: pixelSizeVertical(20),
     flexDirection: 'row',
     gap: 20,
   },
   chartLeftView: {
     flex: 1,
     backgroundColor: COLORS.white,
-    borderRadius: 20,
+    borderRadius: BORDER_RADIUS['Semi-Large'],
     gap: 10,
     justifyContent: 'space-evenly',
-    paddingVertical: 20,
+    paddingVertical: pixelSizeHorizontal(20),
   },
   chartRightView: {
     flex: 1,
@@ -244,15 +243,15 @@ const styles = StyleSheet.create({
   chartRightTopView: {
     flex: 1,
     backgroundColor: COLORS.white,
-    borderRadius: 20,
-    padding: 20,
+    borderRadius: BORDER_RADIUS['Semi-Large'],
+    padding: heightPixel(20),
     justifyContent: 'space-between',
   },
   chartRightBottomView: {
     flex: 1,
     backgroundColor: COLORS.white,
-    borderRadius: 20,
-    padding: 20,
+    borderRadius: BORDER_RADIUS['Semi-Large'],
+    padding: heightPixel(20),
     justifyContent: 'space-between',
   },
 });

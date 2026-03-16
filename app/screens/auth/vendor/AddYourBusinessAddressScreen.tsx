@@ -1,29 +1,36 @@
-import React, {useState} from 'react';
-import {ScrollView, View, SafeAreaView} from 'react-native';
+import React, { useState } from 'react';
+import { ScrollView, View, SafeAreaView } from 'react-native';
 import LayoutBG from '../../../components/layout/LayoutBG';
 import BackBtn from '../../../components/buttons/BackBtn';
-import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {MyText} from '../../../components/MyText';
-import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../../styles';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { MyText } from '../../../components/MyText';
+import { COLORS, FONT_SIZE, FONT_WEIGHT } from '../../../styles';
 import InputWrapper from '../../../components/inputs/InputWrapper';
 import MyInput from '../../../components/inputs/MyInput';
 import PrimaryBtn from '../../../components/buttons/PrimaryBtn';
 import PasswordUpdatedModel from '../../../components/modal/PasswordUpdatedModel';
 import SelectInput from '../../../components/inputs/SelectInput';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootStackParams} from '../../../naviagtion/types';
-import {Formik} from 'formik';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParams } from '../../../naviagtion/types';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
-import {ALERT_TYPE} from 'react-native-alert-notification';
-import {updateUser} from '../../../redux/features/auth/authSlice';
-import {ShowAlert} from '../../../utils/alert';
-import {api_addUpdateAddress} from '../../../api/auth';
-import {useDispatch} from 'react-redux';
-import {AppDispatch} from '../../../redux/store';
-import {CountryType} from '../../../utils/countryTable';
+import { ALERT_TYPE } from 'react-native-alert-notification';
+import { updateUser } from '../../../redux/features/auth/authSlice';
+import { ShowAlert } from '../../../utils/alert';
+import { api_addUpdateAddress } from '../../../api/auth';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../../redux/store';
+import { CountryType } from '../../../utils/countryTable';
 import InputErrorMsg from '../../../components/inputs/InputErrorMsg';
-import {SheetManager} from 'react-native-actions-sheet';
-import {SHEETS} from '../../../sheets/sheets';
+import { SheetManager } from 'react-native-actions-sheet';
+import { SHEETS } from '../../../sheets/sheets';
+import {
+  fontPixel,
+  heightPixel,
+  pixelSizeHorizontal,
+  pixelSizeVertical,
+  widthPixel,
+} from '../../../utils/sizeNormalization';
 
 type FormValues = {
   address: string;
@@ -33,16 +40,20 @@ type FormValues = {
 };
 const validationSchema = Yup.object().shape({
   address: Yup.string()
-    .min(10, ({min}) => `Address must be at least ${min} characters`)
+    .trim()
+    .min(10, ({ min }) => `Address must be at least ${min} characters`)
     .required('Address is Required!'),
   city: Yup.string()
-    .min(4, ({min}) => `City must be at least ${min} characters`)
+    .trim()
+    .min(4, ({ min }) => `City must be at least ${min} characters`)
     .required('City is Required!'),
   state: Yup.string()
-    .min(4, ({min}) => `State must be at least ${min} characters`)
+    .trim()
+    .min(4, ({ min }) => `State must be at least ${min} characters`)
     .required('State is Required!'),
   zipcode: Yup.string()
-    .min(4, ({min}) => `ZipCode must be at least ${min} characters`)
+    .trim()
+    .min(4, ({ min }) => `ZipCode must be at least ${min} characters`)
     .required('ZipCode is Required!'),
 });
 
@@ -57,11 +68,11 @@ const AddYourBusinessAddressScreen = () => {
   const [extraErr, setExtraErr] = useState({
     country: '',
   });
-  console.log({country});
+
   const onSubmit = async (values: FormValues) => {
     let isValid = true;
     if (country === null) {
-      setExtraErr(e => ({...e, country: 'Please Choose Country!'}));
+      setExtraErr(e => ({ ...e, country: 'Please Choose Country!' }));
       isValid = false;
     }
 
@@ -73,7 +84,6 @@ const AddYourBusinessAddressScreen = () => {
       country: country?.name,
       zipcode: values.zipcode,
     };
-    console.log(payload, params);
     try {
       setLoading(true);
       const res = (await api_addUpdateAddress(
@@ -83,7 +93,7 @@ const AddYourBusinessAddressScreen = () => {
       dispatch(updateUser(res));
       navigation.navigate('AccountCreatedSuccess');
     } catch (error: any) {
-      ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
+      ShowAlert({ textBody: error.message, type: ALERT_TYPE.DANGER });
     } finally {
       setLoading(false);
     }
@@ -107,20 +117,20 @@ const AddYourBusinessAddressScreen = () => {
           errors,
           touched,
         }) => (
-          <ScrollView contentContainerStyle={{marginHorizontal: 20}}>
+          <ScrollView contentContainerStyle={{ marginHorizontal: pixelSizeHorizontal(20) }}>
             <BackBtn onPress={navigation.goBack} />
             <View>
               <MyText
                 bold={FONT_WEIGHT.bold}
                 size={FONT_SIZE['2xl']}
-                style={{marginTop: 100, marginBottom: 10}}>
+                style={{ marginTop: pixelSizeVertical(36), marginBottom: pixelSizeVertical(10) }}>
                 Add your Business Address
               </MyText>
-              <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
+              <MyText color={COLORS.grey} style={{ width: "84%", lineHeight: fontPixel(20) }}>
                 Enter your business address to help customers find you easily.
               </MyText>
             </View>
-            <View style={{marginTop: 20}}>
+            <View style={{ marginTop: pixelSizeVertical(20) }}>
               <InputWrapper title="Business Address">
                 <MyInput
                   hasError={Boolean(errors.address && touched.address)}
@@ -167,7 +177,7 @@ const AddYourBusinessAddressScreen = () => {
                       payload: {
                         onSelect: (e: CountryType) => {
                           setCoutry(e);
-                          setExtraErr(prev => ({...prev, country: ''}));
+                          setExtraErr(prev => ({ ...prev, country: '' }));
                         },
                       },
                     });
@@ -192,7 +202,7 @@ const AddYourBusinessAddressScreen = () => {
                 loading={loading}
                 onPress={handleSubmit}
                 text="Next"
-                conatinerStyle={{marginTop: 10, marginBottom: 40}}
+                conatinerStyle={{ marginTop: pixelSizeVertical(10), marginBottom: pixelSizeVertical(40) }}
               />
             </View>
           </ScrollView>

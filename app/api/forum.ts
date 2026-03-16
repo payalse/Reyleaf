@@ -12,7 +12,6 @@ export const api_getAllForums = (token: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 'OK') {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -105,7 +104,6 @@ export const api_forumContent = (token: string, data: any, id: any) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(
             data.message || data.error || 'something went wrong!',

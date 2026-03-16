@@ -1,46 +1,41 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import MainHeader from '../../components/header/MainHeader';
 import {
-  FlatList,
-  Pressable,
   SafeAreaView,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import {COLORS, D, FONT_SIZE, FONT_WEIGHT, hp, wp} from '../../styles';
-import {MyText} from '../../components/MyText';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import FeedItem from './components/FeedItem';
+import { COLORS, FONT_WEIGHT, hp, wp } from '../../styles';
+import { MyText } from '../../components/MyText';
 import AddActionButton from '../../components/buttons/AddActionButton';
-import {useIsFocused, useNavigation, useRoute} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {FeedStackParams} from '../../naviagtion/types';
+import { useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { FeedStackParams } from '../../naviagtion/types';
 import LoactionPermissionModal from '../../components/modal/LoactionPermissionModal';
 import FriendsTab from './FriendsTab';
 import FeedsTab from './FeedsTab';
-import {useDispatch, useSelector} from 'react-redux';
-import {AppDispatch, RootState} from '../../redux/store';
-import {FeedType} from '../../types';
-import {api_getFeeds, api_getFeedsByZipCode} from '../../api/feeds';
-import {addFeed} from '../../redux/features/feed/feedSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../redux/store';
+import { FeedType } from '../../types';
+import { api_getFeeds, api_getFeedsByZipCode } from '../../api/feeds';
+import { addFeed } from '../../redux/features/feed/feedSlice';
 import FullScreenLoader from '../../components/FullScreenLoader';
+import {widthPixel,heightPixel,pixelSizeHorizontal} from '../../utils/sizeNormalization';
 const Tabs = ['Feeds', 'Friends'];
 
 const FeedScreen = () => {
   const route = useRoute();
   const navigation =
     useNavigation<NativeStackNavigationProp<FeedStackParams>>();
-  const [activeTab, setActiveTab] = useState(Tabs[1]);
+  const [activeTab, setActiveTab] = useState(Tabs[0]);
   const [text, setText] = useState('');
   const [isLoactionPermissionModalOpen, setIsLoactionPermissionModalOpen] =
     useState(false);
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
-  const {token, user} = useSelector((s: RootState) => s.auth);
+  const { token, user } = useSelector((s: RootState) => s.auth);
 
   const handleLocationPermissionModalClose = async () => {
     setIsLoactionPermissionModalOpen(false);
@@ -81,7 +76,6 @@ const FeedScreen = () => {
 
   useEffect(() => {
     requestApi();
-    setActiveTab(user?.role == 2 ? Tabs[0] : Tabs[1]);
   }, [isFocused]);
 
   return (
@@ -106,7 +100,7 @@ const FeedScreen = () => {
         />
       </View>
       {user?.role == 2 ? (
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <View style={styles.headerWrapper}>
             <SafeAreaView />
             <MainHeader
@@ -122,7 +116,7 @@ const FeedScreen = () => {
           </View>
         </View>
       ) : (
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <LoactionPermissionModal
             value={text}
             onChange={s => setText(s)}

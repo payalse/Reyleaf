@@ -1,17 +1,21 @@
-import {ScrollView, Touchable, TouchableOpacity, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import { ScrollView, TouchableOpacity, View } from 'react-native';
+import { useEffect, useState } from 'react';
 import LayoutBG from '../../components/layout/LayoutBG';
 import BackBtn from '../../components/buttons/BackBtn';
-import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {MyText} from '../../components/MyText';
-import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../styles';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { MyText } from '../../components/MyText';
+import { COLORS, FONT_SIZE, FONT_WEIGHT } from '../../styles';
 import OTPInput from '../../components/inputs/OtpInput';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootStackParams} from '../../naviagtion/types';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParams } from '../../naviagtion/types';
 import PrimaryBtn from '../../components/buttons/PrimaryBtn';
-import {ShowAlert} from '../../utils/alert';
-import {ALERT_TYPE} from 'react-native-alert-notification';
-import {api_verifyForgetPasswordOTP} from '../../api/auth';
+import { ShowAlert } from '../../utils/alert';
+import { ALERT_TYPE } from 'react-native-alert-notification';
+import { api_verifyForgetPasswordOTP } from '../../api/auth';
+import {
+  pixelSizeHorizontal,
+  pixelSizeVertical,
+} from '../../utils/sizeNormalization';
 
 const ForgetPasswordOtpVerificationScreen = () => {
   const params =
@@ -31,22 +35,19 @@ const ForgetPasswordOtpVerificationScreen = () => {
 
   const onSubmit = async () => {
     if (code.length < 4) return;
-    console.log(code);
-
     try {
       setLoading(true);
       const res = (await api_verifyForgetPasswordOTP({
         refId: params.verifyToken,
         otp: code,
       })) as any;
-      console.log(res);
-      ShowAlert({textBody: res?.message});
+      ShowAlert({ textBody: res?.message });
       navigation.navigate('SetNewPassword', {
         verifyToken: params.verifyToken,
         otp: code,
       });
     } catch (error: any) {
-      ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
+      ShowAlert({ textBody: error.message, type: ALERT_TYPE.DANGER });
     } finally {
       setLoading(false);
     }
@@ -73,20 +74,20 @@ const ForgetPasswordOtpVerificationScreen = () => {
   });
   return (
     <LayoutBG type="bg-leaf">
-      <ScrollView contentContainerStyle={{marginHorizontal: 20}}>
+      <ScrollView contentContainerStyle={{ marginHorizontal: pixelSizeHorizontal(20) }}>
         <BackBtn onPress={navigation.goBack} />
         <View>
           <MyText
             bold={FONT_WEIGHT.bold}
             size={FONT_SIZE['2xl']}
-            style={{marginTop: 100, marginBottom: 10}}>
+            style={{ marginTop: pixelSizeVertical(100), marginBottom: pixelSizeVertical(10) }}>
             Enter Verfication Code
           </MyText>
-          <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
+          <MyText size={FONT_SIZE.lg} color={COLORS.grey}>
             We have sent a verification code to your email
           </MyText>
 
-          <View style={{marginVertical: 40}}>
+          <View style={{ marginVertical: pixelSizeVertical(40) }}>
             <OTPInput
               onOTPChange={e => {
                 setCode(e);
@@ -95,20 +96,19 @@ const ForgetPasswordOtpVerificationScreen = () => {
           </View>
 
           {seconds > 0 || minutes > 0 ? (
-            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
               <MyText>
                 Time Remaining: {minutes < 10 ? `0${minutes}` : minutes}:
                 {seconds < 10 ? `0${seconds}` : seconds}
               </MyText>
             </View>
           ) : (
-            <View style={{flexDirection: 'row', alignSelf: 'center', gap: 5}}>
-              <MyText center size={FONT_SIZE.sm} color={COLORS.grey}>
+            <View style={{ flexDirection: 'row', alignSelf: 'center', gap: 5 }}>
+              <MyText center color={COLORS.grey}>
                 Didn’t Receive the Code{' '}
               </MyText>
               <TouchableOpacity onPress={resendOTPStartTimmer}>
                 <MyText
-                  size={FONT_SIZE.sm}
                   color={COLORS.greenDark}
                   bold={FONT_WEIGHT.bold}>
                   Resend
@@ -118,7 +118,7 @@ const ForgetPasswordOtpVerificationScreen = () => {
           )}
         </View>
         <PrimaryBtn
-          conatinerStyle={{marginTop: 20}}
+          conatinerStyle={{ marginTop: pixelSizeVertical(20) }}
           text="Submit"
           onPress={onSubmit}
           loading={loading}

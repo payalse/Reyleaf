@@ -5,9 +5,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {MyText} from '../../components/MyText';
-import {COLORS} from '../../styles';
+import {BORDER_RADIUS, COLORS} from '../../styles';
 import {api_getCategories} from '../../api/category';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../../redux/store';
@@ -16,6 +16,7 @@ import {
   updateHomeActiveCategory,
 } from '../../redux/features/category/categorySlice';
 import {GetCategoriesResponse} from '../../types/apiResponse';
+import { pixelSizeHorizontal, pixelSizeVertical } from '../../utils/sizeNormalization';
 
 const OptionsList = () => {
   const [loading, setLoading] = useState(false);
@@ -45,7 +46,7 @@ const OptionsList = () => {
       horizontal
       data={categories}
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{marginBottom: 20}}
+      contentContainerStyle={{marginBottom: pixelSizeVertical(20)}}
       ListFooterComponent={() => {
         return loading ? (
           <View
@@ -70,15 +71,15 @@ const OptionsList = () => {
               }
             }}
             style={{
-              marginRight: 10,
-              borderRadius: 20,
+              marginRight: pixelSizeHorizontal(10),
+              borderRadius: BORDER_RADIUS.Circle,
               backgroundColor: isActive ? COLORS.darkBrown : COLORS.lightgrey2,
             }}>
             <MyText
               color={isActive ? COLORS.white : COLORS.lightgrey}
               style={{
-                paddingHorizontal: 15,
-                paddingVertical: 8,
+                paddingHorizontal: pixelSizeHorizontal(16),
+                paddingVertical: pixelSizeVertical(8),
               }}>
               {item.name}
             </MyText>

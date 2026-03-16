@@ -1,9 +1,8 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
 import {MyText} from '../../components/MyText';
 import {FONT_SIZE, FONT_WEIGHT} from '../../styles';
 import {FlatList} from 'react-native';
-import ProductItem from '../../components/ProductItem';
+import Product from '../../components/Product';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/store';
 import {useNavigation} from '@react-navigation/native';
@@ -29,7 +28,13 @@ const BestSellingList = () => {
         <MyText bold={FONT_WEIGHT.bold} size={FONT_SIZE.xl}>
           Best Selling
         </MyText>
-        <TouchableOpacity onPress={() => navigation.navigate('BestSelling')}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('AllProductList', {
+              title: 'Best Selling',
+              productData: bestSellingProducts,
+            })
+          }>
           <MyText>View all</MyText>
         </TouchableOpacity>
       </View>
@@ -41,7 +46,7 @@ const BestSellingList = () => {
         keyExtractor={item => item?._id}
         renderItem={({item}) => {
           return (
-            <ProductItem
+            <Product
               photos={item?.photos}
               id={item?._id}
               title={item?.title}

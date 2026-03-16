@@ -1,27 +1,27 @@
 import {
-  Image,
   Pressable,
   SafeAreaView,
-  TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
-import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {OrderStackParams} from '../../../naviagtion/DrawerNavigator';
-import {COLORS, FONT_SIZE, FONT_WEIGHT, hp, wp} from '../../../styles';
-import {MyText} from '../../../components/MyText';
-import {FlatList} from 'react-native-gesture-handler';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { OrderStackParams } from '../../../naviagtion/DrawerNavigator';
+import { BORDER_RADIUS, COLORS, FONT_SIZE, FONT_WEIGHT } from '../../../styles';
+import { MyText } from '../../../components/MyText';
+import { FlatList } from 'react-native-gesture-handler';
 import AntDesgin from 'react-native-vector-icons/AntDesign';
-import {api_getOrderDetail} from '../../../api/order';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../../redux/store';
+import { api_getOrderDetail } from '../../../api/order';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
 import FullScreenLoader from '../../../components/FullScreenLoader';
-import {OrderType} from '../../../types';
+import { OrderType } from '../../../types';
 import moment from 'moment';
-import {BUILD_IMAGE_URL} from '../../../api';
-import DummyProductImage from '../../../../assets/img/productPlaceholder.jpeg';
+import { BUILD_IMAGE_URL } from '../../../api';
+import { heightPixel, pixelSizeHorizontal, pixelSizeVertical, widthPixel } from '../../../utils/sizeNormalization';
+import FastImage from 'react-native-fast-image';
+
 const Steps = [
   'Order Placed on 10 Dec',
   'Order Accepted on 10 Dec',
@@ -40,28 +40,28 @@ const ListHeaderComponent = ({
 }) => {
   const [currentStepIndex, setCurrentStepIndex] = useState(1);
   return (
-    <View style={{marginTop: 15}}>
+    <View style={{ marginTop: pixelSizeVertical(16) }}>
       <MyText size={FONT_SIZE.xl} bold={FONT_WEIGHT.bold}>
         Order ID - {orderId}
       </MyText>
-      <View style={{flexDirection: 'row', gap: 5, marginVertical: 10}}>
+      <View style={{ flexDirection: 'row', gap: 5, marginVertical: pixelSizeVertical(12) }}>
         <AntDesgin
           name="clockcircle"
           size={FONT_SIZE.base}
           color={COLORS.grey}
         />
-        <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
+        <MyText size={FONT_SIZE.base} color={COLORS.grey}>
           {moment(orderDate).format('MMMM Do, YYYY h:mm A')}
         </MyText>
       </View>
-      <View style={{justifyContent: 'space-between', flexDirection: 'row'}}>
+      <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
         <MyText>Order Status</MyText>
         <MyText color={COLORS.greenDark} bold={FONT_WEIGHT.semibold}>
           Order Confirmed
         </MyText>
       </View>
 
-      <View style={{}}>
+      <View>
         {Steps.map((step: string, index: number) => {
           const isFirstSetp = index === 0;
           const isActive = currentStepIndex >= index;
@@ -72,14 +72,14 @@ const ListHeaderComponent = ({
               style={{
                 flexDirection: 'row',
                 gap: 20,
-                marginTop: isFirstSetp ? 20 : 30,
-                marginLeft: 10,
+                marginTop: pixelSizeVertical(isFirstSetp ? 24 : 34),
+                marginLeft: pixelSizeHorizontal(12),
               }}>
               <View
                 style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: 10,
+                  width: widthPixel(19),
+                  height: heightPixel(20),
+                  borderRadius: BORDER_RADIUS.Medium,
                   backgroundColor: isActive
                     ? COLORS.greenDark
                     : COLORS.lightgrey,
@@ -88,9 +88,9 @@ const ListHeaderComponent = ({
                   style={{
                     display: isActive ? 'flex' : 'none',
                     backgroundColor: COLORS.greenDark,
-                    width: 35,
-                    height: 35,
-                    borderRadius: 35 / 2,
+                    width: widthPixel(34),
+                    height: heightPixel(35),
+                    borderRadius: BORDER_RADIUS.Circle,
                     position: 'absolute',
                     opacity: 0.3,
                     top: -7.5,
@@ -102,11 +102,11 @@ const ListHeaderComponent = ({
                     display: isFirstSetp ? 'none' : 'flex',
                     width: 1.5,
                     backgroundColor: isActive ? COLORS.greenDark : COLORS.grey,
-                    height: 30,
+                    height: heightPixel(34),
                     position: 'absolute',
                     left: 9,
-                    bottom: 20,
-                  }}></View>
+                    bottom: pixelSizeVertical(20),
+                  }} />
               </View>
               <MyText color={isActive ? COLORS.black : COLORS.grey}>
                 {step}
@@ -115,7 +115,7 @@ const ListHeaderComponent = ({
           );
         })}
       </View>
-      <MyText bold={FONT_WEIGHT.semibold} style={{marginTop: 15}}>
+      <MyText bold={FONT_WEIGHT.semibold} style={{ marginTop: pixelSizeVertical(16) }}>
         Order Items
       </MyText>
     </View>
@@ -126,18 +126,19 @@ const OrderDetailScreen = () => {
   const params = useRoute<RouteProp<OrderStackParams, 'OrderDetail'>>().params;
   const navigation =
     useNavigation<NativeStackNavigationProp<OrderStackParams>>();
-  const {token} = useSelector((s: RootState) => s.auth);
+  const { token } = useSelector((s: RootState) => s.auth);
   const [orderData, setOrderData] = useState<OrderType | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const requestApi = async () => {
+  const fetchOrderDetail = async () => {
     try {
       setLoading(true);
+
       const res = (await api_getOrderDetail(token!, params.orderId)) as {
         data: OrderType;
       };
-      console.log(res, 'api_getOrderDetail');
-      setOrderData(res.data);
+
+      setOrderData(res.data || null);
     } catch (error) {
       console.log(error);
     } finally {
@@ -146,14 +147,15 @@ const OrderDetailScreen = () => {
   };
 
   useEffect(() => {
-    requestApi();
+    fetchOrderDetail();
   }, [params]);
 
   if (loading) {
     return <FullScreenLoader />;
   }
+
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <SafeAreaView />
       <SecondaryHeader onBack={navigation.goBack} title="Order Summery" />
 
@@ -165,44 +167,58 @@ const OrderDetailScreen = () => {
             orderDate={orderData?.createdAt || ''}
           />
         }
-        style={{marginTop: 20}}
+        style={{ marginTop: pixelSizeVertical(20) }}
         data={orderData?.items || []}
         contentContainerStyle={{
-          marginHorizontal: 20,
+          marginHorizontal: pixelSizeHorizontal(20),
           gap: 10,
         }}
-        renderItem={({item}) => {
+        renderItem={({ item }: any) => {
+          // Calculate effective price (discounted if available, otherwise original)
+          const discountedPrice = item?.product?.discountedProce || 0;
+          const originalPrice = item?.product?.price || 0;
+          const effectivePrice =
+            discountedPrice > 0 ? discountedPrice : originalPrice;
+          const hasDiscount = discountedPrice > 0 && originalPrice > discountedPrice;
+
           return (
-            <TouchableOpacity
+            <View
               style={{
-                padding: 5,
+                padding: heightPixel(8),
+                maxHeight: heightPixel(74),
                 flexDirection: 'row',
                 alignItems: 'center',
                 gap: 10,
                 backgroundColor: COLORS.white,
-                borderRadius: 15,
+                borderRadius: BORDER_RADIUS.Medium,
                 justifyContent: 'center',
-                marginBottom: 5,
+                marginBottom: pixelSizeVertical(6),
               }}>
               <View
                 style={{
                   backgroundColor: COLORS.grey,
-                  width: wp(15),
-                  height: wp(15),
-                  borderRadius: 15,
+                  width: widthPixel(56),
+                  height: heightPixel(60),
+                  borderRadius: BORDER_RADIUS.Medium,
                 }}>
-                <Image
-                  style={{
-                    width: wp(15),
-                    height: wp(15),
-                    borderRadius: 15,
-                  }}
+                <FastImage
                   source={
                     item?.product?.photos[0]?.url
-                      ? {uri: BUILD_IMAGE_URL(item?.product?.photos[0].url)}
-                      : DummyProductImage
+                      ? { uri: BUILD_IMAGE_URL(item.product.photos[0].url) }
+                      : require('../../../../assets/img/productPlaceholder.jpeg')
+                  }
+                  style={{
+                    width: widthPixel(56),
+                    height: heightPixel(60),
+                    borderRadius: BORDER_RADIUS.Medium,
+                  }}
+                  resizeMode={
+                    item?.product?.photos[0]?.url
+                      ? FastImage.resizeMode.contain
+                      : FastImage.resizeMode.stretch
                   }
                 />
+
               </View>
               <View
                 style={{
@@ -215,11 +231,13 @@ const OrderDetailScreen = () => {
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                   }}>
-                  <MyText size={FONT_SIZE.base} bold={FONT_WEIGHT.semibold}>
-                    {item?.product?.title}
+                  <MyText bold={FONT_WEIGHT.semibold}>
+                    {item?.product?.title.length > 30
+                      ? `${item?.product?.title.substring(0, 30)}...`
+                      : item?.product?.title}
                   </MyText>
-                  <MyText size={FONT_SIZE.base} bold={FONT_WEIGHT.semibold}>
-                    ${item?.product?.discountedProce}
+                  <MyText bold={FONT_WEIGHT.semibold}>
+                    ${effectivePrice.toFixed(2)}
                   </MyText>
                 </View>
 
@@ -229,8 +247,8 @@ const OrderDetailScreen = () => {
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                   }}>
-                  <MyText size={FONT_SIZE.sm}>Qty</MyText>
-                  <MyText size={FONT_SIZE.sm}>{item?.quantity}</MyText>
+                  <MyText size={FONT_SIZE.base}>Qty</MyText>
+                  <MyText size={FONT_SIZE.base}>{item?.quantity}</MyText>
                 </View>
 
                 <View
@@ -239,17 +257,20 @@ const OrderDetailScreen = () => {
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                   }}>
-                  <MyText size={FONT_SIZE.sm}>
+                  <MyText size={FONT_SIZE.base}>
                     {item?.product?.categoryId?.name}
                   </MyText>
-                  <MyText
-                    style={{textDecorationLine: 'line-through'}}
-                    size={FONT_SIZE.sm}>
-                    ${item?.product?.price}
-                  </MyText>
+                  {hasDiscount && (
+                    <MyText
+                      style={{ textDecorationLine: 'line-through' }}
+                      size={FONT_SIZE.base}
+                      color={COLORS.grey}>
+                      ${originalPrice.toFixed(2)}
+                    </MyText>
+                  )}
                 </View>
               </View>
-            </TouchableOpacity>
+            </View>
           );
         }}
       />
@@ -258,27 +279,37 @@ const OrderDetailScreen = () => {
         style={{
           backgroundColor: COLORS.white,
           padding: 20,
-          height: hp(18),
+          height: "18%",
           marginTop: 'auto',
-          gap: hp(1.5),
+          gap: 8,
         }}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <MyText color={COLORS.grey} size={FONT_SIZE.base}>
             Sub total
           </MyText>
           <MyText color={COLORS.grey} size={FONT_SIZE.base}>
-            ${orderData?.totalAmount}
+            ${(orderData?.subtotal || orderData?.totalAmount || 0).toFixed(2)}
           </MyText>
         </View>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        {(orderData?.taxAmount || 0) > 0 && (
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <MyText color={COLORS.grey} size={FONT_SIZE.base}>
+              Tax
+            </MyText>
+            <MyText color={COLORS.grey} size={FONT_SIZE.base}>
+              ${(orderData?.taxAmount || 0).toFixed(2)}
+            </MyText>
+          </View>
+        )}
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <MyText color={COLORS.grey} size={FONT_SIZE.base}>
             Shipping fee
           </MyText>
           <MyText color={COLORS.grey} size={FONT_SIZE.base}>
-            ${0}
+            ${(orderData?.shippingCost || 0).toFixed(2)}
           </MyText>
         </View>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <MyText
             color={COLORS.black}
             bold={FONT_WEIGHT.bold}
@@ -289,7 +320,7 @@ const OrderDetailScreen = () => {
             color={COLORS.black}
             bold={FONT_WEIGHT.bold}
             size={FONT_SIZE.xl}>
-            ${orderData?.totalAmount}
+            ${(orderData?.totalAmount || 0).toFixed(2)}
           </MyText>
         </View>
       </View>

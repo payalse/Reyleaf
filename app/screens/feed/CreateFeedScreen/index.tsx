@@ -122,7 +122,6 @@ const CreateFeedScreen = () => {
 
               <View
                 style={{
-                  backgroundColor: COLORS.greenDark,
                   width: 25,
                   height: 25,
                   borderRadius: 25 / 2,
@@ -132,11 +131,9 @@ const CreateFeedScreen = () => {
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <AntDesign
-                  onPress={openPicker}
-                  name="cloudupload"
-                  size={FONT_SIZE.base}
-                  color={COLORS.white}
+                <Image
+                  style={{width: 30, height: 30, resizeMode: 'cover'}}
+                  source={require('../../../../assets/img/icons/uploadimg.png')}
                 />
               </View>
             </TouchableOpacity>

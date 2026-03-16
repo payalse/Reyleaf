@@ -11,7 +11,6 @@ export const api_getEvents = (token: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -33,7 +32,6 @@ export const api_getJoinedEvents = (token: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -47,7 +45,6 @@ export const api_getJoinedEvents = (token: string) => {
 export const api_joinOrLeaveEvent = (token: string, payload: any) => {
   const uri = `${BASE_URL}/api/v1/event/joinOrLeaveEvent`;
 
-  console.log(payload, 'payload', token);
   return new Promise((resolve, reject) => {
     fetch(uri, {
       method: 'POST',
@@ -59,7 +56,6 @@ export const api_joinOrLeaveEvent = (token: string, payload: any) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data, 'data');
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -81,7 +77,6 @@ export const api_getEventDetails = (token: string, eventId: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -104,7 +99,6 @@ export const api_getEventsByDate = (token: string, date: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data, 'getEventsByDate');
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -136,7 +130,6 @@ export const api_addEvent = (token: string, formData: FormData) => {
         resolve(data);
       })
       .catch(err => {
-        console.log(err);
         reject(err);
       });
   });

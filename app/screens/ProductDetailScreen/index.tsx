@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  Alert,
   Image,
   StyleSheet,
   ToastAndroid,
@@ -16,7 +17,7 @@ import {COLORS, FONT_SIZE, FONT_WEIGHT, hp, wp} from '../../styles';
 import AntDesgin from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {FlatList} from 'react-native';
-import ProductItem from '../../components/ProductItem';
+import Product from '../../components/Product';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import ProductShow from './components/ProductShow';
 import CartSvg from '../../../assets/svg/tab/icons/CartFill.svg';
@@ -31,9 +32,14 @@ import {
   api_addProductToFavourite,
   api_getReviewList,
   api_productGetById,
+  api_productDelete,
   apiSimilarProductList,
 } from '../../api/product';
-import {HomeStackParams, ProductDetailParams} from '../../naviagtion/types';
+import {
+  HomeStackParams,
+  ProductDetailParams,
+  AllProductStackParams,
+} from '../../naviagtion/types';
 import {BASE_URL, BUILD_IMAGE_URL} from '../../api';
 import FullScreenLoader from '../../components/FullScreenLoader';
 import {
@@ -50,6 +56,10 @@ import {
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import Review from '../../components/Reviews';
 import {Rating} from 'react-native-ratings';
+import {pixelSizeVertical} from '../../utils/sizeNormalization';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useIsFocused} from '@react-navigation/native';
 
 const SimilarList = ({productList}: any) => {
   const navigation =
@@ -68,7 +78,12 @@ const SimilarList = ({productList}: any) => {
           Similar Items
         </MyText>
         <TouchableOpacity
-          onPress={() => navigation.navigate('SimilarProducts')}>
+          onPress={() =>
+            navigation.navigate('AllProductList', {
+              title: 'Similar Items',
+              productData: productList,
+            })
+          }>
           <MyText>View all</MyText>
         </TouchableOpacity>
       </View>
@@ -80,7 +95,7 @@ const SimilarList = ({productList}: any) => {
         keyExtractor={item => item.id}
         renderItem={({item}) => {
           return (
-            <ProductItem
+            <Product
               photos={item?.photos}
               id={item?._id}
               title={item?.title}
@@ -109,14 +124,25 @@ const ProductDetailScreen = () => {
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(false);
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(true);
-  const {token} = useSelector((s: RootState) => s.auth);
+  const {token, user} = useSelector((s: RootState) => s.auth);
   const navigation = useNavigation();
   const [productImages, setProductImages] = useState<string[]>([]);
-  const navigation1 =
-    useNavigation<NativeStackNavigationProp<ProductDetailParams>>();
-    const navigation2 =
+  const navigation1 = useNavigation<any>();
+  const navigation2 =
     useNavigation<NativeStackNavigationProp<HomeStackParams>>();
+  const isVendor = user?.role === 2;
+  const isFocused = useIsFocused();
 
+  const getShippingMethodLabel = (method: string): string => {
+    const methodMap: {[key: string]: string} = {
+      standard: 'Standard',
+      express: 'Express',
+      two_day: 'Two Day',
+      next_day: 'Next Day',
+      pickup: 'Pickup',
+    };
+    return methodMap[method] || method;
+  };
   const addToCartPress = async () => {
     try {
       if (!token) {
@@ -162,7 +188,7 @@ const ProductDetailScreen = () => {
       setLoading2(false);
     }
   };
-
+  console.log(product);
   const requestReviewsApi = async () => {
     try {
       setLoading2(true);
@@ -206,11 +232,11 @@ const ProductDetailScreen = () => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     requestApi();
     requestReviewsApi();
     requestSimilarProductApi();
-  }, []);
+  }, [isFocused]);
 
   useEffect(() => {
     if (product?.photos?.length) {
@@ -240,6 +266,37 @@ const ProductDetailScreen = () => {
     }
   };
 
+  const confirmDelete = () => {
+    Alert.alert(
+      'Confirm Delete',
+      'Are you sure you want to delete this product?',
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {text: 'Delete', onPress: deleteProduct, style: 'destructive'},
+      ],
+    );
+  };
+
+  const deleteProduct = async () => {
+    try {
+      const res: any = await api_productDelete(token!, params.productId);
+
+      if (res.status === 200) {
+        ShowAlert({
+          textBody: 'Product deleted successfully!',
+          type: ALERT_TYPE.SUCCESS,
+        });
+        navigation.goBack();
+      } else {
+        ShowAlert({
+          textBody: res.data.message || 'Failed to delete product!',
+          type: ALERT_TYPE.DANGER,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <View
       style={{
@@ -259,9 +316,16 @@ const ProductDetailScreen = () => {
             borderTopRightRadius: 20,
             borderTopLeftRadius: 20,
           }}>
-          {/* Like Btn */}
           <TouchableOpacity
-            onPress={() => addToFavourite()}
+            onPress={() => {
+              if (isVendor) {
+                navigation1.navigate('ProductEdit', {
+                  product: product as ProductType,
+                });
+              } else {
+                addToFavourite();
+              }
+            }}
             style={{
               backgroundColor: COLORS.greenDark,
               width: wp(18),
@@ -276,7 +340,11 @@ const ProductDetailScreen = () => {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <HeartIconSvg opacity={liked ? 1 : 0.4} />
+            {isVendor ? (
+              <AntDesgin name="edit" size={24} color={COLORS.white} />
+            ) : (
+              <HeartIconSvg opacity={liked ? 1 : 0.4} />
+            )}
           </TouchableOpacity>
           <View>
             <View
@@ -287,10 +355,17 @@ const ProductDetailScreen = () => {
                 marginBottom: 10,
               }}>
               <View style={{gap: 5}}>
-                <MyText size={FONT_SIZE.lg} bold={FONT_WEIGHT.semibold}>
+                <MyText
+                  size={FONT_SIZE.xl}
+                  bold={FONT_WEIGHT.semibold}
+                  style={{width: '90%', flexWrap: 'wrap'}}>
                   {product?.title || 'Product title'}
                 </MyText>
-                <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
+
+                <MyText
+                  size={FONT_SIZE.lg}
+                  color={COLORS.grey}
+                  style={{width: '90%', flexWrap: 'wrap'}}>
                   {product?.categoryId?.name || 'Product Category'}
                 </MyText>
                 <View
@@ -306,59 +381,85 @@ const ProductDetailScreen = () => {
                     readonly
                     startingValue={product?.rating}
                   />
-                  <MyText size={FONT_SIZE.sm}>{product?.rating || '0'}</MyText>
+                  {product?.rating !== undefined && product?.rating > 0 && (
+                    <MyText size={FONT_SIZE.lg}>
+                      {product?.rating || '0'}
+                    </MyText>
+                  )}
                 </View>
               </View>
               <View
                 style={{
                   alignItems: 'flex-end',
                   justifyContent: 'flex-end',
+                  marginTop: 5,
                 }}>
-                <MyText size={FONT_SIZE.lg} bold={FONT_WEIGHT.semibold}>
-                  ${product?.discountedProce}
-                </MyText>
+                {product?.discountedProce !== product?.price &&
+                  product?.discountedProce !== 0 && (
+                    <MyText
+                      size={FONT_SIZE.lg}
+                      color={COLORS.grey}
+                      style={{marginBottom: 5}}>
+                      Discounted Price
+                    </MyText>
+                  )}
+                {product?.discountedProce !== product?.price &&
+                  product?.discountedProce !== 0 && (
+                    <MyText
+                      size={FONT_SIZE['1.5xl']}
+                      bold={FONT_WEIGHT.semibold}>
+                      ${product?.discountedProce}
+                    </MyText>
+                  )}
                 <MyText
-                  size={FONT_SIZE.sm}
+                  size={FONT_SIZE.lg}
                   color={COLORS.grey}
-                  style={{textDecorationLine: 'line-through'}}>
+                  style={{marginBottom: 5}}>
+                  Price
+                </MyText>
+
+                <MyText size={FONT_SIZE.xl} color={COLORS.grey}>
                   ${product?.price}
                 </MyText>
               </View>
             </View>
-            <View
-              style={{
-                alignItems: 'center',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-              }}>
-              <MyText size={FONT_SIZE.sm}>Select Total Item</MyText>
+            {!isVendor && (
               <View
-                style={{alignItems: 'center', flexDirection: 'row', gap: 10}}>
-                <TouchableOpacity
-                  style={styles.countBtn}
-                  onPress={() => setQty(prev => prev + 1)}>
-                  <AntDesgin
-                    name="plus"
-                    size={FONT_SIZE.sm}
-                    color={COLORS.white}
-                  />
-                </TouchableOpacity>
-                <MyText size={FONT_SIZE['xl']}>{qty}</MyText>
-                <TouchableOpacity
-                  style={styles.countBtn}
-                  onPress={() => {
-                    if (qty >= 2) {
-                      return setQty(prev => prev - 1);
-                    }
-                  }}>
-                  <AntDesgin
-                    name="minus"
-                    size={FONT_SIZE.sm}
-                    color={COLORS.white}
-                  />
-                </TouchableOpacity>
+                style={{
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+                <MyText size={FONT_SIZE.lg}>Select Total Item</MyText>
+                <View
+                  style={{alignItems: 'center', flexDirection: 'row', gap: 10}}>
+                  <TouchableOpacity
+                    style={styles.countBtn}
+                    onPress={() => {
+                      if (qty >= 2) {
+                        return setQty(prev => prev - 1);
+                      }
+                    }}>
+                    <AntDesgin
+                      name="minus"
+                      size={FONT_SIZE.base}
+                      color={COLORS.white}
+                    />
+                  </TouchableOpacity>
+                  <MyText size={FONT_SIZE['xl']}>{qty}</MyText>
+
+                  <TouchableOpacity
+                    style={styles.countBtn}
+                    onPress={() => setQty(prev => prev + 1)}>
+                    <AntDesgin
+                      name="plus"
+                      size={FONT_SIZE.base}
+                      color={COLORS.white}
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
+            )}
           </View>
           <View style={styles.line} />
           <View
@@ -366,7 +467,7 @@ const ProductDetailScreen = () => {
               flexDirection: 'row',
               justifyContent: 'space-between',
               alignItems: 'center',
-              marginBottom: 5,
+              marginBottom: pixelSizeVertical(4),
             }}>
             <MyText>Description</MyText>
             <TouchableOpacity
@@ -385,10 +486,100 @@ const ProductDetailScreen = () => {
             <MyText
               color={COLORS.grey}
               style={{lineHeight: 18}}
-              size={FONT_SIZE.sm}>
+              size={FONT_SIZE.base}>
               {product?.description}
             </MyText>
           ) : null}
+
+          {/* Shipping Information */}
+          {((product as any)?.shippingMethod ||
+            (product as any)?.shippingCost !== undefined) && (
+            <>
+              <View style={styles.line} />
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: pixelSizeVertical(4),
+                }}>
+                <MyText bold={FONT_WEIGHT.semibold}>
+                  Shipping Information
+                </MyText>
+              </View>
+              <View style={{gap: 8, marginTop: 10}}>
+                {(product as any)?.shippingMethod && (
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}>
+                    <MyText color={COLORS.grey} size={FONT_SIZE.base}>
+                      Shipping Method:
+                    </MyText>
+                    <MyText size={FONT_SIZE.base}>
+                      {getShippingMethodLabel(
+                        (product as any).shippingMethod,
+                      ) || 'Standard'}
+                    </MyText>
+                  </View>
+                )}
+                {(product as any)?.shippingCost !== undefined && (
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}>
+                    <MyText color={COLORS.grey} size={FONT_SIZE.base}>
+                      Shipping Cost:
+                    </MyText>
+                    <MyText size={FONT_SIZE.base}>
+                      {(product as any).shippingCost === 0
+                        ? 'Free'
+                        : '$' + (product as any).shippingCost}
+                    </MyText>
+                  </View>
+                )}
+                {(product as any)?.freeShippingAbove !== undefined &&
+                  (product as any).freeShippingAbove > 0 && (
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}>
+                      <MyText color={COLORS.grey} size={FONT_SIZE.base}>
+                        Free Shipping Above:
+                      </MyText>
+                      <MyText size={FONT_SIZE.base} color={COLORS.greenDark}>
+                        ${(product as any).freeShippingAbove}
+                      </MyText>
+                    </View>
+                  )}
+              </View>
+            </>
+          )}
+
+          {/* Tax Included */}
+          {(product as any)?.tax &&
+            Array.isArray((product as any).tax) &&
+            (product as any).tax.length > 0 && (
+              <>
+                <View style={styles.line} />
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 8,
+                  }}>
+                  <MyText color={COLORS.grey} size={FONT_SIZE.base}>
+                    Tax Included
+                  </MyText>
+                </View>
+              </>
+            )}
 
           <View
             style={{
@@ -400,7 +591,7 @@ const ProductDetailScreen = () => {
             }}>
             <MyText>Rating & Reviews</MyText>
             <TouchableOpacity onPress={() => navigation1.navigate('Reviews')}>
-              <MyText size={FONT_SIZE.sm}>View all</MyText>
+              <MyText size={FONT_SIZE.lg}>View all</MyText>
             </TouchableOpacity>
           </View>
           <View>
@@ -418,22 +609,52 @@ const ProductDetailScreen = () => {
               })}
           </View>
         </View>
-        <SimilarList productList={similarProducts} />
+        {!isVendor && <SimilarList productList={similarProducts} />}
       </MainLayout>
-      <PrimaryBtn
-        loading={loading}
-        onPress={addToCartPress}
-        leftComp={() => {
-          return <CartSvg />;
-        }}
-        conatinerStyle={{
-          width: '95%',
-          gap: 10,
-          alignSelf: 'center',
-          marginBottom: 15,
-        }}
-        text="Add to Cart"
-      />
+      {isVendor ? (
+        <View
+          style={{
+            width: '100%',
+            alignItems: 'center',
+            backgroundColor: COLORS.white,
+          }}>
+          <TouchableOpacity
+            onPress={confirmDelete}
+            style={{
+              width: '95%',
+              gap: 5,
+              alignSelf: 'center',
+              marginBottom: 15,
+              backgroundColor: '#f3c4c9',
+              padding: 10,
+              borderRadius: 50,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: 50,
+            }}>
+            <MaterialCommunityIcons name="delete" color={'#EA001B'} size={20} />
+            <MyText color={'#EA001B'} size={FONT_SIZE.lg}>
+              Delete Product
+            </MyText>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <PrimaryBtn
+          loading={loading}
+          onPress={addToCartPress}
+          leftComp={() => {
+            return <CartSvg />;
+          }}
+          conatinerStyle={{
+            width: '95%',
+            gap: 10,
+            alignSelf: 'center',
+            marginBottom: 15,
+          }}
+          text="Add to Cart"
+        />
+      )}
     </View>
   );
 };

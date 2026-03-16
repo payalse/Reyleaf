@@ -11,7 +11,7 @@ const BoardTwo = () => {
   return (
     <RenderBody
       heading={
-        'Reynette, Honest Choices, Upholding Our Commitment to Purely Eco-Friendly Offerings'
+        'Reyleaf, Honest Choices, Upholding Our Commitment to Purely Eco-Friendly Offerings'
       }
       subHeading={
         "our commitment to sustainability goes beyond mere words; it's the cornerstone of our ethos"

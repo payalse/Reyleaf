@@ -9,7 +9,7 @@ import feedReducer from './features/feed/feedSlice';
 import supportReducer from './features/support/supportSlice';
 import {createLogger} from 'redux-logger';
 import friendReducer from './features/friends/friendsSlice';
-
+import {AppConfig} from '../config/env';
 const logger = createLogger({});
 
 const store = configureStore({
@@ -24,7 +24,10 @@ const store = configureStore({
     friend: friendReducer,
     support: supportReducer,
   },
-  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(logger),
+  middleware: getDefaultMiddleware =>
+    AppConfig.ENABLE_DEBUGGING
+      ? getDefaultMiddleware().concat(logger)
+      : getDefaultMiddleware(),
 });
 
 export default store;

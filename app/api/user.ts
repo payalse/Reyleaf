@@ -20,7 +20,6 @@ export const api_chnagePassword = (
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 201) {
           throw new Error(
             data.message || data.error || 'something went wrong!',
@@ -46,7 +45,6 @@ export const api_getAddress = (token: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(
             data.message || data.error || 'something went wrong!',
@@ -72,7 +70,6 @@ export const api_getNotifications = (token: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(
             data.message || data.error || 'something went wrong!',
@@ -99,7 +96,6 @@ export const api_updateNotificationSettings = (token: string, body: any) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(
             data.message || data.error || 'something went wrong!',
@@ -126,7 +122,6 @@ export const api_addReviewByUser = (token: string, body: any, orderId: any) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(
             data.message || data.error || 'something went wrong!',
@@ -155,7 +150,6 @@ export const api_deleteUserProfile = (token: string) => {
         resolve(data);
       })
       .catch(err => {
-        console.log(err, 'hhhhhhhh');
         reject(err);
       });
   });

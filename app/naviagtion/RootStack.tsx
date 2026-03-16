@@ -1,5 +1,4 @@
-import React from 'react';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // SCREENS
 import WelcomeScreen from '../screens/Welcome/WelcomeScreen';
@@ -24,28 +23,23 @@ import AddYourBusinessAddressScreen from '../screens/auth/vendor/AddYourBusiness
 import OnBoarding from '../screens/OnBoarding';
 import SplashScreen from '../screens/Splash/SplashScreen';
 import ApplicationUnderReviewScreen from '../screens/auth/vendor/ApplicationUnderReviewScreen';
-import {RootStackParams} from './types';
+import { RootStackParams } from './types';
 import DrawerNavigator from './DrawerNavigator';
-import {useSelector} from 'react-redux';
-import {RootState} from '../redux/store';
-import {useEffect, useState} from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
+import { useEffect, useState } from 'react';
 import ConnectWithCalendarScreen from '../screens/auth/ConnectWithCalendarScreen';
-import {requestNotificationPermission} from '../permissions/notification';
+import { requestNotificationPermission } from '../permissions/notification';
 import HomeScreen from '../screens/home/HomeScreen';
-import TrendingProductsScreen from '../screens/home/TrendingProductsScreen';
-import RecentlyViewedScreen from '../screens/home/RecentlyViewedScreen';
-import BestSellingScreen from '../screens/home/BestSellingScreen';
 import ProductDetailScreen from '../screens/ProductDetailScreen';
-import SimilarProductScreen from '../screens/home/SimilarProductScreen';
 import ReviewsScreen from '../screens/ProductDetailScreen/Reviews';
 import NewlyArrival from '../screens/home/NewlyArrivalList';
 
 const Stack = createNativeStackNavigator<RootStackParams>();
 const RootStack = () => {
-  const {isAuthenticated} = useSelector((s: RootState) => s.auth);
-  const {firstLaunched} = useSelector((s: RootState) => s.app);
+  const { isAuthenticated } = useSelector((s: RootState) => s.auth);
+  const { firstLaunched } = useSelector((s: RootState) => s.app);
 
-  console.log({isAuthenticated});
   const [splashEnable, setSplashEnable] = useState(true);
 
   useEffect(() => {
@@ -57,15 +51,13 @@ const RootStack = () => {
   }
 
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
-      {!isAuthenticated ? (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {!isAuthenticated ?
         <>
           {firstLaunched && (
             <Stack.Screen name="OnBoarding" component={OnBoarding} />
           )}
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
-
-          {/* USER */}
           <Stack.Group>
             <Stack.Screen name="Signup" component={SignupScreen} />
             <Stack.Screen name="Login" component={LoginScreen} />
@@ -107,26 +99,11 @@ const RootStack = () => {
             />
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen
-              name="TrendingProduct"
-              component={TrendingProductsScreen}
-            />
-            <Stack.Screen name="NewlyArrival" component={NewlyArrival} />
-            <Stack.Screen
-              name="RecentlyViewed"
-              component={RecentlyViewedScreen}
-            />
-            <Stack.Screen name="BestSelling" component={BestSellingScreen} />
-            <Stack.Screen
               name="ProductDetail"
               component={ProductDetailScreen}
             />
-            <Stack.Screen
-              name="SimilarProducts"
-              component={SimilarProductScreen}
-            />
             <Stack.Screen name="Reviews" component={ReviewsScreen} />
           </Stack.Group>
-          {/* VENDOR */}
           <Stack.Group>
             <Stack.Screen name="VendorLogin" component={VendorLoginScreen} />
             <Stack.Screen name="VendorSignup" component={VendorSignupScreen} />
@@ -161,11 +138,9 @@ const RootStack = () => {
             />
           </Stack.Group>
         </>
-      ) : (
-        <Stack.Screen name="AppDrawer" component={DrawerNavigator} />
-      )}
+        : <Stack.Screen name="AppDrawer" component={DrawerNavigator} />
+      }
 
-      {/* Rest */}
     </Stack.Navigator>
   );
 };

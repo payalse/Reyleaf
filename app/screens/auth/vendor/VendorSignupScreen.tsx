@@ -1,10 +1,10 @@
-import React, {useState} from 'react';
-import {ScrollView, TouchableOpacity, View} from 'react-native';
-import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../../styles';
-import {useNavigation} from '@react-navigation/native';
+import { useState } from 'react';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { COLORS, FONT_SIZE, FONT_WEIGHT } from '../../../styles';
+import { useNavigation } from '@react-navigation/native';
 
 // COMPONENTS
-import {MyText} from '../../../components/MyText';
+import { MyText } from '../../../components/MyText';
 import PrimaryBtn from '../../../components/buttons/PrimaryBtn';
 import MyInput from '../../../components/inputs/MyInput';
 import InputWrapper from '../../../components/inputs/InputWrapper';
@@ -15,35 +15,52 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import BackBtn from '../../../components/buttons/BackBtn';
 import APPLOGO from '../../../../assets/svg/icons/icon.svg';
 import LayoutBG from '../../../components/layout/LayoutBG';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootStackParams} from '../../../naviagtion/types';
-import {useDispatch} from 'react-redux';
-import {AppDispatch} from '../../../redux/store';
-import {Formik} from 'formik';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParams } from '../../../naviagtion/types';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../../redux/store';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
-import {SignupResponse} from '../../../types/apiResponse';
-import {api_signup} from '../../../api/auth';
-import {ShowAlert} from '../../../utils/alert';
-import {login} from '../../../redux/features/auth/authSlice';
-import {ALERT_TYPE} from 'react-native-alert-notification';
+import { SignupResponse } from '../../../types/apiResponse';
+import { api_signup } from '../../../api/auth';
+import { ShowAlert } from '../../../utils/alert';
+import { login } from '../../../redux/features/auth/authSlice';
+import { ALERT_TYPE } from 'react-native-alert-notification';
 import InputErrorMsg from '../../../components/inputs/InputErrorMsg';
+import {
+  pixelSizeHorizontal,
+  pixelSizeVertical,
+  widthPixel,
+} from '../../../utils/sizeNormalization';
+import { LOGO_HEIGHT, LOGO_WIDTH } from '../../Welcome/WelcomeScreen';
+import TnC from '../../../components/modal/TnC';
+import PrivacyPolicy from '../../../components/modal/PrivacyPolicy';
+import CheckBox from '@react-native-community/checkbox';
 
 type FormValues = {
   email: string;
   password: string;
   confirmPassword: string;
+  isAgreed: boolean
 };
 const validationSchema = Yup.object().shape({
   email: Yup.string()
+    .trim()
     .email('Invalid email address')
     .required('Required')
     .required('Email is Required!'),
   password: Yup.string()
-    .min(8, ({min}) => `Password must be at least ${min} characters`)
+    .trim()
+    .min(8, ({ min }) => `Password must be at least ${min} characters`)
     .required('Password is Required!'),
   confirmPassword: Yup.string()
+    .trim()
     .oneOf([Yup.ref('password')], 'Passwords must match')
     .required('Confirm Password is Required!'),
+  isAgreed: Yup.boolean().oneOf(
+    [true],
+    'You must accept the Terms & Conditions and Privacy Policy to register!',
+  ),
 });
 
 const VendorSignupScreen = () => {
@@ -52,6 +69,9 @@ const VendorSignupScreen = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
+
   const onSubmit = async (values: FormValues) => {
     const payload = {
       email: values.email,
@@ -61,19 +81,18 @@ const VendorSignupScreen = () => {
 
     try {
       setLoading(true);
-      const res = (await api_signup(payload)) as SignupResponse;
-      console.log(res);
+      const res = (await api_signup(payload as any)) as SignupResponse;
       ShowAlert({
         textBody: 'OTP sent successfully, Please check your inbox!',
         type: ALERT_TYPE.SUCCESS,
       });
-      dispatch(login({...res.data, token: res.token}));
+      dispatch(login({ ...res.data, token: res.token } as any));
       navigation.navigate('VendorOtpVerification', {
         verifyToken: res.data._id,
         authToken: res.token,
       });
     } catch (error: any) {
-      ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
+      ShowAlert({ textBody: error.message, type: ALERT_TYPE.DANGER });
     } finally {
       setLoading(false);
     }
@@ -86,42 +105,44 @@ const VendorSignupScreen = () => {
           email: '',
           password: '',
           confirmPassword: '',
+          isAgreed: false
         }}
         onSubmit={onSubmit}>
         {({
           handleChange,
           handleBlur,
           handleSubmit,
+          setFieldValue,
           values,
           errors,
           touched,
         }) => (
           <ScrollView
             showsVerticalScrollIndicator={false}
-            style={{flex: 1, marginHorizontal: 20}}>
+            style={{ flex: 1, marginHorizontal: pixelSizeHorizontal(20) }}>
             <View>
               <BackBtn onPress={navigation.goBack} />
-              <View style={{alignItems: 'center'}}>
-                <APPLOGO width={130} height={200} />
+              <View style={{ alignItems: 'center' }}>
+                <APPLOGO width={LOGO_WIDTH} height={LOGO_HEIGHT} />
               </View>
             </View>
 
-            <View style={{width: '100%'}}>
+            <View style={{ width: '100%' }}>
               <MyText
                 style={{
                   fontSize: FONT_SIZE['1.5xl'],
                   fontWeight: FONT_WEIGHT.bold,
-                  marginVertical: 5,
+                  marginVertical: pixelSizeVertical(6),
                 }}>
                 Open your Business Account
               </MyText>
-              <MyText size={FONT_SIZE.sm} color={'grey'}>
+              <MyText color={'grey'}>
                 Enter your information to create a new account
               </MyText>
             </View>
             <View
               style={{
-                marginTop: 20,
+                marginTop: pixelSizeVertical(20),
               }}>
               <InputWrapper title="Email">
                 <MyInput
@@ -132,7 +153,7 @@ const VendorSignupScreen = () => {
                   placeholder="Type your email"
                   leftIcon={() => (
                     <Ionicons
-                      size={24}
+                      size={widthPixel(24)}
                       color={COLORS.lightgrey}
                       name="mail-outline"
                     />
@@ -150,7 +171,7 @@ const VendorSignupScreen = () => {
                   value={values.password}
                   leftIcon={() => (
                     <AntDesign
-                      size={24}
+                      size={widthPixel(24)}
                       color={COLORS.lightgrey}
                       name="lock1"
                     />
@@ -172,7 +193,7 @@ const VendorSignupScreen = () => {
                   value={values.confirmPassword}
                   leftIcon={() => (
                     <AntDesign
-                      size={24}
+                      size={widthPixel(24)}
                       color={COLORS.lightgrey}
                       name="lock1"
                     />
@@ -184,17 +205,51 @@ const VendorSignupScreen = () => {
               {errors.confirmPassword && touched.confirmPassword && (
                 <InputErrorMsg msg={errors.confirmPassword} />
               )}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginLeft: pixelSizeHorizontal(8),
+                }}>
+                <CheckBox
+                  value={values.isAgreed}
+                  onValueChange={newValue =>
+                    setFieldValue('isAgreed', newValue)
+                  }
+                />
+                <MyText size={FONT_SIZE.sm}>
+                  I agree to the{' '}
+                  <Text
+                    onPress={() => {
+                      setShowTerms(true);
+                    }}
+                    style={{ color: '#056145', fontWeight: '600', fontSize: FONT_SIZE.lg }}>
+                    Terms & Conditions
+                  </Text>{' '}
+                  and{' '}
+                  <Text
+                    onPress={() => {
+                      setShowPrivacy(true);
+                    }}
+                    style={{ color: '#056145', fontWeight: '600', fontSize: FONT_SIZE.lg }}>
+                    Privacy Policy
+                  </Text>
+                </MyText>
+              </View>
+
+              {errors.isAgreed && touched.isAgreed && (
+                <InputErrorMsg msg={errors.isAgreed} />
+              )}
             </View>
 
             <View
               style={{
-                paddingVertical: 20,
-                gap: 20,
+                paddingVertical: pixelSizeVertical(16),
               }}>
               <PrimaryBtn
                 loading={loading}
                 onPress={handleSubmit}
-                text="Sign Up"
+                text="Signup"
               />
             </View>
             <View
@@ -203,16 +258,15 @@ const VendorSignupScreen = () => {
                 justifyContent: 'center',
                 flexDirection: 'row',
                 gap: 6,
-                marginVertical: 50,
+                marginVertical: pixelSizeVertical(36),
               }}>
-              <MyText center size={FONT_SIZE.sm} style={{color: 'grey'}}>
+              <MyText center style={{ color: 'grey' }}>
                 Already have an Business account?
               </MyText>
               <TouchableOpacity onPress={navigation.goBack}>
                 <MyText
                   bold={FONT_WEIGHT.medium}
-                  size={FONT_SIZE.sm}
-                  style={{color: COLORS.greenDark}}>
+                  style={{ color: COLORS.greenDark }}>
                   Signin
                 </MyText>
               </TouchableOpacity>
@@ -220,6 +274,12 @@ const VendorSignupScreen = () => {
           </ScrollView>
         )}
       </Formik>
+
+      <TnC open={showTerms} handleClose={() => setShowTerms(!showTerms)} />
+      <PrivacyPolicy
+        open={showPrivacy}
+        handleClose={() => setShowPrivacy(!showPrivacy)}
+      />
     </LayoutBG>
   );
 };

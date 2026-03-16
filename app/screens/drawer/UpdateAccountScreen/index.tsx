@@ -39,7 +39,7 @@ const validationSchema = yup.object().shape({
   number: yup
     .string()
     .min(16, ({min}) => `Number must be at least ${min} characters`)
-    .max(16, ({min}) => `Number must be not be  longer than ${min} characters`)
+    .max(16, ({max}) => `Number must be not be  longer than ${max} characters`)
     .required('number is Required!'),
   CVV: yup.number().required('CVV is Required!'),
 });
@@ -50,7 +50,6 @@ const UpdateAccount = () => {
   const [loading, setLoading] = useState(false);
 
   const getToken = async (values: Values) => {
-    console.log('HERE');
     const apiKey = STRIPE_PK;
     const [exm, exy] = values.expirydate.split('/');
     try {

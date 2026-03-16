@@ -3,6 +3,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {Dimensions} from 'react-native';
+import {fontPixel, widthPixel} from '../utils/sizeNormalization';
 
 type FONT_WEIGHT_Type = {
   thin: '100';
@@ -15,6 +16,7 @@ type FONT_WEIGHT_Type = {
   extrabold: '800';
   black: '900';
 };
+
 export const FONT_WEIGHT: FONT_WEIGHT_Type = {
   thin: '100',
   extralight: '200',
@@ -41,18 +43,29 @@ export const FONT_WEIGHT: FONT_WEIGHT_Type = {
 // };
 
 export const FONT_SIZE = {
-  xs: wp(2.5),
-  sm: wp(3),
-  sml: wp(3.3),
-  base: wp(3.7),
-  lg: wp(4.5),
-  xl: wp(5),
-  '1.5xl': wp(5.8),
-  '2xl': wp(7),
-  '3xl': wp(9),
-  '4xl': wp(11),
-  '5xl': wp(12.5),
-  '6xl': wp(14),
+  xs: fontPixel(10),
+  sm: fontPixel(12),
+  sml: fontPixel(13),
+  base: fontPixel(14),
+  lg: fontPixel(16),
+  xl: fontPixel(18),
+  '1.5xl': fontPixel(20),
+  '2xl': fontPixel(24),
+  '3xl': fontPixel(30),
+  '4xl': fontPixel(36),
+  '5xl': fontPixel(40),
+  '6xl': fontPixel(44),
+};
+
+export const BORDER_RADIUS = {
+  XSmall: widthPixel(4),
+  Small: widthPixel(8),
+  XMedium: widthPixel(12),
+  Medium: widthPixel(16),
+  'Semi-Large': widthPixel(20),
+  Large: widthPixel(24),
+  ExtraLarge: widthPixel(32),
+  Circle: widthPixel(50),
 };
 
 export const COLORS = {

@@ -12,6 +12,7 @@ import {
 import React, {ChangeEvent, useState} from 'react';
 import {COLORS} from '../../styles';
 import Feather from 'react-native-vector-icons/Feather';
+
 type Props = {
   placeholder?: string;
   keyboardType?: KeyboardType;
@@ -22,6 +23,7 @@ type Props = {
   leftIcon?: () => React.ReactNode;
   inputStyle?: StyleProp<TextStyle>;
   hasError?: boolean;
+  editable?: boolean;
 };
 
 const isAndroid = Platform.OS === 'android';
@@ -36,6 +38,7 @@ const MyInput = ({
   leftIcon,
   inputStyle,
   hasError = false,
+  editable = true,
 }: Props) => {
   const [isFocused, setIsFocused] = useState(false);
   const [secureTextEntry, setSecureTextEntry] = useState(isPassword);
@@ -58,6 +61,7 @@ const MyInput = ({
           onBlur && onBlur(e);
           setIsFocused(false);
         }}
+        editable={editable}
         value={value}
         onChangeText={onChangeText}
         onFocus={() => setIsFocused(true)}

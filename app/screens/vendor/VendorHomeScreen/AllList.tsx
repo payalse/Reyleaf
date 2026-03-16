@@ -88,7 +88,8 @@ const AllList = ({isFocused}: {isFocused: any}) => {
   const {token} = useSelector((s: RootState) => s.auth);
   const [loading, setLoading] = useState(false);
   const [allOrders, setAllOrders] = useState<OrderType[]>([]);
-  console.log(allOrders, 'allOrders');
+
+
   const requestApi = async () => {
     try {
       setLoading(true);

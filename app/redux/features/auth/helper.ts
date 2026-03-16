@@ -1,29 +1,34 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {AuthUserType} from '../../../types';
-export const saveUserToLocal = async (user: AuthUserType) => {
+import { AuthUserType } from '../../../types';
+
+const STORAGE_KEY = 'AUTH';
+
+export const saveUserToLocal = async (user: AuthUserType): Promise<boolean> => {
   try {
-    await AsyncStorage.setItem('AUTH', JSON.stringify(user));
+    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+    return true;
   } catch (error) {
-    console.log(error);
+    console.error('[saveUserToLocal] Failed to save user:', error);
+    return false;
   }
 };
+
 export const getUserFromLocal = async (): Promise<AuthUserType | null> => {
   try {
-    const user = await AsyncStorage.getItem('AUTH');
-    if (!user) {
-      return null;
-    } else {
-      return JSON.parse(user);
-    }
+    const storedUser = await AsyncStorage.getItem(STORAGE_KEY);
+    return storedUser ? JSON.parse(storedUser) : null;
   } catch (error) {
-    console.log(error);
+    console.error('[getUserFromLocal] Failed to retrieve user:', error);
     return null;
   }
 };
-export const removeUserFromLocal = async () => {
+
+export const removeUserFromLocal = async (): Promise<boolean> => {
   try {
-    await AsyncStorage.removeItem('AUTH');
+    await AsyncStorage.removeItem(STORAGE_KEY);
+    return true;
   } catch (error) {
-    console.log(error);
+    console.error('[removeUserFromLocal] Failed to remove user:', error);
+    return false;
   }
 };

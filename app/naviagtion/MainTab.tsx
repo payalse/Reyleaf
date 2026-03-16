@@ -1,6 +1,6 @@
 import {
+  Dimensions,
   Image,
-  Platform,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -9,8 +9,8 @@ import {
   createBottomTabNavigator,
   BottomTabBar,
 } from '@react-navigation/bottom-tabs';
-import {COLORS, FONT_SIZE, hp, wp} from '../styles';
-import {MyText} from '../components/MyText';
+import { COLORS, FONT_SIZE } from '../styles';
+import { MyText } from '../components/MyText';
 // ICONS
 import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -25,7 +25,6 @@ import AwarenessSvg from '../../assets/svg/tab/icons/Awareness.svg';
 import AwarenessFillSvg from '../../assets/svg/tab/icons/AwarenessFill.svg';
 import FeedSvg from '../../assets/svg/tab/icons/Feed.svg';
 import FeedFillSvg from '../../assets/svg/tab/icons/FeedFill.svg';
-
 // Screens x Stacks
 import HomeStack from './HomeStack';
 import FeedStack from './FeedStack';
@@ -33,23 +32,23 @@ import CartStack from './CartStack';
 import EventStack from './EventStack';
 import AwarenessStack from './AwarenessStack';
 import SearchStack from './SearchStack';
-import {useEffect, useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
-import {useIsFocused} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {SearchStackParams} from './types';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { SearchStackParams } from './types';
+import { heightPixel, pixelSizeVertical, widthPixel } from '../utils/sizeNormalization';
 
-const TAB_ICON_SIZE = FONT_SIZE['2xl'];
 
-const isAndroid = Platform.OS === 'android';
 const Tab = createBottomTabNavigator();
 
-const ACTION_SIZE = wp(14);
-export const TAB_BAR_BG_HEIGHT = hp(17.5);
+const TAB_ICON_SIZE = widthPixel(24)
+const TAB_FOCUSED_BTN = widthPixel(52);
+
+export const TAB_BAR_BG_HEIGHT = heightPixel(140);
+
 function MainTab() {
-  const [value, setValue] = useState(false);
   const navigation =
     useNavigation<NativeStackNavigationProp<SearchStackParams>>();
+
   const handleTabPress = (focused: any) => {
     if (focused) {
       navigation.goBack();
@@ -57,8 +56,9 @@ function MainTab() {
       navigation.navigate('SearchStack');
     }
   };
+
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <Tab.Navigator
         id="MainTab"
         tabBar={props => (
@@ -78,12 +78,11 @@ function MainTab() {
           unmountOnBlur: true,
           tabBarStyle: styles.tabBarStyle,
           tabBarBackground() {
-            // return null;
             return (
               <Image
                 source={BgImg}
                 style={{
-                  width: wp('100%'),
+                  width: Dimensions.get("screen").width,
                   height: TAB_BAR_BG_HEIGHT,
                   position: 'absolute',
                   bottom: 0,
@@ -102,7 +101,7 @@ function MainTab() {
           options={{
             tabBarLabel: '',
             unmountOnBlur: true,
-            tabBarIcon: ({focused}) => {
+            tabBarIcon: ({ focused }) => {
               const color = focused ? COLORS.white : COLORS.grey;
               return (
                 <View style={styles.tabItemContainer}>
@@ -111,7 +110,7 @@ function MainTab() {
                   ) : (
                     <HomeSvg width={TAB_ICON_SIZE} height={TAB_ICON_SIZE} />
                   )}
-                  <MyText color={color} size={FONT_SIZE.xs}>
+                  <MyText color={color} size={FONT_SIZE.base} style={{ marginTop: pixelSizeVertical(4), textAlign: "center" }}>
                     Home
                   </MyText>
                 </View>
@@ -124,7 +123,7 @@ function MainTab() {
           component={CartStack}
           options={{
             tabBarLabel: '',
-            tabBarIcon: ({focused}) => {
+            tabBarIcon: ({ focused }) => {
               const color = focused ? COLORS.white : COLORS.grey;
 
               return (
@@ -134,7 +133,7 @@ function MainTab() {
                   ) : (
                     <CartSvg width={TAB_ICON_SIZE} height={TAB_ICON_SIZE} />
                   )}
-                  <MyText color={color} size={FONT_SIZE.xs}>
+                  <MyText color={color} size={FONT_SIZE.base} style={{ marginTop: pixelSizeVertical(4), textAlign: "center" }}>
                     Cart
                   </MyText>
                 </View>
@@ -148,7 +147,7 @@ function MainTab() {
           options={{
             unmountOnBlur: true,
             tabBarLabel: '',
-            tabBarIcon: ({focused}) => {
+            tabBarIcon: ({ focused }) => {
               const color = focused ? COLORS.white : COLORS.grey;
               return (
                 <View style={styles.tabItemContainer}>
@@ -160,7 +159,7 @@ function MainTab() {
                   ) : (
                     <EventSvg width={TAB_ICON_SIZE} height={TAB_ICON_SIZE} />
                   )}
-                  <MyText color={color} size={FONT_SIZE.xs}>
+                  <MyText color={color} size={FONT_SIZE.base} style={{ marginTop: pixelSizeVertical(4), textAlign: "center" }}>
                     Event
                   </MyText>
                 </View>
@@ -170,26 +169,26 @@ function MainTab() {
         />
         <Tab.Screen
           name="SearchTab"
-          component={SearchStack} // Set the default stack
+          component={SearchStack}
           options={{
             unmountOnBlur: true,
             tabBarItemStyle: {
               position: 'absolute',
               zIndex: 10,
               left: '50%',
-              top: hp(4.5),
+              top: heightPixel(36),
             },
             tabBarLabel: '',
-            tabBarIcon: ({focused}) => {
+            tabBarIcon: ({ focused }) => {
               return (
                 <TouchableOpacity
-                  onPress={() => handleTabPress(focused)} // Handle icon press
+                  onPress={() => handleTabPress(focused)}
                   style={{
-                    width: ACTION_SIZE,
-                    height: ACTION_SIZE,
+                    width: TAB_FOCUSED_BTN,
+                    height: TAB_FOCUSED_BTN,
                     backgroundColor: COLORS.white,
                     alignSelf: 'center',
-                    borderRadius: ACTION_SIZE,
+                    borderRadius: TAB_FOCUSED_BTN,
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
@@ -217,7 +216,7 @@ function MainTab() {
           options={{
             unmountOnBlur: true,
             tabBarLabel: '',
-            tabBarIcon: ({focused}) => {
+            tabBarIcon: ({ focused }) => {
               const color = focused ? COLORS.white : COLORS.grey;
               return (
                 <View style={styles.tabItemContainer}>
@@ -233,7 +232,7 @@ function MainTab() {
                     />
                   )}
 
-                  <MyText color={color} size={FONT_SIZE.xs}>
+                  <MyText color={color} size={FONT_SIZE.base} style={{ marginTop: pixelSizeVertical(4), textAlign: "center" }}>
                     Awareness
                   </MyText>
                 </View>
@@ -247,7 +246,7 @@ function MainTab() {
           options={{
             unmountOnBlur: true,
             tabBarLabel: '',
-            tabBarIcon: ({focused}) => {
+            tabBarIcon: ({ focused }) => {
               const color = focused ? COLORS.white : COLORS.grey;
               return (
                 <View style={styles.tabItemContainer}>
@@ -257,7 +256,7 @@ function MainTab() {
                     <FeedSvg width={TAB_ICON_SIZE} height={TAB_ICON_SIZE} />
                   )}
 
-                  <MyText color={color} size={FONT_SIZE.xs}>
+                  <MyText color={color} size={FONT_SIZE.base} style={{ marginTop: pixelSizeVertical(4), textAlign: "center" }}>
                     Feeds
                   </MyText>
                 </View>
@@ -275,7 +274,7 @@ const styles = StyleSheet.create({
   tabBarStyle: {
     display: 'flex',
     height: TAB_BAR_BG_HEIGHT,
-    width: wp('100%'),
+    width: Dimensions.get("screen").width,
     borderWidth: 0,
     shadowOpacity: 0,
     padding: 0,
@@ -283,11 +282,13 @@ const styles = StyleSheet.create({
     borderTopColor: COLORS.transparent,
   },
   tabItemContainer: {
-    marginTop: hp(10),
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 5,
+    padding: heightPixel(4),
+    marginTop: heightPixel(72),
+    marginHorizontal: "auto",
+    width: Dimensions.get("window").width / 5
   },
 });
 
-export {styles};
+export { styles };

@@ -11,7 +11,6 @@ export const api_searchSuggessions = (token: string, username: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -33,7 +32,6 @@ export const api_fiendSuggessions = (token: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data, 'data');
         if (data?.status !== 'OK') {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -55,7 +53,6 @@ export const api_getMyfiends = (token: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -78,7 +75,6 @@ export const api_getBlocked = (token: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -100,7 +96,6 @@ export const api_getReported = (token: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -124,7 +119,6 @@ export const api_RecivedRequested = (token: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -153,7 +147,6 @@ export const api_friendfollowUnfollow = (
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -166,7 +159,6 @@ export const api_friendfollowUnfollow = (
 };
 export const api_requestAcceptReject = (token: string, payload: any) => {
   const uri = `${BASE_URL}/api/v1/friend/requestAcceptReject`;
-  console.log({payload}, token);
   return new Promise((resolve, reject) => {
     fetch(uri, {
       method: 'POST',
@@ -190,7 +182,6 @@ export const api_requestAcceptReject = (token: string, payload: any) => {
 };
 export const api_reportOrBlock = (token: string, payload: any) => {
   const uri = `${BASE_URL}/api/v1/friend/reportOrBlock`;
-  console.log(payload, 'payload');
   return new Promise((resolve, reject) => {
     fetch(uri, {
       method: 'POST',
@@ -203,7 +194,6 @@ export const api_reportOrBlock = (token: string, payload: any) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }
@@ -230,7 +220,6 @@ export const api_cancelRequest = (token: string, followingId: string) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }

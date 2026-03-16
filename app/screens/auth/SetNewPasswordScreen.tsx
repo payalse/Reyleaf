@@ -1,24 +1,29 @@
-import React, {useState} from 'react';
-import {ScrollView, View} from 'react-native';
+import React, { useState } from 'react';
+import { ScrollView, View } from 'react-native';
 import LayoutBG from '../../components/layout/LayoutBG';
 import BackBtn from '../../components/buttons/BackBtn';
-import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {MyText} from '../../components/MyText';
-import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../styles';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { MyText } from '../../components/MyText';
+import { COLORS, FONT_SIZE, FONT_WEIGHT } from '../../styles';
 import InputWrapper from '../../components/inputs/InputWrapper';
 import MyInput from '../../components/inputs/MyInput';
 import PrimaryBtn from '../../components/buttons/PrimaryBtn';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import PasswordUpdatedModel from '../../components/modal/PasswordUpdatedModel';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootStackParams} from '../../naviagtion/types';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParams } from '../../naviagtion/types';
 
-import {Formik} from 'formik';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
 import InputErrorMsg from '../../components/inputs/InputErrorMsg';
-import {ShowAlert} from '../../utils/alert';
-import {ALERT_TYPE} from 'react-native-alert-notification';
-import {api_setNewPassword} from '../../api/auth';
+import { ShowAlert } from '../../utils/alert';
+import { ALERT_TYPE } from 'react-native-alert-notification';
+import { api_setNewPassword } from '../../api/auth';
+import {
+  pixelSizeHorizontal,
+  pixelSizeVertical,
+  widthPixel,
+} from '../../utils/sizeNormalization';
 
 type FormValues = {
   password: string;
@@ -26,9 +31,11 @@ type FormValues = {
 };
 const validationSchema = Yup.object().shape({
   password: Yup.string()
-    .min(8, ({min}) => `Password must be at least ${min} characters`)
+    .trim()
+    .min(8, ({ min }) => `Password must be at least ${min} characters`)
     .required('Password is Required!'),
   confirmPassword: Yup.string()
+    .trim()
     .oneOf([Yup.ref('password')], 'Passwords must match')
     .required('Retype Password is Required!'),
 });
@@ -49,10 +56,10 @@ const SetNewPasswordScreen = () => {
         newPassword: values.password,
         otp: params.otp,
       })) as any;
-      console.log(res);
+
       setIsModalOpen(true);
     } catch (error: any) {
-      ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
+      ShowAlert({ textBody: error.message, type: ALERT_TYPE.DANGER });
     } finally {
       setLoading(false);
     }
@@ -78,20 +85,20 @@ const SetNewPasswordScreen = () => {
           errors,
           touched,
         }) => (
-          <ScrollView contentContainerStyle={{marginHorizontal: 20}}>
+          <ScrollView contentContainerStyle={{ marginHorizontal: pixelSizeHorizontal(20) }}>
             <BackBtn onPress={navigation.goBack} />
             <View>
               <MyText
                 bold={FONT_WEIGHT.bold}
                 size={FONT_SIZE['2xl']}
-                style={{marginTop: 100, marginBottom: 10}}>
+                style={{ marginTop: pixelSizeVertical(100), marginBottom: pixelSizeVertical(10) }}>
                 Set New Password
               </MyText>
               <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
                 Set your password here whatever you wanted
               </MyText>
             </View>
-            <View style={{marginTop: 20}}>
+            <View style={{ marginTop: pixelSizeVertical(20) }}>
               <InputWrapper title="New Password">
                 <MyInput
                   hasError={Boolean(errors.password && touched.password)}
@@ -102,7 +109,7 @@ const SetNewPasswordScreen = () => {
                   placeholder="Type your password"
                   leftIcon={() => (
                     <AntDesign
-                      size={24}
+                      size={widthPixel(24)}
                       color={COLORS.lightgrey}
                       name="lock1"
                     />
@@ -123,7 +130,7 @@ const SetNewPasswordScreen = () => {
                   placeholder="Retype Password"
                   leftIcon={() => (
                     <AntDesign
-                      size={24}
+                      size={widthPixel(24)}
                       color={COLORS.lightgrey}
                       name="lock1"
                     />
@@ -137,7 +144,7 @@ const SetNewPasswordScreen = () => {
                 loading={loading}
                 onPress={handleSubmit}
                 text="Submit"
-                conatinerStyle={{marginTop: 10}}
+                conatinerStyle={{ marginTop: pixelSizeVertical(10) }}
               />
             </View>
           </ScrollView>

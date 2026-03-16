@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import {Fragment, useCallback, useEffect, useState} from 'react';
 import MainHeader from '../../components/header/MainHeader';
 import MainLayout from '../../components/layout/MainLayout';
 import {ActivityIndicator, View} from 'react-native';
@@ -25,14 +25,16 @@ import {
 } from '../../redux/features/product/productSlice';
 import messaging from '@react-native-firebase/messaging';
 import {LocalNotification} from '../../utils/localNotification';
+import { fontPixel, pixelSizeVertical } from '../../utils/sizeNormalization';
 
 const RenderProducts = () => {
   const [loading, setLoading] = useState(false);
   const {homeActiveCategory} = useSelector((s: RootState) => s.category);
   const {token} = useSelector((s: RootState) => s.auth);
   const dispatch = useDispatch<AppDispatch>();
+  
   const requestApi = useCallback(async () => {
-    console.log(token, 'hghh');
+    // console.log(token, 'hghh');
     let categoryId = null;
     if (homeActiveCategory._id !== DEFAULT_ALL_CATEGORY._id) {
       categoryId = homeActiveCategory._id;
@@ -43,6 +45,7 @@ const RenderProducts = () => {
         token!,
         categoryId,
       )) as GetHomeProductResponse;
+      // console.warn(res,"res api_getHomeProducts")
       if ('bestSeller' in res.data) {
         dispatch(setBestSellingProduct(res.data.bestSeller));
       }
@@ -67,12 +70,12 @@ const RenderProducts = () => {
     return <ActivityIndicator size={'small'} color={COLORS.greenDark} />;
   }
   return (
-    <React.Fragment>
+    <Fragment>
       <TrendingProducts />
       <NewlyArrivalList />
       <BestSellingList />
       <RecentlyViewedList />
-    </React.Fragment>
+    </Fragment>
   );
 };
 
@@ -137,12 +140,12 @@ const HomeScreen = () => {
           onNotiPress={() => navigation.navigate('AppNotification')}
         />
       }
-      contentContainerStyle={{paddingBottom: 150}}>
+      contentContainerStyle={{paddingBottom: pixelSizeVertical(150)}}>
       <View style={{flex: 1}}>
         <MyText
-          size={FONT_SIZE['2xl']}
+          size={FONT_SIZE['3xl']}
           bold={FONT_WEIGHT.bold}
-          style={{lineHeight: 45, marginTop: 10}}>
+          style={{lineHeight: fontPixel(42), marginTop: pixelSizeVertical(10),width:"80%"}}>
           Welcome, to our center for eco-friendly living 🛒
         </MyText>
         {/* Search */}

@@ -14,7 +14,6 @@ export const sellerSlice = createSlice({
   initialState,
   reducers: {
     setSellers: (state, action: PayloadAction<Sellers[]>) => {
-      console.log(action);
       state.sellers = action.payload;
     },
   },

@@ -17,7 +17,7 @@ const topTabConfig = [
   },
   {
     id: 2,
-    name: 'My Friend',
+    name: 'My Friends',
     comp: MyFriendList,
   },
   {

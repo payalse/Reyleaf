@@ -1,5 +1,4 @@
 import {TouchableOpacity, View, Platform, Linking, Image} from 'react-native';
-import React from 'react';
 import LayoutBG from '../../components/layout/LayoutBG';
 import PrimaryBtn from '../../components/buttons/PrimaryBtn';
 import GradientBox from '../../components/GradientBox';
@@ -53,7 +52,7 @@ const AccountCreatedSuccessScreen = () => {
           style={{textAlign: 'center'}}>
           {user?.role == 2
             ? 'Business Account has been created Successfully'
-            : 'Your Account Created Successfully'}
+            : 'Your account is created successfully!'}
         </MyText>
         <MyText
           center
@@ -79,7 +78,7 @@ const AccountCreatedSuccessScreen = () => {
           }}
           text="Let's get Started"
         />
-        <TouchableOpacity onPress={openAppStore}>
+        {/* <TouchableOpacity onPress={openAppStore}>
           <GradientBox
             conatinerStyle={{
               width: 50,
@@ -93,7 +92,7 @@ const AccountCreatedSuccessScreen = () => {
               style={{width: 20, height: 20, resizeMode: 'contain'}}
             />
           </GradientBox>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </LayoutBG>
   );

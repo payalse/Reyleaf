@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useMemo, useCallback} from 'react';
 import {useHideBottomBar} from '../../../hook/useHideBottomBar';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
 import {MyText} from '../../../components/MyText';
@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../../styles';
+import {BORDER_RADIUS, COLORS, FONT_SIZE, FONT_WEIGHT} from '../../../styles';
 import PrimaryBtn from '../../../components/buttons/PrimaryBtn';
 import {
   RouteProp,
@@ -33,8 +33,15 @@ import {ALERT_TYPE} from 'react-native-alert-notification';
 import {api_orderPlace} from '../../../api/order';
 import FullScreenLoader from '../../../components/FullScreenLoader';
 import {api_chargePayment, api_getCard} from '../../../api/payment';
-import {CardType} from '../../../types';
+import {CardType, CartItemType} from '../../../types';
 import {ShippingAddressStackParams} from '../../../naviagtion/DrawerNavigator';
+import {
+  pixelSizeHorizontal,
+  pixelSizeVertical,
+  widthPixel,
+} from '../../../utils/sizeNormalization';
+import {api_getCart} from '../../../api/cart';
+import {GetCartResponse} from '../../../types/apiResponse';
 
 export const OptionBox = ({
   active,
@@ -68,28 +75,28 @@ export const OptionBox = ({
       <TouchableOpacity
         onPress={onPress}
         style={{
-          borderRadius: 15,
+          borderRadius: BORDER_RADIUS.Medium,
           flexDirection: 'row',
           alignItems: 'center',
-          paddingVertical: 5,
+          paddingVertical: pixelSizeVertical(5),
           width: '88%',
         }}>
         <View
           style={{
-            marginHorizontal: 8,
-            width: 40,
+            marginHorizontal: pixelSizeHorizontal(8),
+            width: widthPixel(40),
             justifyContent: 'center',
             alignItems: 'center',
           }}>
           {leftIcon}
         </View>
-        <View style={{flex: 1, gap: 5, paddingLeft: 5}}>
+        <View style={{flex: 1, gap: 4, paddingLeft: 5}}>
           <MyText size={FONT_SIZE.base} color={COLORS.grey}>
             {text}
           </MyText>
           <MyText
             numberOfLines={1}
-            size={FONT_SIZE.base}
+            size={FONT_SIZE.lg}
             bold={textBold ? FONT_WEIGHT.semibold : FONT_WEIGHT.normal}>
             {subText}
           </MyText>
@@ -117,6 +124,7 @@ type AddressType = {
 
 const CheckOutScreen = () => {
   const params = useRoute<RouteProp<CartStackParams, 'CheckOut'>>().params;
+  console.log(params, 'params');
   const navigation1 =
     useNavigation<NativeStackNavigationProp<ShippingAddressStackParams>>();
   const navigation =
@@ -133,22 +141,28 @@ const CheckOutScreen = () => {
 
   const [address, setAddress] = useState<AddressType[]>([]);
   const [selectedAddressIndex, setSelectedAddressIndex] = useState<number>(0);
+  const [cartItems, setCartItems] = useState<CartItemType[]>([]);
 
   const handlePlaceOrder = async () => {
     if (!address) {
       return;
     }
     const addressId = address[selectedAddressIndex]?._id;
-    console.log(addressId);
     if (!addressId) {
+      return;
     }
     try {
       setLoading2(true);
-      const res = (await api_orderPlace(token!, addressId)) as any;
-      // ToastAndroid.show('Order placed successfully!', ToastAndroid.SHORT);
+      // Round values to 2 decimal places to avoid floating point issues
+      const orderData = {
+        subtotal: Math.round(subtotal * 100) / 100,
+        shippingCost: Math.round(shippingTotal * 100) / 100,
+        taxAmount: Math.round(taxTotal * 100) / 100,
+        totalAmount: Math.round(total * 100) / 100,
+      };
+      const res = (await api_orderPlace(token!, addressId, orderData)) as any;
       navigation.navigate('OrderSuccess');
     } catch (error: any) {
-      console.log(error);
       ShowAlert({
         textBody: error.message,
         title: 'Alert',
@@ -160,7 +174,7 @@ const CheckOutScreen = () => {
   };
 
   const chargePayment = async () => {
-    console.log(cards);
+    // Validate cards
     if (!cards.length) {
       ShowAlert({
         title: 'Alert',
@@ -169,25 +183,61 @@ const CheckOutScreen = () => {
       });
       return;
     }
+
+    // Validate address
+    if (!address.length || !address[selectedAddressIndex]) {
+      ShowAlert({
+        title: 'Alert',
+        textBody: 'Please select a shipping address!',
+        type: ALERT_TYPE.INFO,
+      });
+      return;
+    }
+
+    // Validate total
+    if (!total || total <= 0) {
+      ShowAlert({
+        title: 'Alert',
+        textBody: 'Invalid order total. Please check your cart.',
+        type: ALERT_TYPE.WARNING,
+      });
+      return;
+    }
+
+    // Validate cart items
+    if (!cartItems.length) {
+      ShowAlert({
+        title: 'Alert',
+        textBody: 'Your cart is empty!',
+        type: ALERT_TYPE.INFO,
+      });
+      return;
+    }
+
     try {
+      setLoading(true);
+      // Round to 2 decimal places to avoid floating point issues
+      const roundedAmount = Math.round(total * 100) / 100;
+      
       const payload = {
         email: auth?.email!,
-        amount: params.total || 0,
+        amount: roundedAmount,
         currency: 'USD',
         source: cards[selectetCardIndex].id,
-        description: 'payment of ' + auth?.fullname!,
+        description: `Payment for order by ${auth?.fullname || 'Customer'}`,
       };
-      console.log(payload, 'payload');
+      
       const res: any = await api_chargePayment(payload, token!);
-      console.log(res);
       ShowAlert({
-        textBody: res.message || 'success',
+        textBody: res.message || 'Payment successful!',
         type: ALERT_TYPE.SUCCESS,
       });
       handlePlaceOrder();
     } catch (error: any) {
-      console.log(error, 'api_chargePayment');
-      ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
+      ShowAlert({
+        textBody: error.message || 'Payment failed. Please try again.',
+        type: ALERT_TYPE.DANGER,
+      });
     } finally {
       setLoading(false);
     }
@@ -197,7 +247,6 @@ const CheckOutScreen = () => {
     try {
       setLoading(true);
       const res = (await api_getAddress(token!)) as {data: AddressType[]};
-      console.log(res);
       setAddress(res.data);
     } catch (error) {
       console.log(error);
@@ -208,25 +257,274 @@ const CheckOutScreen = () => {
   const handleGetCards = async () => {
     try {
       setCardLoading(true);
-      console.log(auth, 'auth');
       const res: any = await api_getCard(auth?.stripeCustomerId!, token!);
-      console.log(res, 'api_getCard res');
       setCards(res.data);
     } catch (error) {
-      console.log(error, 'api_getCard err');
+      console.log(error);
     } finally {
       setCardLoading(false);
+    }
+  };
+
+  const handleGetCart = async () => {
+    try {
+      const res = (await api_getCart(token!)) as GetCartResponse;
+      setCartItems(res.data || []);
+    } catch (error) {
+      console.log(error);
     }
   };
 
   const requestApi = () => {
     handleGetAddress();
     handleGetCards();
+    handleGetCart();
   };
 
   useEffect(() => {
     requestApi();
   }, [isFocused]);
+
+  // Calculate subtotal
+  const subtotal = useMemo(() => {
+    return cartItems.reduce((acc, item: CartItemType) => {
+      if (item.product) {
+        const discountedPrice = item.product.discountedProce || 0;
+        const originalPrice = item.product.price || 0;
+        const effectivePrice =
+          discountedPrice > 0 ? discountedPrice : originalPrice;
+        return acc + item.quantity * effectivePrice;
+      } else {
+        return acc;
+      }
+    }, 0);
+  }, [cartItems]);
+
+  // Check if tax applies to the selected address
+  const doesTaxApply = useCallback((taxItem: any, userAddress: any) => {
+    // If no address, cannot determine tax applicability - return false
+    if (!userAddress) return false;
+
+    const userState = (userAddress.state || '').toLowerCase().trim();
+    const userCity = (userAddress.city || '').toLowerCase().trim();
+    const userZipcode = (userAddress.zipcode || '').trim();
+    const taxRegion = (taxItem.region || '').toLowerCase().trim();
+    const taxZipCode = (taxItem.zipCode || '').trim();
+
+    if (taxZipCode) {
+      if (taxZipCode !== userZipcode) {
+        return false;
+      }
+    }
+
+    if (taxRegion) {
+      const normalizedTaxRegion = taxRegion
+        .replace(/county|count|state|province/gi, '')
+        .trim();
+      const normalizedUserState = userState
+        .replace(/county|count|state|province/gi, '')
+        .trim();
+      const normalizedUserCity = userCity
+        .replace(/county|count|state|province/gi, '')
+        .trim();
+
+      const regionMatchesState =
+        normalizedUserState &&
+        (normalizedUserState.includes(normalizedTaxRegion) ||
+          normalizedTaxRegion.includes(normalizedUserState));
+      const regionMatchesCity =
+        normalizedUserCity &&
+        (normalizedUserCity.includes(normalizedTaxRegion) ||
+          normalizedTaxRegion.includes(normalizedUserCity));
+
+      if (!regionMatchesState && !regionMatchesCity) {
+        return false;
+      }
+    }
+
+    return true;
+  }, []);
+
+  // Calculate shipping and tax based on selected address
+  const {shippingTotal, taxTotal, total} = useMemo(() => {
+    try {
+      let shipping = 0;
+      let tax = 0;
+      
+      // Use the selected address from fetched addresses, or fallback to user data
+      const validIndex =
+        address.length > 0 && selectedAddressIndex < address.length
+          ? selectedAddressIndex
+          : 0;
+      const userAddress = address[validIndex] || auth?.data || null;
+
+      if (!Array.isArray(cartItems) || cartItems.length === 0) {
+        return {
+          shippingTotal: 0,
+          taxTotal: 0,
+          total: subtotal || 0,
+        };
+      }
+
+      cartItems.forEach(item => {
+        try {
+          if (!item || !item.product) {
+            return; // Skip invalid items
+          }
+
+          const product = item.product as any;
+          
+          // Validate and calculate effective price
+          const discountedPrice = parseFloat(product.discountedProce) || 0;
+          const originalPrice = parseFloat(product.price) || 0;
+          
+          // Ensure prices are valid numbers
+          if (isNaN(discountedPrice) || discountedPrice < 0) {
+            console.warn('Invalid discounted price for product:', product._id);
+          }
+          if (isNaN(originalPrice) || originalPrice < 0) {
+            console.warn('Invalid original price for product:', product._id);
+          }
+          
+          const effectivePrice = discountedPrice > 0 && discountedPrice < originalPrice 
+            ? discountedPrice 
+            : (originalPrice > 0 ? originalPrice : 0);
+          
+          // Validate quantity
+          const quantity = typeof item.quantity === 'number' 
+            ? item.quantity 
+            : parseInt(String(item.quantity)) || 0;
+          if (quantity <= 0 || isNaN(quantity) || !isFinite(quantity)) {
+            console.warn('Invalid quantity for product:', product._id);
+            return; // Skip items with invalid quantity
+          }
+          
+          const itemSubtotal = quantity * effectivePrice;
+          
+          // Validate itemSubtotal
+          if (isNaN(itemSubtotal) || !isFinite(itemSubtotal)) {
+            console.warn('Invalid itemSubtotal for product:', product._id);
+            return;
+          }
+
+          // Calculate shipping with error handling
+          if (product.shippingCost !== undefined && product.shippingCost !== null) {
+            try {
+              const shippingCost = parseFloat(product.shippingCost);
+              
+              if (!isNaN(shippingCost) && isFinite(shippingCost) && shippingCost >= 0) {
+                const freeShippingAbove = parseFloat(product.freeShippingAbove) || 0;
+                
+                // Check if free shipping applies
+                if (freeShippingAbove > 0 && subtotal >= freeShippingAbove) {
+                  // Free shipping applies - don't add shipping cost
+                } else {
+                  // Shipping cost is typically per product, not per unit
+                  shipping += shippingCost;
+                }
+              } else {
+                console.warn('Invalid shipping cost for product:', product._id, shippingCost);
+              }
+            } catch (shippingError) {
+              console.error('Error calculating shipping for product:', product._id, shippingError);
+            }
+          }
+
+          // Calculate tax with error handling
+          if (product.tax) {
+            try {
+              if (Array.isArray(product.tax) && product.tax.length > 0) {
+                product.tax.forEach((taxItem: any) => {
+                  try {
+                    if (!taxItem || typeof taxItem !== 'object') {
+                      return; // Skip invalid tax items
+                    }
+
+                    const applies = doesTaxApply(taxItem, userAddress);
+                    const taxRate = parseFloat(taxItem.rate);
+                    
+                    // Validate tax rate (should be between 0 and 1 for percentage, or reasonable range)
+                    if (applies && !isNaN(taxRate) && isFinite(taxRate) && taxRate > 0 && taxRate <= 1) {
+                      const calculatedTax = itemSubtotal * taxRate;
+                      
+                      // Validate calculated tax
+                      if (!isNaN(calculatedTax) && isFinite(calculatedTax) && calculatedTax >= 0) {
+                        tax += calculatedTax;
+                      } else {
+                        console.warn('Invalid calculated tax for product:', product._id, calculatedTax);
+                      }
+                    } else if (applies && taxRate > 1) {
+                      // Tax rate might be in percentage format (e.g., 8.5 for 8.5%)
+                      const taxRatePercent = taxRate / 100;
+                      if (taxRatePercent > 0 && taxRatePercent <= 1) {
+                        const calculatedTax = itemSubtotal * taxRatePercent;
+                        if (!isNaN(calculatedTax) && isFinite(calculatedTax) && calculatedTax >= 0) {
+                          tax += calculatedTax;
+                        }
+                      } else {
+                        console.warn('Invalid tax rate format for product:', product._id, taxRate);
+                      }
+                    }
+                  } catch (taxItemError) {
+                    console.error('Error processing tax item for product:', product._id, taxItemError);
+                  }
+                });
+              }
+            } catch (taxError) {
+              console.error('Error calculating tax for product:', product._id, taxError);
+            }
+          }
+        } catch (itemError) {
+          console.error('Error processing cart item:', item?._id, itemError);
+        }
+      });
+
+      // Validate final values
+      if (isNaN(shipping) || !isFinite(shipping)) {
+        console.warn('Invalid shipping total, resetting to 0');
+        shipping = 0;
+      }
+      if (shipping < 0) {
+        console.warn('Negative shipping total, resetting to 0');
+        shipping = 0;
+      }
+
+      if (isNaN(tax) || !isFinite(tax)) {
+        console.warn('Invalid tax total, resetting to 0');
+        tax = 0;
+      }
+      if (tax < 0) {
+        console.warn('Negative tax total, resetting to 0');
+        tax = 0;
+      }
+
+      const final = (subtotal || 0) + tax + shipping;
+      
+      // Validate final total
+      if (isNaN(final) || !isFinite(final) || final < 0) {
+        console.error('Invalid final total calculated:', final);
+        return {
+          shippingTotal: 0,
+          taxTotal: 0,
+          total: subtotal || 0,
+        };
+      }
+
+      return {
+        shippingTotal: Math.round(shipping * 100) / 100, // Round to 2 decimal places
+        taxTotal: Math.round(tax * 100) / 100,
+        total: Math.round(final * 100) / 100,
+      };
+    } catch (error) {
+      console.error('Error calculating shipping and tax:', error);
+      // Return safe defaults on error
+      return {
+        shippingTotal: 0,
+        taxTotal: 0,
+        total: subtotal || 0,
+      };
+    }
+  }, [cartItems, subtotal, address, selectedAddressIndex, auth, doesTaxApply]);
   if (loading || cardLoading || loading2) {
     return <FullScreenLoader />;
   }
@@ -280,7 +578,6 @@ const CheckOutScreen = () => {
                 active={selectedAddressIndex === index}
                 onPress={() => {
                   setSelectedAddressIndex(index);
-                  // navigation.navigate('EditAddress');
                 }}
                 goToEdit={() =>
                   navigation1.navigate('EditAddress', {
@@ -289,45 +586,10 @@ const CheckOutScreen = () => {
                   })
                 }
                 textBold
-                leftIcon={
-                  <HomeSvg />
-                  // <Entypo
-                  //   name="home"
-                  //   size={FONT_SIZE['xl']}
-                  //   color={COLORS.greenDark}
-                  // />
-                }
+                leftIcon={<HomeSvg />}
               />
             );
           })}
-          {/* <OptionBox
-            text="Home"
-            subText="112 Willson street, apt isolnt, Ny"
-            active
-            onPress={() => navigation.navigate('EditAddress')}
-            textBold
-            leftIcon={
-              <HomeSvg />
-              // <Entypo
-              //   name="home"
-              //   size={FONT_SIZE['xl']}
-              //   color={COLORS.greenDark}
-              // />
-            }
-          />
-          <OptionBox
-            text="Office"
-            subText="20 restor street, Opp isolnt, Ny"
-            textBold
-            leftIcon={
-              <HomeSvg />
-              // <Entypo
-              //   name="home"
-              //   size={FONT_SIZE['xl']}
-              //   color={COLORS.greenDark}
-              // />
-            }
-          /> */}
         </View>
 
         <View
@@ -364,39 +626,12 @@ const CheckOutScreen = () => {
                 subText={item.name}
                 onPress={() => {
                   setSelectetCardIndex(index);
-                  // () => navigation.navigate('EditCard')
                 }}
                 active={selectetCardIndex === index}
                 leftIcon={<VisaSvg />}
               />
             );
           })}
-          {/* <OptionBox
-            text="**** **** **** **54"
-            subText="Visa"
-            onPress={() => navigation.navigate('EditCard')}
-            // active
-            leftIcon={
-              <VisaSvg />
-              // <FontAwesome
-              //   name="cc-visa"
-              //   size={FONT_SIZE['xl']}
-              //   color={COLORS.greenDark}
-              // />
-            }
-          />
-          <OptionBox
-            text="**** **** **** **54"
-            subText="Paypal"
-            leftIcon={
-              <PayPalSvg />
-              // <FontAwesome
-              //   name="cc-visa"
-              //   size={FONT_SIZE['xl']}
-              //   color={COLORS.greenDark}
-              // />
-            }
-          /> */}
         </View>
       </ScrollView>
 
@@ -413,8 +648,19 @@ const CheckOutScreen = () => {
             marginBottom: 10,
           }}>
           <MyText color={COLORS.grey}>Sub total</MyText>
-          <MyText color={COLORS.grey}>${params?.total}</MyText>
+          <MyText color={COLORS.grey}>${subtotal.toFixed(2)}</MyText>
         </View>
+        {taxTotal > 0 && (
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginBottom: 10,
+            }}>
+            <MyText color={COLORS.grey}>Tax</MyText>
+            <MyText color={COLORS.grey}>${taxTotal.toFixed(2)}</MyText>
+          </View>
+        )}
         <View
           style={{
             flexDirection: 'row',
@@ -422,7 +668,7 @@ const CheckOutScreen = () => {
             marginBottom: 10,
           }}>
           <MyText color={COLORS.grey}>Shipping fee</MyText>
-          <MyText color={COLORS.grey}>${0}.00</MyText>
+          <MyText color={COLORS.grey}>${shippingTotal.toFixed(2)}</MyText>
         </View>
         <View
           style={{
@@ -433,12 +679,11 @@ const CheckOutScreen = () => {
           <MyText size={FONT_SIZE['xl']} bold={FONT_WEIGHT.bold}>
             Total
           </MyText>
-          <MyText size={FONT_SIZE['xl']}>${params?.total}</MyText>
+          <MyText size={FONT_SIZE['xl']}>${total.toFixed(2)}</MyText>
         </View>
         <PrimaryBtn
           loading={loading2}
           onPress={chargePayment}
-          // text="Make Payment"
           text="Place Order"
         />
       </View>

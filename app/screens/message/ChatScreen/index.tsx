@@ -136,7 +136,7 @@ export const ChatMessageSendInput = ({
             overflow: 'hidden',
           }}>
           <View style={{marginLeft: 15, marginRight: 10, opacity: 0.5}}>
-            <SmileySvg />
+            {/* <SmileySvg /> */}
           </View>
           <TextInput
             value={text}

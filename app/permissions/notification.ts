@@ -5,10 +5,8 @@ export const requestNotificationPermission = async () => {
     await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
     );
-    console.warn('noti succcs');
   } catch (err) {
     if (__DEV__) {
-      console.warn('requestNotificationPermission error: ', err);
     }
   }
 };

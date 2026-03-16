@@ -1,12 +1,15 @@
 buildscript {
     ext {
-        buildToolsVersion = "34.0.0"
+        buildToolsVersion = "35.0.0"
         minSdkVersion = 21
-        compileSdkVersion = 34
-        targetSdkVersion = 34
-        ndkVersion = "25.1.8937393"
+        compileSdkVersion = 35
+        targetSdkVersion = 35
+        // NDK 27 has stricter C++ checks that break react-native-reanimated;
+        // use NDK 26 for compatibility (install via Android Studio SDK Manager if needed)
+        ndkVersion = "26.1.10909125"
         kotlinVersion = "1.8.0"
         googlePlayServicesAuthVersion = "20.7.0"
+        FLIPPER_VERSION = "0.240.0"
     }
     repositories {
         google()

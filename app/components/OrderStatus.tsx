@@ -1,17 +1,19 @@
-import {TouchableOpacity, View} from 'react-native';
-import React, {useState} from 'react';
-import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../styles';
-import {MyText} from './MyText';
+import { Alert, TouchableOpacity, View } from 'react-native';
+import { useState } from 'react';
+import { BORDER_RADIUS, COLORS, FONT_SIZE, FONT_WEIGHT } from '../styles';
+import { MyText } from './MyText';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FullScreenLoader from './FullScreenLoader';
-import {api_sellerHomeOrderAction} from '../api/order';
-import {useSelector} from 'react-redux';
-import {RootState} from '../redux/store';
+import { api_sellerHomeOrderAction } from '../api/order';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 import moment from 'moment';
-import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {VendorHomeStackParams} from '../naviagtion/types';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { VendorHomeStackParams } from '../naviagtion/types';
+import { heightPixel, pixelSizeHorizontal, pixelSizeVertical } from '../utils/sizeNormalization';
+
 type Props = {
   statusBgColor: string;
   statusTextColor?: string;
@@ -23,225 +25,151 @@ type Props = {
   isActionNeeded: boolean;
 };
 
-const OrderStatus = (props: Props) => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<VendorHomeStackParams>>();
-  const [iProps, setIprops] = useState(props);
-  const [propValue, setPropValue] = useState(props);
-  const {statusBgColor, statusText, statusTextColor} = propValue;
+const OrderStatus = ({
+  statusText,
+  orderId,
+  date,
+  total,
+  numberOfItems,
+  isActionNeeded,
+}: Props) => {
+  const navigation = useNavigation<NativeStackNavigationProp<VendorHomeStackParams>>();
+  const [status, setStatus] = useState(statusText);
+  const [actionNeeded, setActionNeeded] = useState(isActionNeeded);
   const [loading, setLoading] = useState(false);
-  const {token} = useSelector((s: RootState) => s.auth);
+  const { token } = useSelector((s: RootState) => s.auth);
 
-  const requestApi = async (action: 'accepted' | 'declined') => {
+  const handleChangeStatus = async (action: 'accepted' | 'declined') => {
     try {
       setLoading(true);
-      const res = await api_sellerHomeOrderAction(
-        token!,
-        props.orderId,
-        action,
-      );
-      console.log(res);
-      setIprops({...props, isActionNeeded: false, statusText: action});
+      await api_sellerHomeOrderAction(token!, orderId, action);
+      setStatus(action);
+      setActionNeeded(false);
     } catch (error) {
-      console.log(error);
+      Alert.alert("Error", "Something Went Wrong!")
     } finally {
       setLoading(false);
     }
   };
-  const handleAccept = () => {
-    requestApi('accepted');
-  };
-  const handleDecline = () => {
-    requestApi('declined');
-  };
-  if (loading) {
-    return <FullScreenLoader />;
-  }
-  return (
-    <TouchableOpacity
-      onPress={() =>
-        navigation.navigate('VendorOrderDetail', {orderId: props.orderId})
-      }
-      style={{
-        backgroundColor: COLORS.white,
-        padding: 20,
-        borderRadius: 15,
-        gap: 10,
-        paddingBottom: iProps.isActionNeeded ? 30 : 20,
-        marginBottom: iProps.isActionNeeded ? 30 : 0,
-      }}>
+
+  const renderStatusTag = () => {
+    const statusStyles: any = {
+      accepted: { bgColor: COLORS.greenDark, color: COLORS.white },
+      completed: { bgColor: COLORS.greenDark, color: COLORS.white },
+      declined: { bgColor: 'red', color: COLORS.white },
+      pending: { bgColor: 'gold', color: COLORS.black },
+      dispatched: { bgColor: 'gold', color: COLORS.black },
+    };
+
+    const { bgColor, color }: any = statusStyles[status] || {};
+
+    if (actionNeeded || !bgColor) return null;
+
+    return (
       <View
         style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
+          paddingVertical: pixelSizeVertical(10),
+          paddingHorizontal: pixelSizeHorizontal(16),
+          backgroundColor: bgColor,
+          borderRadius: BORDER_RADIUS['Semi-Large'],
         }}>
-        <MyText bold={FONT_WEIGHT.bold}>Order id {iProps.orderId}</MyText>
-        <MyText bold={FONT_WEIGHT.bold}>${iProps.total}</MyText>
-      </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-        }}>
-        <View style={{flexDirection: 'row', gap: 10}}>
-          <AntDesign
-            name="clockcircle"
-            size={FONT_SIZE.sm}
-            color={COLORS.grey}
-          />
-          <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
-            {moment(new Date(iProps.date), 'DD MMM, YYYY hh:mm A').format(
-              'YYYY-MM-DD HH:mm',
-            )}
-          </MyText>
-        </View>
-        <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
-          Order Total
+        <MyText color={color} size={FONT_SIZE.base}>
+          {status.charAt(0).toUpperCase() + status.slice(1)}
         </MyText>
       </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-        }}>
+    );
+  };
+
+  if (loading) return <FullScreenLoader />;
+
+  return (
+    <TouchableOpacity
+      onPress={() => navigation.navigate('VendorOrderDetail', { orderId })}
+      style={{
+        backgroundColor: COLORS.white,
+        padding: heightPixel(20),
+        borderRadius: BORDER_RADIUS.Medium,
+        gap: 10,
+        paddingBottom: pixelSizeVertical(20),
+        marginVertical: pixelSizeVertical(8),
+      }}>
+
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <MyText bold={FONT_WEIGHT.bold} size={FONT_SIZE.xl}>OrderID #{orderId}</MyText>
+        <View style={{ alignItems: 'flex-end' }}>
+          <MyText bold={FONT_WEIGHT.bold} size={FONT_SIZE.xl}>
+            ${typeof total === 'number' ? total.toFixed(2) : total}
+          </MyText>
+        </View>
+      </View>
+
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
+          <AntDesign name="clockcircle" size={FONT_SIZE.base} color={COLORS.grey} />
+          <MyText size={FONT_SIZE.base} color={COLORS.grey}>
+            {moment(new Date(date)).format('YYYY-MM-DD HH:mm')}
+          </MyText>
+        </View>
+        <View style={{ alignItems: 'flex-end' }}>
+          <MyText size={FONT_SIZE.base} color={COLORS.grey}>Order Total</MyText>
+        </View>
+      </View>
+
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <View
           style={{
-            paddingVertical: 10,
-            paddingHorizontal: 15,
+            paddingVertical: pixelSizeVertical(10),
+            paddingHorizontal: pixelSizeHorizontal(16),
             backgroundColor: COLORS.darkBrown,
-            borderRadius: 20,
+            borderRadius: BORDER_RADIUS['Semi-Large'],
           }}>
-          <View style={{flexDirection: 'row', gap: 10}}>
-            <FontAwesome5
-              name="shopping-bag"
-              color={COLORS.white}
-              size={FONT_SIZE.sm}
-            />
-            <MyText size={FONT_SIZE.sm} color={COLORS.white}>
-              Total Order {iProps.numberOfItems || 0} Items
+          <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
+            <FontAwesome5 name="shopping-bag" color={COLORS.white} size={FONT_SIZE.base} />
+            <MyText size={FONT_SIZE.base} color={COLORS.white}>
+              Total Order {numberOfItems || 0} Items
             </MyText>
           </View>
         </View>
-        {iProps.statusText === 'accepted' && (
-          <View
-            style={{
-              paddingVertical: 10,
-              paddingHorizontal: 15,
-              backgroundColor: COLORS.greenDark,
-              borderRadius: 20,
-              display: iProps.isActionNeeded ? 'none' : 'flex',
-            }}>
-            <MyText color={COLORS.white} size={FONT_SIZE.sm}>
-              {'accepted'}
-            </MyText>
-          </View>
-        )}
-        {iProps.statusText === 'completed' && (
-          <View
-            style={{
-              paddingVertical: 10,
-              paddingHorizontal: 15,
-              backgroundColor: COLORS.greenDark,
-              borderRadius: 20,
-              display: iProps.isActionNeeded ? 'none' : 'flex',
-            }}>
-            <MyText color={COLORS.white} size={FONT_SIZE.sm}>
-              {'completed'}
-            </MyText>
-          </View>
-        )}
-
-        {iProps.statusText === 'declined' && (
-          <View
-            style={{
-              paddingVertical: 10,
-              paddingHorizontal: 15,
-              backgroundColor: 'red',
-              borderRadius: 20,
-              display: iProps.isActionNeeded ? 'none' : 'flex',
-            }}>
-            <MyText color={COLORS.white} size={FONT_SIZE.sm}>
-              {'declined'}
-            </MyText>
-          </View>
-        )}
-        {iProps.statusText === 'pending' && (
-          <View
-            style={{
-              paddingVertical: 10,
-              paddingHorizontal: 15,
-              backgroundColor: 'gold',
-              borderRadius: 20,
-              display: iProps.isActionNeeded ? 'none' : 'flex',
-            }}>
-            <MyText color={COLORS.black} size={FONT_SIZE.sm}>
-              {'pending'}
-            </MyText>
-          </View>
-        )}
-        {iProps.statusText === 'dispatched' && (
-          <View
-            style={{
-              paddingVertical: 10,
-              paddingHorizontal: 15,
-              backgroundColor: 'gold',
-              borderRadius: 20,
-              display: iProps.isActionNeeded ? 'none' : 'flex',
-            }}>
-            <MyText color={COLORS.black} size={FONT_SIZE.sm}>
-              {'dispatched'}
-            </MyText>
-          </View>
-        )}
+        {renderStatusTag()}
       </View>
 
-      {iProps.isActionNeeded && (
-        <View
-          style={{
-            width: '90%',
-            height: 50,
-            alignSelf: 'center',
-            position: 'absolute',
-            bottom: -25,
-            flexDirection: 'row',
-            gap: 20,
-          }}>
+      {actionNeeded && (
+        <View style={{
+          width: '100%',
+          flexDirection: 'row',
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}>
           <TouchableOpacity
-            onPress={handleAccept}
+            onPress={() => handleChangeStatus('accepted')}
             style={{
               backgroundColor: COLORS.greenDark,
               flex: 1,
-              height: 40,
-              borderRadius: 20,
+              height: heightPixel(40),
+              borderRadius: BORDER_RADIUS['Semi-Large'],
               justifyContent: 'center',
               alignItems: 'center',
               flexDirection: 'row',
               gap: 10,
+              marginRight: pixelSizeHorizontal(10),
             }}>
-            <AntDesign
-              name="checkcircle"
-              size={FONT_SIZE.xl}
-              color={COLORS.white}
-            />
+            <AntDesign name="checkcircle" size={FONT_SIZE.xl} color={COLORS.white} />
             <MyText color={COLORS.white}>Accept</MyText>
           </TouchableOpacity>
+
           <TouchableOpacity
-            onPress={handleDecline}
+            onPress={() => handleChangeStatus('declined')}
             style={{
               backgroundColor: 'red',
               flex: 1,
-              height: 40,
-              borderRadius: 20,
+              height: heightPixel(40),
+              borderRadius: BORDER_RADIUS['Semi-Large'],
               justifyContent: 'center',
               alignItems: 'center',
               flexDirection: 'row',
               gap: 10,
             }}>
-            <AntDesign
-              name="closecircle"
-              size={FONT_SIZE.xl}
-              color={COLORS.white}
-            />
+            <AntDesign name="closecircle" size={FONT_SIZE.xl} color={COLORS.white} />
             <MyText color={COLORS.white}>Decline</MyText>
           </TouchableOpacity>
         </View>

@@ -1,16 +1,16 @@
-import {StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
-import React from 'react';
-import {COLORS, FONT_SIZE, wp} from '../styles';
+import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { BORDER_RADIUS, COLORS, FONT_SIZE } from '../styles';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FilterSvg from '../../assets/svg/icons/filter.svg';
 import GradientBox from '../components/GradientBox';
-import {MyText} from './MyText';
+import { MyText } from './MyText';
+import { heightPixel, pixelSizeHorizontal, pixelSizeVertical, widthPixel } from '../utils/sizeNormalization';
 
 type Props = {
   value?: string;
   onChange?: (s: string) => void;
   onSearch?: () => void;
-  disabledOnPress?: () => void; //if this true make it touchable
+  disabledOnPress?: () => void; 
   onFilterBtnPress?: () => void;
 };
 
@@ -25,22 +25,22 @@ const SearchBox = ({
     <TouchableOpacity
       disabled={!disabledOnPress}
       onPress={disabledOnPress}
-      style={{flexDirection: 'row', gap: wp(2), marginVertical: 20}}>
+      style={{ flexDirection: 'row', gap: widthPixel(10), marginVertical: pixelSizeVertical(20) }}>
       <View
         style={{
           backgroundColor: '#EBEBEB',
-          height: 60,
+          height: heightPixel(64),
           flex: 1,
-          borderRadius: 30,
+          borderRadius: BORDER_RADIUS.Circle,
           flexDirection: 'row',
           alignItems: 'center',
           overflow: 'hidden',
         }}>
         {disabledOnPress !== undefined ? (
           <MyText
-            size={FONT_SIZE.sml}
+            size={FONT_SIZE.base}
             color={COLORS.grey}
-            style={{paddingLeft: 12}}>
+            style={{ paddingLeft: pixelSizeHorizontal(12) }}>
             Search by Product name, brand
           </MyText>
         ) : (
@@ -52,8 +52,8 @@ const SearchBox = ({
             style={{
               flex: 1,
               height: '100%',
-              fontSize: FONT_SIZE.sml,
-              paddingLeft: 10,
+              fontSize: FONT_SIZE.base,
+              paddingLeft: pixelSizeHorizontal(10),
               color: COLORS.black,
             }}
           />
@@ -62,25 +62,25 @@ const SearchBox = ({
       <TouchableOpacity
         onPress={onSearch}
         style={{
-          width: 60,
-          height: 60,
-          borderRadius: 30,
+          width: widthPixel(58),
+          height: heightPixel(60),
+          borderRadius: BORDER_RADIUS.Circle,
           backgroundColor: '#EBEBEB',
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <AntDesign name="search1" size={FONT_SIZE.xl} color={COLORS.grey} />
+        <AntDesign name="search1" size={widthPixel(20)} color={COLORS.grey} />
       </TouchableOpacity>
       <TouchableOpacity onPress={onFilterBtnPress}>
         <GradientBox
           conatinerStyle={{
-            width: wp(14),
-            height: wp(14),
-            borderRadius: wp(14) / 2,
+            width: widthPixel(54),
+            height: heightPixel(56),
+            borderRadius: BORDER_RADIUS.Circle,
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <FilterSvg width={25} height={25} />
+          <FilterSvg width={widthPixel(24)} height={heightPixel(24)} />
         </GradientBox>
       </TouchableOpacity>
     </TouchableOpacity>

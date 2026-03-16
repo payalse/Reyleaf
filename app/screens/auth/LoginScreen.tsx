@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
-import {View, TouchableOpacity, ScrollView} from 'react-native';
-import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../styles';
-import {useNavigation} from '@react-navigation/native';
+import { useState } from 'react';
+import { View, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import { COLORS, FONT_SIZE, FONT_WEIGHT } from '../../styles';
+import { useNavigation } from '@react-navigation/native';
 
 // COMPONENTS
 import BackBtn from '../../components/buttons/BackBtn';
-import {MyText} from '../../components/MyText';
+import { MyText } from '../../components/MyText';
 import PrimaryBtn from '../../components/buttons/PrimaryBtn';
 import MyInput from '../../components/inputs/MyInput';
 import InputWrapper from '../../components/inputs/InputWrapper';
@@ -15,23 +15,32 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import APPLOGO from '../../../assets/svg/icons/icon.svg';
 import LayoutBG from '../../components/layout/LayoutBG';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootStackParams} from '../../naviagtion/types';
-import {useDispatch} from 'react-redux';
-import {AppDispatch} from '../../redux/store';
-import {login, setIsAuthenticated} from '../../redux/features/auth/authSlice';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParams } from '../../naviagtion/types';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../redux/store';
+import { login, setIsAuthenticated } from '../../redux/features/auth/authSlice';
 import {
   changeAppMode,
   setFirstLaunched,
 } from '../../redux/features/app/appSlice';
-import {Formik} from 'formik';
+import { Formik } from 'formik';
 import * as yup from 'yup';
 import InputErrorMsg from '../../components/inputs/InputErrorMsg';
-import {api_login} from '../../api/auth';
-import {LoginResponseType} from '../../types/apiResponse';
-import {ShowAlert} from '../../utils/alert';
-import {ALERT_TYPE} from 'react-native-alert-notification';
-import {fetchFcmTokenFromLocal} from '../../utils/fetchFcmTokenFromLocal';
+import { api_login } from '../../api/auth';
+import { LoginResponseType } from '../../types/apiResponse';
+import { ShowAlert } from '../../utils/alert';
+import { ALERT_TYPE } from 'react-native-alert-notification';
+import { fetchFcmTokenFromLocal } from '../../utils/fetchFcmTokenFromLocal';
+import { Text } from 'react-native';
+import TnC from '../../components/modal/TnC';
+import PrivacyPolicy from '../../components/modal/PrivacyPolicy';
+import {
+  pixelSizeHorizontal,
+  pixelSizeVertical,
+  widthPixel,
+} from '../../utils/sizeNormalization';
+import { LOGO_HEIGHT, LOGO_WIDTH } from '../Welcome/WelcomeScreen';
 
 type LoginValues = {
   email: string;
@@ -40,12 +49,14 @@ type LoginValues = {
 const loginValidationSchema = yup.object().shape({
   email: yup
     .string()
+    .trim()
     .email('Invalid email address')
     .required('Required')
     .required('Email is Required!'),
   password: yup
     .string()
-    .min(6, ({min}) => `Password must be at least ${min} characters`)
+    .trim()
+    .min(6, ({ min }) => `Password must be at least ${min} characters`)
     .required('Password is Required!'),
 });
 
@@ -54,20 +65,20 @@ const LoginScreen = () => {
     useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
 
   const onSubmit = async (values: LoginValues) => {
-    console.log(values);
-
     try {
       setLoading(true);
       let fcmToken = await fetchFcmTokenFromLocal();
-      const res = (await api_login({
+      const res: any = (await api_login({
         ...values,
         email: values.email.toLocaleLowerCase(),
         fcmToken,
       })) as LoginResponseType;
       // ShowAlert({textBody: res.message});
-      dispatch(login({...res.data, token: res.token}));
+      dispatch(login({ ...res.data, token: res.token }));
       // not verfied
       if (res.data.account_status === 1) {
         navigation.navigate('OtpVerification', {
@@ -82,17 +93,19 @@ const LoginScreen = () => {
         dispatch(setFirstLaunched(false));
       }
       if (res.data.account_status === 3) {
-        ShowAlert({textBody: 'Account is Blocked!', type: ALERT_TYPE.DANGER});
+        ShowAlert({ textBody: 'Account is Blocked!', type: ALERT_TYPE.DANGER });
       }
       if (res.data.account_status === 4) {
-        ShowAlert({textBody: 'Account is Deleted!', type: ALERT_TYPE.DANGER});
+        ShowAlert({ textBody: 'Account is Deleted!', type: ALERT_TYPE.DANGER });
       }
     } catch (error: any) {
-      ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
+      ShowAlert({ textBody: error.message, type: ALERT_TYPE.DANGER });
     } finally {
       setLoading(false);
     }
   };
+
+
 
   return (
     <LayoutBG type="bg-tl">
@@ -114,8 +127,8 @@ const LoginScreen = () => {
           <ScrollView
             showsVerticalScrollIndicator={false}
             style={{
-              marginHorizontal: 20,
-              paddingBottom: 25,
+              marginHorizontal: pixelSizeHorizontal(20),
+              paddingBottom: pixelSizeVertical(26),
             }}>
             <View>
               <BackBtn onPress={navigation.goBack} />
@@ -123,26 +136,26 @@ const LoginScreen = () => {
                 style={{
                   alignItems: 'center',
                 }}>
-                <APPLOGO width={120} height={200} />
+                <APPLOGO width={LOGO_WIDTH} height={LOGO_HEIGHT} />
               </View>
             </View>
 
-            <View style={{width: '90%'}}>
+            <View style={{ width: '90%' }}>
               <MyText
                 style={{
                   fontSize: FONT_SIZE['3xl'],
                   fontWeight: FONT_WEIGHT.bold,
-                  marginVertical: 10,
+                  marginVertical: pixelSizeVertical(6),
                 }}>
                 Let's get Started
               </MyText>
-              <MyText size={FONT_SIZE.sm} color={'grey'}>
+              <MyText color={'grey'}>
                 Give credentails to sign in your Account
               </MyText>
             </View>
             <View
               style={{
-                marginTop: 20,
+                marginTop: pixelSizeVertical(20),
               }}>
               <InputWrapper title="Email">
                 <MyInput
@@ -154,7 +167,7 @@ const LoginScreen = () => {
                   placeholder="Type your email"
                   leftIcon={() => (
                     <Ionicons
-                      size={24}
+                      size={widthPixel(24)}
                       color={COLORS.lightgrey}
                       name="mail-outline"
                     />
@@ -172,7 +185,7 @@ const LoginScreen = () => {
                   value={values.password}
                   leftIcon={() => (
                     <AntDesign
-                      size={24}
+                      size={widthPixel(24)}
                       color={COLORS.lightgrey}
                       name="lock1"
                     />
@@ -187,10 +200,9 @@ const LoginScreen = () => {
             </View>
 
             <TouchableOpacity
-              style={{alignSelf: 'flex-end'}}
+              style={{ alignSelf: 'flex-end' }}
               onPress={() => navigation.navigate('ForgetPassword')}>
               <MyText
-                size={FONT_SIZE.sm}
                 color={COLORS.greenDark}
                 bold={FONT_WEIGHT.medium}>
                 Forget Password ?
@@ -198,8 +210,7 @@ const LoginScreen = () => {
             </TouchableOpacity>
             <View
               style={{
-                paddingVertical: 20,
-                gap: 20,
+                paddingVertical: pixelSizeVertical(16),
               }}>
               <PrimaryBtn
                 loading={loading}
@@ -212,24 +223,57 @@ const LoginScreen = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 flexDirection: 'row',
-                gap: 6,
-                marginVertical: 50,
+                gap: 4,
+                marginVertical: pixelSizeVertical(36),
               }}>
-              <MyText center size={FONT_SIZE.sm} style={{color: 'grey'}}>
+              <MyText
+                center
+                style={{ color: 'grey', width: 'auto' }}>
                 Don’t have an account?
               </MyText>
               <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
                 <MyText
                   bold={FONT_WEIGHT.medium}
-                  size={FONT_SIZE.sm}
-                  style={{color: COLORS.greenDark}}>
+                  style={{ color: COLORS.greenDark }}>
                   Signup
                 </MyText>
               </TouchableOpacity>
             </View>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <MyText style={{ textAlign: "center" }}>
+                I agree to the{' '}
+                <Text
+                  onPress={() => {
+                    setShowTerms(true);
+                  }}
+                  style={{ color: '#056145', fontWeight: '600' }}>
+                  Terms & Conditions
+                </Text>{' '}
+                and{' '}
+                <Text
+                  onPress={() => {
+                    setShowPrivacy(true);
+                  }}
+                  style={{ color: '#056145', fontWeight: '600' }}>
+                  Privacy Policy
+                </Text>
+              </MyText>
+            </View>
           </ScrollView>
         )}
       </Formik>
+
+      <TnC open={showTerms} handleClose={() => setShowTerms(!showTerms)} />
+      <PrivacyPolicy
+        open={showPrivacy}
+        handleClose={() => setShowPrivacy(!showPrivacy)}
+      />
     </LayoutBG>
   );
 };

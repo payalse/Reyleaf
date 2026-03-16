@@ -3,36 +3,9 @@ import React from 'react';
 import {MyText} from '../../components/MyText';
 import {FONT_SIZE, FONT_WEIGHT} from '../../styles';
 import {FlatList} from 'react-native';
-import ProductItem from '../../components/ProductItem';
+import Product from '../../components/Product';
 import {ProductType} from '../../types';
 
-const data = [
-  {
-    id: '1',
-    rating: '4.6',
-    title: 'Product title',
-    category: 'Product Category',
-    price: '$60.00',
-    oldPrice: '$70.00',
-  },
-  {
-    id: '2',
-    rating: '4.6',
-    title: 'Product title',
-    category: 'Product Category',
-    price: '$60.00',
-    oldPrice: '$70.00',
-  },
-
-  {
-    id: '3',
-    rating: '4.6',
-    title: 'Product title',
-    category: 'Product Category',
-    price: '$60.00',
-    oldPrice: '$70.00',
-  },
-];
 
 const RecommendList = ({products}: {products: ProductType[]}) => {
   if (!products.length) {
@@ -60,7 +33,7 @@ const RecommendList = ({products}: {products: ProductType[]}) => {
         keyExtractor={item => item._id}
         renderItem={({item}) => {
           return (
-            <ProductItem
+            <Product
               category={item.categoryId.name}
               oldPrice={String(item.price)}
               price={String(item.discountedProce)}

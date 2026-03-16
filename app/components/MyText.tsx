@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   StyleProp,
   TextStyle,
@@ -6,6 +5,7 @@ import {
   TextProps,
   TouchableOpacity,
   GestureResponderEvent,
+  ViewStyle,
 } from 'react-native';
 import {FONT_SIZE} from '../styles';
 
@@ -17,6 +17,7 @@ interface TextProp extends TextProps {
   center?: boolean;
   color?: TextStyle['color'];
   onPress?: (event: GestureResponderEvent) => void;
+  containerStyle?:ViewStyle;
 }
 
 export const MyText = ({
@@ -27,6 +28,7 @@ export const MyText = ({
   color,
   center,
   onPress,
+  containerStyle,
   ...rest
 }: TextProp) => {
   const textComponent = (
@@ -35,7 +37,7 @@ export const MyText = ({
       style={[
         {
           // fontFamily: FONT_FAMILY.Mulish.name,
-          fontSize: size ? size : FONT_SIZE.base,
+          fontSize: size ? size : FONT_SIZE.lg,
           fontWeight: bold,
           color: color ? color : '#222',
           textAlign: center ? 'center' : 'auto',
@@ -48,7 +50,7 @@ export const MyText = ({
 
   if (onPress) {
     return (
-      <TouchableOpacity onPress={onPress}>{textComponent}</TouchableOpacity>
+      <TouchableOpacity style={containerStyle} onPress={onPress}>{textComponent}</TouchableOpacity>
     );
   }
 

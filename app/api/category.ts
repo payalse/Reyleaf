@@ -11,7 +11,6 @@ export const api_getCategories = () => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         if (data?.status !== 200) {
           throw new Error(data.message || 'something went wrong!');
         }

@@ -1,6 +1,4 @@
 import {TouchableOpacity, View} from 'react-native';
-import React from 'react';
-
 // ICONS x Images
 import MenuSvg from '../../../assets/svg/icons/menu.svg';
 import AppIcon from '../../../assets/svg/icons/icon.svg';
@@ -13,6 +11,7 @@ import {useSelector} from 'react-redux';
 import {RootState} from 'app/redux/store';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {MyText} from '../MyText';
+import { fontPixel } from '../../utils/sizeNormalization';
 
 const ICON_SIZE = wp(13);
 
@@ -76,7 +75,7 @@ const MainHeader = ({onNotiPress, onMessagePress}: Props) => {
                 color={COLORS.white}
               />
             </View>
-            <MyText center size={FONT_SIZE.sm} color={COLORS.greenDark}>
+            <MyText center size={fontPixel(18)} color={COLORS.greenDark}>
               Back
             </MyText>
           </TouchableOpacity>

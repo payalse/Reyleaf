@@ -1,4 +1,4 @@
-import { CommentType } from '../types';
+import {CommentType, ProductType} from '../types';
 
 export type RootStackParams = {
   Splash: undefined;
@@ -6,23 +6,23 @@ export type RootStackParams = {
   Welcome: undefined;
   Signup: undefined;
   Login: undefined;
-  OtpVerification: { verifyToken: string; authToken: string };
+  OtpVerification: {verifyToken: string; authToken: string};
   ForgetPassword: undefined;
-  SetNewPassword: { verifyToken: string; otp: string };
-  ForgetPasswordOtpVerification: { verifyToken: string };
-  CompleteYourProfile: { authToken: string };
-  ChooseProfileImage: { setSelectedImage: () => void };
-  AddYourAddress: { authToken: string };
+  SetNewPassword: {verifyToken: string; otp: string};
+  ForgetPasswordOtpVerification: {verifyToken: string};
+  CompleteYourProfile: {authToken: string};
+  ChooseProfileImage: {setSelectedImage: () => void};
+  AddYourAddress: {authToken: string};
   ConnectWithCalendar: undefined;
   AccountCreatedSuccess: undefined;
   VendorLogin: undefined;
   VendorSignup: undefined;
-  VendorSetNewPassword: { verifyToken: string; otp: string };
-  VendorOtpVerification: { verifyToken: string; authToken: string };
+  VendorSetNewPassword: {verifyToken: string; otp: string};
+  VendorOtpVerification: {verifyToken: string; authToken: string};
   VendorForgetPassword: undefined;
-  VendorForgetPasswordOtpVerification: { verifyToken: string };
-  CompleteYourBusinessProfile: { authToken: string };
-  AddYourBusinessAddress: { authToken: string };
+  VendorForgetPasswordOtpVerification: {verifyToken: string};
+  CompleteYourBusinessProfile: {authToken: string};
+  AddYourBusinessAddress: {authToken: string};
   ApplicationUnderReview: undefined;
   MainTab: undefined;
   AppDrawer: undefined;
@@ -38,12 +38,15 @@ export type RootStackParams = {
   Reviews: undefined;
   ProductDetail: {
     productId: string;
-    photos: { url: string }[] | undefined;
+    photos: {url: string}[] | undefined;
     title: string;
   };
-  SearchResult: undefined; Search: undefined;
+  SearchResult: undefined;
+  Search: undefined;
   SearchStack: undefined;
   SearchFilter: undefined;
+  TnC: undefined;
+  PrivacyPolicy: undefined;
 };
 
 export type DrawerParams = {
@@ -61,18 +64,20 @@ export type DrawerParams = {
   SupportStack: undefined;
   ConnectCalender: undefined;
   EarningStack: undefined;
+  TnC: undefined;
+  PrivacyPolicy: undefined;
 };
 export type HomeStackParams = {
   Home: undefined;
-  TrendingProduct: undefined;
-  NewlyArrival: undefined;
-  RecentlyViewed: undefined;
-  BestSelling: undefined;
+  AllProductList: {
+    productData: any;
+    title: string;
+  };
   SimilarProducts: undefined;
   Reviews: undefined;
   ProductDetail: {
     productId: string;
-    photos: { url: string }[] | undefined;
+    photos: {url: string}[] | undefined;
     title: string;
   };
   AppNotification: undefined;
@@ -83,21 +88,30 @@ export type HomeStackParams = {
 };
 export type VendorHomeStackParams = {
   VendorHome: undefined;
-  VendorOrderDetail: { orderId: string };
+  VendorOrderDetail: {orderId: string};
   ChatStack: undefined;
   AppNotification: undefined;
 };
 export type VendorAllOrdersStackStackParams = {
   AllOrder: undefined;
-  VendorOrderDetail: { orderId: string };
+  VendorOrderDetail: {orderId: string};
 };
 
 export type CartStackParams = {
   Cart: undefined;
-  CheckOut: { total: number };
+  CheckOut: {total: number, subtotal: number, shippingTotal: number, taxTotal: number};
   AddAddress: undefined;
   EditAddress: undefined;
-  EditCard: undefined;
+  EditCard: {
+    params: {
+      params: {
+        last4: string;
+        name: string;
+        exp_month: string;
+        cvc: string;
+      };
+    };
+  };
   AddCard: undefined;
   OrderSuccess: undefined;
   AppNotification: undefined;
@@ -118,7 +132,7 @@ export type SearchStackParams = {
   ChatStack: undefined;
   ProductDetail: {
     productId: string;
-    photos: { url: string }[] | undefined;
+    photos: {url: string}[] | undefined;
     title: string;
   };
 };
@@ -136,9 +150,9 @@ export type EventStackParams = {
 export type AwarenessStackParams = {
   Awareness: undefined;
   AddResource: undefined;
-  ForumDetail: { id: string };
-  JoinedForumDetail: { id: string };
-  AddContent: { id: string };
+  ForumDetail: {id: string};
+  JoinedForumDetail: {id: string};
+  AddContent: {id: string};
   CommentScreen: undefined;
   LikeScreen: undefined;
   AddEvent: undefined;
@@ -181,18 +195,25 @@ export type ChatStackParams = {
 };
 export type ProfileEditStackParams = {
   EditProfile: undefined;
-  ChooseProfileImage: { setSelectedImage: () => void };
+  ChooseProfileImage: {setSelectedImage: () => void};
 };
 
 export type AllProductStackParams = {
   AllProduct: undefined;
   ProductCreate: undefined;
+  ProductEdit: {
+    product: ProductType;
+  };
+  ProductDetail: {
+    product: ProductType;
+  };
+  Reviews: undefined;
 };
 
 export type ProductDetailParams = {
   ProductDetail: {
     productId: string;
-    photos: { url: string }[] | undefined;
+    photos: {url: string}[] | undefined;
     title: string;
   };
   Reviews: undefined;

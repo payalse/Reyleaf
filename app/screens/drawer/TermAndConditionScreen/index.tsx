@@ -1,16 +1,21 @@
-import {SafeAreaView, Text, StyleSheet} from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
-import {MyText} from '../../../components/MyText';
+import { SafeAreaView, Text, StyleSheet, Linking, TouchableOpacity } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
-import {COLORS} from '../../../styles';
 import LayoutBG from '../../../components/layout/LayoutBG';
-import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AboutUsStackParams} from '../../../naviagtion/DrawerNavigator';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AboutUsStackParams } from '../../../naviagtion/DrawerNavigator';
+import { heightPixel, pixelSizeVertical } from '../../../utils/sizeNormalization';
+import { FONT_SIZE } from '../../../styles';
 
 const TermAndConditionScreen = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<AboutUsStackParams>>();
+
+  const handleEmailPress = () => {
+    Linking.openURL('mailto:info@reyleaf.com');
+  };
+
   return (
     <LayoutBG type="bg-tr">
       <SafeAreaView />
@@ -19,13 +24,13 @@ const TermAndConditionScreen = () => {
         contentContainerStyle={{
           justifyContent: 'center',
           alignItems: 'center',
-          padding: 20,
-          gap: 50,
+          padding: heightPixel(20),
+          gap: 10,
         }}>
         <Text style={styles.text}>
-          These Terms & Conditions ("Terms") govern the use of the Reynette
+          These Terms & Conditions ("Terms") govern the use of the Reyleaf Rescue Refill Ltd
           mobile applications, websites, and related services (collectively
-          referred to as the "Service"), provided by Reynette Inc. ("Reynette,"
+          referred to as the "Service"), provided by Reyleaf Rescue Refill Ltd. ("Reyleaf Rescue Refill Ltd,"
           "we," "us," or "our"). By accessing or using the Service, you agree to
           be bound by these Terms. If you do not agree to these Terms, please do
           not use the Service.
@@ -34,7 +39,7 @@ const TermAndConditionScreen = () => {
         <Text style={styles.heading}>1. Account Registration</Text>
         <Text style={styles.text}>
           1.1. Eligibility: You must be at least 18 years old and a resident of
-          the United States to create an account with Reynette. By registering
+          the United States to create an account with Reyleaf Rescue Refill Ltd. By registering
           an account, you represent and warrant that you meet these eligibility
           criteria.
         </Text>
@@ -46,7 +51,7 @@ const TermAndConditionScreen = () => {
         <Text style={styles.text}>
           1.3. Account Security: You are responsible for maintaining the
           confidentiality of your account credentials and for all activities
-          that occur under your account. You agree to notify Reynette
+          that occur under your account. You agree to notify Reyleaf Rescue Refill Ltd
           immediately of any unauthorized use of your account or any other
           breach of security.
         </Text>
@@ -80,19 +85,19 @@ const TermAndConditionScreen = () => {
         <Text style={styles.heading}>3. Intellectual Property</Text>
         <Text style={styles.text}>
           3.1. Ownership: The Service, including all content, features, and
-          functionality, is owned by Reynette and is protected by United States
+          functionality, is owned by Reyleaf Rescue Refill Ltd and is protected by United States
           and international copyright, trademark, and other intellectual
           property laws.
         </Text>
         <Text style={styles.text}>
-          3.2. License: Subject to your compliance with these Terms, Reynette
+          3.2. License: Subject to your compliance with these Terms, Reyleaf Rescue Refill Ltd
           grants you a limited, non-exclusive, non-transferable, revocable
           license to access and use the Service for personal, non-commercial
           purposes.
         </Text>
         <Text style={styles.text}>
           3.3. User Content: By submitting any content to the Service, you grant
-          Reynette a worldwide, royalty-free, sublicensable, and transferable
+          Reyleaf Rescue Refill Ltd a worldwide, royalty-free, sublicensable, and transferable
           license to use, reproduce, distribute, prepare derivative works of,
           display, and perform the content in connection with the Service.
         </Text>
@@ -107,14 +112,14 @@ const TermAndConditionScreen = () => {
 
         <Text style={styles.heading}>5. Termination</Text>
         <Text style={styles.text}>
-          5.1. Termination by Reynette: Reynette reserves the right to suspend
+          5.1. Termination by Reyleaf Rescue Refill Ltd: Reyleaf Rescue Refill Ltd reserves the right to suspend
           or terminate your access to the Service at any time for any reason,
           including if you violate these Terms or engage in conduct that
-          Reynette determines to be harmful or disruptive.
+          Reyleaf Rescue Refill Ltd determines to be harmful or disruptive.
         </Text>
         <Text style={styles.text}>
           5.2. Termination by User: You may terminate your account at any time
-          by contacting Reynette customer support or using the account deletion
+          by contacting Reyleaf Rescue Refill Ltd customer support or using the account deletion
           option within the Service.
         </Text>
 
@@ -122,14 +127,14 @@ const TermAndConditionScreen = () => {
         <Text style={styles.text}>
           6.1. No Warranty: The Service is provided on an "as is" and "as
           available" basis, without any warranties of any kind, either express
-          or implied. Reynette disclaims all warranties, including, but not
+          or implied. Reyleaf Rescue Refill Ltd disclaims all warranties, including, but not
           limited to, the implied warranties of merchantability, fitness for a
           particular purpose, and non-infringement.
         </Text>
 
         <Text style={styles.heading}>7. Limitation of Liability</Text>
         <Text style={styles.text}>
-          7.1. No Liability: In no event shall Reynette be liable for any
+          7.1. No Liability: In no event shall Reyleaf Rescue Refill Ltd be liable for any
           indirect, incidental, special, consequential, or punitive damages,
           including without limitation, loss of profits, data, use, goodwill, or
           other intangible losses, arising out of or in connection with your use
@@ -150,7 +155,7 @@ const TermAndConditionScreen = () => {
 
         <Text style={styles.heading}>9. Changes to Terms</Text>
         <Text style={styles.text}>
-          9.1. Modification: Reynette reserves the right to modify or update
+          9.1. Modification: Reyleaf Rescue Refill Ltd reserves the right to modify or update
           these Terms at any time without prior notice. Any changes will be
           effective immediately upon posting the revised Terms on the Service.
         </Text>
@@ -159,8 +164,11 @@ const TermAndConditionScreen = () => {
         <Text style={styles.text}>
           10.1. Questions: If you have any questions or concerns about these
           Terms, please contact us at{' '}
-          <Text style={styles.link}>contact@reynette.com</Text>.
         </Text>
+        <TouchableOpacity onPress={handleEmailPress}>
+          <Text style={styles.link}>info@reyleaf.com</Text>
+        </TouchableOpacity>
+        <Text style={styles.text}>.</Text>
       </ScrollView>
     </LayoutBG>
   );
@@ -168,29 +176,27 @@ const TermAndConditionScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 5,
+    padding: heightPixel(6),
   },
   title: {
-    fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 6,
+    marginBottom: pixelSizeVertical(6),
     color: 'black',
   },
   heading: {
-    fontSize: 16,
+    fontSize: FONT_SIZE.xl,
     fontWeight: 'bold',
-    marginTop: 6,
     color: 'black',
+    marginTop: pixelSizeVertical(6),
   },
   text: {
-    fontSize: 12,
+    fontSize: FONT_SIZE.base,
     lineHeight: 24,
     color: 'black',
   },
   listItem: {
-    fontSize: 16,
-    lineHeight: 24,
-    marginBottom: 8,
+    lineHeight: 20,
+    marginBottom: pixelSizeVertical(8),
     color: 'black',
   },
   link: {

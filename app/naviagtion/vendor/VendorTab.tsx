@@ -1,10 +1,10 @@
-import {Image, Platform, StyleSheet, View} from 'react-native';
+import { Dimensions, Image, Platform, StyleSheet, View } from 'react-native';
 import {
   createBottomTabNavigator,
   BottomTabBar,
 } from '@react-navigation/bottom-tabs';
-import {COLORS, FONT_SIZE, hp, wp} from '../../styles';
-import {MyText} from '../../components/MyText';
+import { COLORS, FONT_SIZE, hp, wp } from '../../styles';
+import { MyText } from '../../components/MyText';
 
 // ICONS
 import BgImg from '../../../assets/svg/tab/VendorBg.png';
@@ -25,15 +25,17 @@ import AwarenessStack from './../AwarenessStack';
 import VendorHomeStack from './VendorHomeStack';
 import AllProductStack from './AllProductStack';
 import AllOrderStack from './AllOrderStack';
-
-const TAB_ICON_SIZE = FONT_SIZE['2xl'];
+import { heightPixel, widthPixel } from '../../utils/sizeNormalization';
 
 const Tab = createBottomTabNavigator();
 
-const TAB_BAR_BG_HEIGHT = hp(13);
+const TAB_ICON_SIZE = widthPixel(24)
+
+export const TAB_BAR_BG_HEIGHT = heightPixel(108);
+
 function VendorTab() {
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <Tab.Navigator
         tabBar={props => (
           <View
@@ -57,7 +59,7 @@ function VendorTab() {
               <Image
                 source={BgImg}
                 style={{
-                  width: wp('100%'),
+                  width: Dimensions.get("screen").width,
                   height: TAB_BAR_BG_HEIGHT,
                   position: 'absolute',
                   bottom: 0,
@@ -74,7 +76,7 @@ function VendorTab() {
           options={{
             tabBarLabel: '',
             unmountOnBlur: true,
-            tabBarIcon: ({focused}) => {
+            tabBarIcon: ({ focused }) => {
               const color = focused ? COLORS.white : COLORS.grey;
               return (
                 <View style={styles.tabItemContainer}>
@@ -83,7 +85,7 @@ function VendorTab() {
                   ) : (
                     <HomeSvg width={TAB_ICON_SIZE} height={TAB_ICON_SIZE} />
                   )}
-                  <MyText color={color} size={FONT_SIZE.xs}>
+                  <MyText color={color} size={FONT_SIZE.base}>
                     Home
                   </MyText>
                 </View>
@@ -96,7 +98,7 @@ function VendorTab() {
           component={AllProductStack}
           options={{
             tabBarLabel: '',
-            tabBarIcon: ({focused}) => {
+            tabBarIcon: ({ focused }) => {
               const color = focused ? COLORS.white : COLORS.grey;
 
               return (
@@ -109,7 +111,7 @@ function VendorTab() {
                   ) : (
                     <ProductSvg width={TAB_ICON_SIZE} height={TAB_ICON_SIZE} />
                   )}
-                  <MyText color={color} size={FONT_SIZE.xs}>
+                  <MyText color={color} size={FONT_SIZE.base}>
                     All Product
                   </MyText>
                 </View>
@@ -122,7 +124,7 @@ function VendorTab() {
           component={AllOrderStack}
           options={{
             tabBarLabel: '',
-            tabBarIcon: ({focused}) => {
+            tabBarIcon: ({ focused }) => {
               const color = focused ? COLORS.white : COLORS.grey;
 
               return (
@@ -132,7 +134,7 @@ function VendorTab() {
                   ) : (
                     <CartSvg width={TAB_ICON_SIZE} height={TAB_ICON_SIZE} />
                   )}
-                  <MyText color={color} size={FONT_SIZE.xs}>
+                  <MyText color={color} size={FONT_SIZE.base}>
                     All Orders
                   </MyText>
                 </View>
@@ -146,7 +148,7 @@ function VendorTab() {
           options={{
             unmountOnBlur: true,
             tabBarLabel: '',
-            tabBarIcon: ({focused}) => {
+            tabBarIcon: ({ focused }) => {
               const color = focused ? COLORS.white : COLORS.grey;
               return (
                 <View style={styles.tabItemContainer}>
@@ -162,7 +164,7 @@ function VendorTab() {
                     />
                   )}
 
-                  <MyText color={color} size={FONT_SIZE.xs}>
+                  <MyText color={color} size={FONT_SIZE.base}>
                     Awareness
                   </MyText>
                 </View>
@@ -176,7 +178,7 @@ function VendorTab() {
           options={{
             unmountOnBlur: true,
             tabBarLabel: '',
-            tabBarIcon: ({focused}) => {
+            tabBarIcon: ({ focused }) => {
               const color = focused ? COLORS.white : COLORS.grey;
               return (
                 <View style={styles.tabItemContainer}>
@@ -186,7 +188,7 @@ function VendorTab() {
                     <FeedSvg width={TAB_ICON_SIZE} height={TAB_ICON_SIZE} />
                   )}
 
-                  <MyText color={color} size={FONT_SIZE.xs}>
+                  <MyText color={color} size={FONT_SIZE.base}>
                     Feeds
                   </MyText>
                 </View>
@@ -203,7 +205,7 @@ export default VendorTab;
 const styles = StyleSheet.create({
   tabBarStyle: {
     display: 'flex',
-    width: wp('100%'),
+    width: Dimensions.get("screen").width,
     backgroundColor: COLORS.red,
     borderWidth: 0,
     shadowOpacity: 0,
@@ -217,4 +219,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export {styles};
+export { styles };

@@ -9,8 +9,8 @@ const {width} = Dimensions.get('screen');
 const BoardThree = () => {
   return (
     <RenderBody
-      heading="Reynette Deliveries Bringing Eco- Friendly Convenience to Doorstep"
-      subHeading="At Reynette, we extend our commitment to sustainability beyond products and into the very essence of your delivery experience"
+      heading="Reyleaf Deliveries Bringing Eco- Friendly Convenience to Doorstep"
+      subHeading="At Reyleaf, we extend our commitment to sustainability beyond products and into the very essence of your delivery experience"
       stripeComp={
         <StripeThree width={width} style={{position: 'absolute', top: 0}} />
       }
