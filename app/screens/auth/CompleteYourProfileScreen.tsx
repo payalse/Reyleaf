@@ -100,14 +100,24 @@ const CompleteYourProfileScreen = () => {
       // formData.append('pronouns', pronoun);
 
       if (selectedImage !== null) {
-        if (!selectedImage['isDefaultAvatar']) {
+        const img = selectedImage as any;
+        if (img.isDefaultAvatar && img.img) {
+          const resolved = Image.resolveAssetSource(img.img);
+          if (resolved?.uri) {
+            formData.append('picture', {
+              name: `avatar-${img.id}.png`,
+              type: 'image/png',
+              uri: resolved.uri,
+            });
+          }
+        } else if (!img.isDefaultAvatar && img.path) {
           const tempImg = {
             name: Date.now().toString() + '.png',
-            type: selectedImage?.mime,
+            type: img.mime || 'image/png',
             uri:
               Platform.OS !== 'android'
-                ? 'file://' + selectedImage?.path
-                : selectedImage?.path,
+                ? 'file://' + img.path
+                : img.path,
           };
           formData.append('picture', tempImg);
         }
