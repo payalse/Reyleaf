@@ -134,16 +134,25 @@ const EditProfileScreen = () => {
       // formData.append('pronouns', pronoun);
 
       if (selectedImage !== null) {
-        if (!selectedImage as any['isDefaultAvatar']) {
+        const img = selectedImage as any;
+        if (img.isDefaultAvatar && img.img) {
+          const resolved = Image.resolveAssetSource(img.img);
+          if (resolved?.uri) {
+            formData.append('picture', {
+              name: `avatar-${img.id}.png`,
+              type: 'image/png',
+              uri: resolved.uri,
+            });
+          }
+        } else if (!img.isDefaultAvatar && img.path) {
           const tempImg = {
             name: Date.now().toString() + '.png',
-            type: selectedImage?.mime,
+            type: img.mime || 'image/png',
             uri:
               Platform.OS !== 'android'
-                ? 'file://' + selectedImage?.path
-                : selectedImage?.path,
+                ? 'file://' + img.path
+                : img.path,
           };
-          console.log(tempImg, 'pppp');
           formData.append('picture', tempImg);
         }
       }
@@ -154,6 +163,7 @@ const EditProfileScreen = () => {
           formData,
           authUser?.token!,
         )) as any;
+        // console.log(res.data, 'res');
         ShowAlert({ textBody: res?.message, type: ALERT_TYPE.SUCCESS });
         dispatch(updateUser(res.data));
       } catch (error: any) {
@@ -185,16 +195,25 @@ const EditProfileScreen = () => {
     // formData.append('pronouns', pronoun);
 
     if (selectedImage !== null) {
-      if (!selectedImage['isDefaultAvatar']) {
+      const img = selectedImage as any;
+      if (img.isDefaultAvatar && img.img) {
+        const resolved = Image.resolveAssetSource(img.img);
+        if (resolved?.uri) {
+          formData.append('picture', {
+            name: `avatar-${img.id}.png`,
+            type: 'image/png',
+            uri: resolved.uri,
+          });
+        }
+      } else if (!img.isDefaultAvatar && img.path) {
         const tempImg = {
           name: Date.now().toString() + '.png',
-          type: selectedImage?.mime,
+          type: img.mime || 'image/png',
           uri:
             Platform.OS !== 'android'
-              ? 'file://' + selectedImage?.path
-              : selectedImage?.path,
+              ? 'file://' + img.path
+              : img.path,
         };
-        console.log(tempImg, 'pppp');
         formData.append('picture', tempImg);
       }
     }

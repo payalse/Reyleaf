@@ -113,6 +113,7 @@ export const api_verifyEmail = (payload: {refId: string; otp: string}) => {
 };
 
 export const api_completeProfile = (formData: FormData, token: string) => {
+  console.log(formData, 'formData');
   const uri = `${BASE_URL}/api/v1/user`;
   return new Promise((resolve, reject) => {
     fetch(uri, {
