@@ -107,18 +107,22 @@ const PaymentAndBillingScreen = () => {
   };
 
   const onDeleteCard = async (item: any) => {
+    if (!user?.stripeCustomerId) {
+      ShowAlert({ textBody: 'Customer ID missing', type: ALERT_TYPE.DANGER });
+      return;
+    }
     try {
       setDeletingCardId(item?.id);
       const res: any = await api_deleteCard(token!, { customerId: user?.stripeCustomerId, cardId: item?.id });
-      if (res?.Status === 200) {
+      // if (res?.Status === 200) {
         ShowAlert({
           textBody: 'Card deleted successfully',
           type: ALERT_TYPE.SUCCESS,
         });
         requestApi();
-      } else {
-        ShowAlert({ textBody: res?.message || 'Failed to delete card', type: ALERT_TYPE.DANGER });
-      }
+      // } else {
+      //   ShowAlert({ textBody: res?.message || 'Failed to delete card', type: ALERT_TYPE.DANGER });
+      // }
     } catch (error: any) {
       console.log(error, 'error');
       ShowAlert({ textBody: error?.message || 'Failed to delete card', type: ALERT_TYPE.DANGER });
@@ -129,7 +133,7 @@ const PaymentAndBillingScreen = () => {
 
   const requestApi = async () => {
     try {
-      setLoading(false);
+      setLoading(true);
       const res: any = await api_getCard(user?.stripeCustomerId || '', token!);
       const transactions: any = await api_getAllTransactions(token!);
       // console.log(transactions.data);
