@@ -269,7 +269,6 @@ const EditProfileScreen = () => {
     }
   };
 
-  console.log(authUser?.data?.country, 'country');
   return (
     <MainLayout
       headerComp={

@@ -6,6 +6,7 @@ interface FriendStateType {
   myFriends: Friend[];
   blocked: Friend[];
   requested: Friend[];
+  sentRequests: Friend[];
 }
 
 const initialState: FriendStateType = {
@@ -13,6 +14,7 @@ const initialState: FriendStateType = {
   myFriends: [],
   blocked: [],
   requested: [],
+  sentRequests: [],
 };
 
 export const friendSlice = createSlice({
@@ -31,10 +33,13 @@ export const friendSlice = createSlice({
     requestsList: (state, action: PayloadAction<Friend[]>) => {
       state.requested = action.payload;
     },
+    sentRequestsList: (state, action: PayloadAction<Friend[]>) => {
+      state.sentRequests = action.payload;
+    },
   },
 });
 
-export const {suggestedList, myFriendsList, blockedList, requestsList} =
+export const {suggestedList, myFriendsList, blockedList, requestsList, sentRequestsList} =
   friendSlice.actions;
 
 export default friendSlice.reducer;

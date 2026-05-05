@@ -31,7 +31,7 @@ import { api_login } from '../../api/auth';
 import { LoginResponseType } from '../../types/apiResponse';
 import { ShowAlert } from '../../utils/alert';
 import { ALERT_TYPE } from 'react-native-alert-notification';
-import { fetchFcmTokenFromLocal } from '../../utils/fetchFcmTokenFromLocal';
+import { getLatestFcmTokenForAuth } from '../../utils/fetchFcmTokenFromLocal';
 import { Text } from 'react-native';
 import TnC from '../../components/modal/TnC';
 import PrivacyPolicy from '../../components/modal/PrivacyPolicy';
@@ -71,7 +71,7 @@ const LoginScreen = () => {
   const onSubmit = async (values: LoginValues) => {
     try {
       setLoading(true);
-      let fcmToken = await fetchFcmTokenFromLocal();
+      const fcmToken = await getLatestFcmTokenForAuth();
       const res: any = (await api_login({
         ...values,
         email: values.email.toLocaleLowerCase(),

@@ -18,7 +18,7 @@ import {api_socialLogin} from '../../api/auth';
 import {LoginResponseType} from '../../types/apiResponse';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParams} from '../../naviagtion/types';
-import {fetchFcmTokenFromLocal} from '../../utils/fetchFcmTokenFromLocal';
+import {getLatestFcmTokenForAuth} from '../../utils/fetchFcmTokenFromLocal';
 
 GoogleSignin.configure({
   webClientId:
@@ -41,7 +41,7 @@ const GoogleButton = () => {
   ) => {
     try {
       setLoading(true);
-      let fcmToken = await fetchFcmTokenFromLocal();
+      const fcmToken = await getLatestFcmTokenForAuth();
       const res = (await api_socialLogin({
         account_type: 1,
         fullname: fullname,

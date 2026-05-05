@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir /s \"E:\\\\Reyleaf\")",
+      "PowerShell(ls \"E:\\\\Reyleaf\" | Where-Object {$_.PSIsContainer} | Select-Object Name)",
+      "Bash(xargs grep *)",
+      "Bash(xargs cat *)"
+    ]
+  }
+}

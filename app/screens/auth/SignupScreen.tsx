@@ -28,7 +28,7 @@ import { AppDispatch } from '../../redux/store';
 import { login } from '../../redux/features/auth/authSlice';
 import { ALERT_TYPE } from 'react-native-alert-notification';
 import { ShowAlert } from '../../utils/alert';
-import { fetchFcmTokenFromLocal } from '../../utils/fetchFcmTokenFromLocal';
+import { getLatestFcmTokenForAuth } from '../../utils/fetchFcmTokenFromLocal';
 import CheckBox from '@react-native-community/checkbox';
 import { Text } from 'react-native';
 import TnC from '../../components/modal/TnC';
@@ -75,7 +75,7 @@ const SignupScreen = () => {
   const [showPrivacy, setShowPrivacy] = useState(false);
 
   const onSubmit = async (values: FormValues) => {
-    let fcmToken = await fetchFcmTokenFromLocal();
+    const fcmToken = await getLatestFcmTokenForAuth();
     const payload = {
       email: values.email,
       password: values.password,

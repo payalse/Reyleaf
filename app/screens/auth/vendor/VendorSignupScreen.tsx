@@ -23,6 +23,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { SignupResponse } from '../../../types/apiResponse';
 import { api_signup } from '../../../api/auth';
+import { getLatestFcmTokenForAuth } from '../../../utils/fetchFcmTokenFromLocal';
 import { ShowAlert } from '../../../utils/alert';
 import { login } from '../../../redux/features/auth/authSlice';
 import { ALERT_TYPE } from 'react-native-alert-notification';
@@ -73,10 +74,12 @@ const VendorSignupScreen = () => {
   const [showPrivacy, setShowPrivacy] = useState(false);
 
   const onSubmit = async (values: FormValues) => {
+    const fcmToken = await getLatestFcmTokenForAuth();
     const payload = {
       email: values.email,
       password: values.password,
       role: 2,
+      fcmToken,
     };
 
     try {

@@ -192,6 +192,8 @@ const styles = StyleSheet.create({
   },
   headerWrapper: {
     marginHorizontal: 20,
+    flex: 1,
+    minHeight: 0,
   },
   searchContainer: {
     flexDirection: 'row',
