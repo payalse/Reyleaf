@@ -31,6 +31,7 @@ import {
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { api_login } from '../../../api/auth';
+import { getLatestFcmTokenForAuth } from '../../../utils/fetchFcmTokenFromLocal';
 import { LoginResponseType } from '../../../types/apiResponse';
 import { ShowAlert } from '../../../utils/alert';
 import { ALERT_TYPE } from 'react-native-alert-notification';
@@ -71,9 +72,11 @@ const VendorLoginScreen = () => {
   const onSubmit = async (values: LoginValues) => {
     try {
       setLoading(true);
+      const fcmToken = await getLatestFcmTokenForAuth();
       const res = (await api_login({
         ...values,
         email: values.email.toLocaleLowerCase(),
+        fcmToken,
       })) as LoginResponseType;
       // ShowAlert({textBody: res.message});
       dispatch(login({ ...res.data, token: res.token } as any));

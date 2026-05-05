@@ -1,14 +1,40 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import messaging from '@react-native-firebase/messaging';
+import { PermissionsAndroid, Platform } from 'react-native';
 
-export const fetchFcmTokenFromLocal = async () => {
+async function ensureAndroidNotificationPermission(): Promise<void> {
+  if (Platform.OS !== 'android' || Number(Platform.Version) < 33) {
+    return;
+  }
   try {
-    const token = await AsyncStorage.getItem('fcmToken');
+    const granted = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+    );
+    if (!granted) {
+      await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+      );
+    }
+  } catch (e) {
+    console.log('ensureAndroidNotificationPermission', e);
+  }
+}
+
+export async function getLatestFcmTokenForAuth(): Promise<string> {
+  try {
+    await ensureAndroidNotificationPermission();
+    await messaging().requestPermission();
+    await messaging().registerDeviceForRemoteMessages();
+    const token = await messaging().getToken();
     if (token) {
+      await AsyncStorage.setItem('fcmToken', token);
       return token;
-    } else {
-      return '';
     }
   } catch (err) {
-    return '';
+    console.log('getLatestFcmTokenForAuth', err);
   }
-};
+  return '';
+}
+
+export const fetchFcmTokenFromLocal = (): Promise<string> =>
+  getLatestFcmTokenForAuth();

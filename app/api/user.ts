@@ -135,6 +135,18 @@ export const api_addReviewByUser = (token: string, body: any, orderId: any) => {
   });
 };
 
+export const api_updateFcmToken = (token: string, fcmToken: string) => {
+  const uri = `${BASE_URL}/api/v1/user/fcm-token`;
+  return fetch(uri, {
+    method: 'PUT',
+    body: JSON.stringify({fcmToken}),
+    headers: {
+      authorization: token,
+      'Content-Type': 'application/json',
+    },
+  });
+};
+
 export const api_deleteUserProfile = (token: string) => {
   const uri = `${BASE_URL}/api/v1/user/delete-profile`;
   return new Promise((resolve, reject) => {

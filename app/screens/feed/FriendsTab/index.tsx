@@ -58,9 +58,11 @@ export const FriendSearch = ({
 
 const FriendsTab = () => {
   return (
-    <View style={{height: '100%'}}>
+    <View style={styles.friendsRoot}>
       <View style={styles.searchContainer}></View>
       <Tab.Navigator
+        style={styles.tabNavigator}
+        sceneContainerStyle={styles.sceneContainer}
         screenOptions={{
           swipeEnabled: false,
           tabBarAllowFontScaling: true,
@@ -101,6 +103,19 @@ const FriendsTab = () => {
 export default FriendsTab;
 
 const styles = StyleSheet.create({
+  friendsRoot: {
+    flex: 1,
+    minHeight: 0,
+    paddingBottom: 82,
+  },
+  tabNavigator: {
+    flex: 1,
+    minHeight: 0,
+  },
+  sceneContainer: {
+    flex: 1,
+    minHeight: 0,
+  },
   seprator: {
     height: 0.3,
     width: '90%',

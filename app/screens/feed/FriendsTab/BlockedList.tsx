@@ -36,6 +36,7 @@ const BlockedList = () => {
   const [searchString, setSearchString] = useState('');
   const [loading, setLoading] = useState(false);
   const {token} = useSelector((s: RootState) => s.auth);
+  const {defaultAvatar} = useSelector((s: RootState) => s.app);
   const isFocused = useIsFocused();
   const dispatch = useDispatch<AppDispatch>();
   const {blocked} = useSelector((s: RootState) => s.friend);
@@ -148,10 +149,13 @@ const BlockedList = () => {
                   />
                 ) : (
                   <Image
-                    source={{
-                      uri: 'https://avatar.iran.liara.run/public/boy?username=green',
+                    source={defaultAvatar.img}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      resizeMode: 'cover',
+                      borderRadius: 200,
                     }}
-                    style={StyleSheet.absoluteFillObject}
                   />
                 )}
               </View>

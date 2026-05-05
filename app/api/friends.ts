@@ -205,6 +205,29 @@ export const api_reportOrBlock = (token: string, payload: any) => {
   });
 };
 
+export const api_getSentRequests = (token: string) => {
+  const uri = `${BASE_URL}/api/v1/friend/sentRequests`;
+  return new Promise((resolve, reject) => {
+    fetch(uri, {
+      method: 'GET',
+      headers: {
+        Authorization: token,
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data?.status !== 200) {
+          throw new Error(data.message || 'something went wrong!');
+        }
+        resolve(data);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
+};
+
 export const api_cancelRequest = (token: string, followingId: string) => {
   const uri = `${BASE_URL}/api/v1/friend/cancelFollowRequest`;
   return new Promise((resolve, reject) => {

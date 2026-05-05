@@ -252,15 +252,17 @@ const Section = ({ title, items, mode, navigation }: {
 
 export default CustomDrawer;
 
+const DRAWER_AVATAR_DIAMETER = widthPixel(120);
+
 const styles = StyleSheet.create({
   container: {
     padding: 20,
     paddingTop: 0,
   },
   avatar: {
-    width: widthPixel(120),
-    height: heightPixel(116),
-    borderRadius: heightPixel(60),
+    width: DRAWER_AVATAR_DIAMETER,
+    height: DRAWER_AVATAR_DIAMETER,
+    borderRadius: DRAWER_AVATAR_DIAMETER / 2,
     backgroundColor: COLORS.grey,
     alignSelf: 'center',
     marginTop: pixelSizeVertical(20),
@@ -270,7 +272,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
-    borderRadius: 200,
   },
   emailContainer: {
     justifyContent: 'center',
