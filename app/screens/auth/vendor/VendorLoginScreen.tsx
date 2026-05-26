@@ -58,7 +58,7 @@ const loginValidationSchema = yup.object().shape({
   password: yup
     .string()
     .trim()
-    .min(8, ({ min }) => `Password must be at least ${min} characters`)
+    .min(4, ({ min }) => `Password must be at least ${min} characters`)
     .required('Password is Required!'),
 });
 const VendorLoginScreen = () => {
@@ -80,32 +80,48 @@ const VendorLoginScreen = () => {
       })) as LoginResponseType;
       // ShowAlert({textBody: res.message});
       dispatch(login({ ...res.data, token: res.token } as any));
-      // not verfied
-      if (res.data.account_status === 1) {
+
+      if (res.data.account_status === 3) {
+        ShowAlert({ textBody: 'Account is Blocked!', type: ALERT_TYPE.DANGER });
+        return;
+      }
+      if (res.data.account_status === 4) {
+        ShowAlert({ textBody: 'Account is Deleted!', type: ALERT_TYPE.DANGER });
+        return;
+      }
+
+      const flags = res.data.flags;
+
+      // Stage 2: email not verified
+      if (!flags?.isEmailVerified || res.data.account_status === 1) {
         navigation.navigate('VendorOtpVerification', {
           verifyToken: res.data._id,
           authToken: res.token,
         });
         return;
       }
-      // if (res.data.profile_status === 1) {
-      //   navigation.navigate('CompleteYourBusinessProfile', {
-      //     authToken: res.token,
-      //   });
-      //   return;
-      // }
-      // verfied or active
-      if (res.data.account_status === 2) {
-        dispatch(changeAppMode('VENDOR'));
-        dispatch(setIsAuthenticated(true));
-        dispatch(setFirstLaunched(false));
+      // Stage 4: profile not complete
+      if (!flags?.isProfileComplete) {
+        navigation.navigate('CompleteYourBusinessProfile', {authToken: res.token});
+        return;
       }
-      if (res.data.account_status === 3) {
-        ShowAlert({ textBody: 'Account is Blocked!', type: ALERT_TYPE.DANGER });
+      // Stage 5: Stripe not onboarded
+      if (!flags?.isStripeOnboarded) {
+        navigation.navigate('VendorOnboarding', {authToken: res.token});
+        return;
       }
-      if (res.data.account_status === 4) {
-        ShowAlert({ textBody: 'Account is Deleted!', type: ALERT_TYPE.DANGER });
+      // Stage 6: pending or rejected approval
+      if (!flags?.vendorApproved) {
+        navigation.navigate('ApplicationUnderReview', {
+          vendorStatus: (res.data as any).vendorStatus,
+          rejectReason: (res.data as any).rejectReason,
+        });
+        return;
       }
+      // Stage 7: fully approved
+      dispatch(changeAppMode('VENDOR'));
+      dispatch(setIsAuthenticated(true));
+      dispatch(setFirstLaunched(false));
     } catch (error: any) {
       ShowAlert({ textBody: error.message, type: ALERT_TYPE.DANGER });
     } finally {

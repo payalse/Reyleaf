@@ -4,7 +4,6 @@ import {AwarenessStackParams} from './types';
 import AwarenessScreen from '../screens/awareness/AwarenessScreen';
 import AddResourceScreen from '../screens/awareness/AddResourceScreen';
 import ForumDetailScreen from '../screens/awareness/ForumDetailScreen';
-import JoinedForumDetailScreen from '../screens/awareness/JoinedForumDetailScreen';
 import AddContentScreen from '../screens/awareness/AddContentScreen';
 import LikeScreen from '../screens/awareness/LikeScreen';
 import CommentScreen from '../screens/awareness/CommentScreen';
@@ -21,10 +20,7 @@ const AwarenessStack = () => {
       <Stack.Screen name="Awareness" component={AwarenessScreen} />
       <Stack.Screen name="AddResource" component={AddResourceScreen} />
       <Stack.Screen name="ForumDetail" component={ForumDetailScreen} />
-      <Stack.Screen
-        name="JoinedForumDetail"
-        component={JoinedForumDetailScreen}
-      />
+      <Stack.Screen name="JoinedForumDetail" component={ForumDetailScreen} />
       <Stack.Screen name="AddContent" component={AddContentScreen} />
       <Stack.Screen name="LikeScreen" component={LikeScreen} />
       <Stack.Screen name="AddEvent" component={AddEventScreen} />

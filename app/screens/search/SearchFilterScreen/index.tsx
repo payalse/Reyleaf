@@ -19,6 +19,7 @@ import {COLORS, FONT_SIZE, FONT_WEIGHT, wp} from '../../../styles';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import RangeSlider from '../../../components/RangeSlider';
 import {useHideBottomBar} from '../../../hook/useHideBottomBar';
+import {amountToCents} from '../../../utils/currency';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../../../redux/store';
 import {
@@ -127,8 +128,8 @@ const SearchFilterScreen = () => {
     navigation.navigate('SearchResult', {
       categoryId: selectedCategoryId,
       vendorId: vendorId,
-      priceStart: minPriceRange,
-      priceEnd: maxPriceRange,
+      priceStart: amountToCents(minPriceRange),
+      priceEnd: amountToCents(maxPriceRange),
     });
   };
 

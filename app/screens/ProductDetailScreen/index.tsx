@@ -57,6 +57,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import Review from '../../components/Reviews';
 import {Rating} from 'react-native-ratings';
 import {pixelSizeVertical} from '../../utils/sizeNormalization';
+import {formatMoney} from '../../utils/currency';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useIsFocused} from '@react-navigation/native';
@@ -408,7 +409,7 @@ const ProductDetailScreen = () => {
                     <MyText
                       size={FONT_SIZE['1.5xl']}
                       bold={FONT_WEIGHT.semibold}>
-                      ${product?.discountedProce}
+                      {formatMoney(product?.discountedProce || 0)}
                     </MyText>
                   )}
                 <MyText
@@ -419,7 +420,7 @@ const ProductDetailScreen = () => {
                 </MyText>
 
                 <MyText size={FONT_SIZE.xl} color={COLORS.grey}>
-                  ${product?.price}
+                  {formatMoney(product?.price || 0)}
                 </MyText>
               </View>
             </View>
@@ -538,7 +539,7 @@ const ProductDetailScreen = () => {
                     <MyText size={FONT_SIZE.base}>
                       {(product as any).shippingCost === 0
                         ? 'Free'
-                        : '$' + (product as any).shippingCost}
+                        : formatMoney((product as any).shippingCost)}
                     </MyText>
                   </View>
                 )}

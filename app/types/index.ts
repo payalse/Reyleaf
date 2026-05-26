@@ -32,11 +32,23 @@ export type AuthUserType = {
   phone?: string;
   pronouns?: string;
   dob?: string;
+  gender?: number;
   data?: any;
   stripeCustomerId?: string;
+  stripeConnectedAccId?: string;
+  stripeOnboardingComplete?: boolean;
+  vendorStatus?: number;
+  companyName?: string;
+  companyAddress?: string;
   orderNotification: boolean;
   messageNotification: boolean;
   eventNotification: boolean;
+  flags?: {
+    isEmailVerified: boolean;
+    isProfileComplete: boolean;
+    isStripeOnboarded?: boolean;
+    vendorApproved?: boolean;
+  };
 };
 export type CategoryType = {
   _id: string;
@@ -52,6 +64,7 @@ export type ProductType = {
   discountedProce: number;
   photos: {url: string}[];
   price: any;
+  shippingMethod?: string;
   status: 'active';
   title: string;
   updated_at: string;
@@ -106,6 +119,11 @@ export type OrderType = {
   subtotal?: number;
   shippingCost?: number;
   taxAmount?: number;
+  appFee?: number;
+  fee_snapshot?: {
+    app_fee_computed: number;
+    currency: string;
+  };
   user: AuthUserType;
   _id: string;
 };

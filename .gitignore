@@ -67,7 +67,7 @@ yarn-error.log
 
 
 
-# text.txt
+***txt
 
 # ====-----
 # Xcode
@@ -228,3 +228,5 @@ package-lock.json
 
 # CircleCI
 .circleci/generated_config.yml
+
+.claude

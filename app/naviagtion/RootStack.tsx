@@ -20,6 +20,7 @@ import VendorForgetPasswordScreen from '../screens/auth/vendor/VendorForgetPassw
 import VendorForgetPasswordOtpVerificationScreen from '../screens/auth/vendor/VendorForgetPasswordOtpVerificationScreen';
 import CompleteYourBusinessProfileScreen from '../screens/auth/vendor/CompleteYourBusinessProfileScreen';
 import AddYourBusinessAddressScreen from '../screens/auth/vendor/AddYourBusinessAddressScreen';
+import VendorOnboardingScreen from '../screens/auth/vendor/VendorOnboardingScreen';
 import OnBoarding from '../screens/OnBoarding';
 import SplashScreen from '../screens/Splash/SplashScreen';
 import ApplicationUnderReviewScreen from '../screens/auth/vendor/ApplicationUnderReviewScreen';
@@ -130,6 +131,10 @@ const RootStack = () => {
             <Stack.Screen
               name="AddYourBusinessAddress"
               component={AddYourBusinessAddressScreen}
+            />
+            <Stack.Screen
+              name="VendorOnboarding"
+              component={VendorOnboardingScreen}
             />
 
             <Stack.Screen

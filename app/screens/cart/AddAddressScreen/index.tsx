@@ -13,6 +13,7 @@ import InputErrorMsg from '../../../components/inputs/InputErrorMsg';
 import {SheetManager} from 'react-native-actions-sheet';
 import {SHEETS} from '../../../sheets/sheets';
 import {api_addUpdateAddress} from '../../../api/auth';
+import {useHideBottomBar} from '../../../hook/useHideBottomBar';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../redux/store';
 
@@ -44,6 +45,7 @@ const validationSchema = Yup.object().shape({
   ),
 });
 const AddAddressScreen = () => {
+  useHideBottomBar({});
   const navigation = useNavigation();
 
   const {token} = useSelector((s: RootState) => s.auth);

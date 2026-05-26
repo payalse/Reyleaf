@@ -23,6 +23,12 @@ type BeforeLoginUser = {
   lastActive: string;
   createdAt: string;
   updatedAt: string;
+  flags?: {
+    isEmailVerified: boolean;
+    isProfileComplete: boolean;
+    isStripeOnboarded?: boolean;
+    vendorApproved?: boolean;
+  };
 };
 
 export interface LoginResponseType extends ApiResponse {
@@ -75,4 +81,16 @@ export interface GetReviewsResponse extends ApiResponse {
 
 export interface GetSimilarProductResponse extends ApiResponse {
   data: ProductType[];
+}
+
+export interface CheckoutPreviewResponse extends ApiResponse {
+  data: {
+    subtotal: number;
+    shippingCost: number;
+    shippingMethod: string;
+    taxAmount: number;
+    appFee: number;
+    totalAmount: number;
+    currency: string;
+  };
 }

@@ -1,62 +1,49 @@
-import {
-  Image,
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  Text,
-  Touchable,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import React, { useState } from 'react';
+import {ScrollView, View} from 'react-native';
+import React, {useState} from 'react';
 import LayoutBG from '../../../components/layout/LayoutBG';
 import BackBtn from '../../../components/buttons/BackBtn';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { MyText } from '../../../components/MyText';
-import { BORDER_RADIUS, COLORS, FONT_SIZE, FONT_WEIGHT } from '../../../styles';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import {MyText} from '../../../components/MyText';
+import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../../styles';
 import InputWrapper from '../../../components/inputs/InputWrapper';
 import MyInput from '../../../components/inputs/MyInput';
-import Feather from 'react-native-vector-icons/Feather';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import PrimaryBtn from '../../../components/buttons/PrimaryBtn';
-import TextArea from '../../../components/inputs/TextArea';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParams } from '../../../naviagtion/types';
-import { Formik } from 'formik';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParams} from '../../../naviagtion/types';
+import {Formik} from 'formik';
 import * as Yup from 'yup';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../../redux/store';
-import { AvatarDefaultType } from '../../../utils/defaultAvatar';
-import { Asset } from 'react-native-image-picker';
-import { api_completeProfile } from '../../../api/auth';
-import { updateUser } from '../../../redux/features/auth/authSlice';
-import { ShowAlert } from '../../../utils/alert';
-import { ALERT_TYPE } from 'react-native-alert-notification';
-import DatePicker from 'react-native-date-picker';
+import {useDispatch} from 'react-redux';
+import {AppDispatch} from '../../../redux/store';
+import {api_createVendorProfile} from '../../../api/user';
+import {updateUser} from '../../../redux/features/auth/authSlice';
+import {ShowAlert} from '../../../utils/alert';
+import {ALERT_TYPE} from 'react-native-alert-notification';
 import InputErrorMsg from '../../../components/inputs/InputErrorMsg';
 import {
-  heightPixel,
-  pixelSizeHorizontal,
   pixelSizeVertical,
-  widthPixel,
 } from '../../../utils/sizeNormalization';
 
 type FormValues = {
-  name: string;
-  bio: string;
+  fullname: string;
+  companyName: string;
   phone: string;
+  companyAddress: string;
 };
+
 const validationSchema = Yup.object().shape({
-  name: Yup.string()
-    .min(4, ({ min }) => `Name must be at least ${min} characters`)
-    .required('Required')
-    .required('Name is Required!'),
-  bio: Yup.string()
-    .min(10, ({ min }) => `Bio must be at least ${min} characters`)
-    .required('Description is Required!'),
+  fullname: Yup.string()
+    .trim()
+    .min(2, ({min}) => `Name must be at least ${min} characters`)
+    .required('Full name is Required!'),
+  companyName: Yup.string()
+    .trim()
+    .min(2, ({min}) => `Company name must be at least ${min} characters`)
+    .required('Company name is Required!'),
   phone: Yup.string()
-    .min(10, ({ min }) => `Phone must be at least ${min} characters`)
+    .trim()
+    .min(7, ({min}) => `Phone must be at least ${min} characters`)
     .required('Phone is Required!'),
+  companyAddress: Yup.string().trim(),
 });
 
 const CompleteYourBusinessProfileScreen = () => {
@@ -66,186 +53,115 @@ const CompleteYourBusinessProfileScreen = () => {
     useRoute<RouteProp<RootStackParams, 'CompleteYourBusinessProfile'>>()
       .params;
   const dispatch = useDispatch<AppDispatch>();
-  const [date, setDate] = useState<Date | null>(null);
-  const [isDateModalOpen, setIsDateModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<any>(null);
-  const onSubmit = async (values: FormValues) => {
-    const formData = new FormData();
-    formData.append('fullname', values.name);
-    formData.append('bio', values.bio);
-    formData.append('phone', values.phone);
-    // formData.append('dob', date?.toISOString());
-    if (selectedImage !== null) {
-      const img = selectedImage as any;
-      if (img.isDefaultAvatar && img.img) {
-        const resolved = Image.resolveAssetSource(img.img);
-        if (resolved?.uri) {
-          formData.append('picture', {
-            name: `avatar-${img.id}.png`,
-            type: 'image/png',
-            uri: resolved.uri,
-          });
-        }
-      } else if (!img.isDefaultAvatar && img.path) {
-        const tempImg = {
-          name: Date.now().toString() + '.png',
-          type: img.mime || 'image/png',
-          uri:
-            Platform.OS !== 'android'
-              ? 'file://' + img.path
-              : img.path,
-        };
-        formData.append('picture', tempImg);
-      }
-    }
 
+  const onSubmit = async (values: FormValues) => {
     try {
       setLoading(true);
-      const res = (await api_completeProfile(
-        formData,
+      const res = (await api_createVendorProfile(
+        {
+          fullname: values.fullname.trim(),
+          phone: values.phone.trim(),
+          companyName: values.companyName.trim(),
+          companyAddress: values.companyAddress.trim() || undefined,
+        },
         params.authToken,
       )) as any;
-      dispatch(updateUser(res.data));
-      navigation.navigate('AddYourBusinessAddress', {
-        authToken: params.authToken,
-      });
+      if (res?.data) {
+        dispatch(updateUser(res.data));
+      }
+      navigation.navigate('VendorOnboarding', {authToken: params.authToken});
     } catch (error: any) {
-      ShowAlert({ textBody: error.message, type: ALERT_TYPE.DANGER });
+      ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
     } finally {
       setLoading(false);
     }
   };
+
   return (
     <LayoutBG type="bg-leaf">
       <Formik
         validationSchema={validationSchema}
         initialValues={{
-          bio: '',
-          name: '',
+          fullname: '',
+          companyName: '',
           phone: '',
+          companyAddress: '',
         }}
         onSubmit={onSubmit}>
-        {({
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          values,
-          errors,
-          touched,
-        }) => (
+        {({handleChange, handleBlur, handleSubmit, values, errors, touched}) => (
           <ScrollView
-            contentContainerStyle={{ marginHorizontal: 20, paddingBottom: 50 }}>
+            contentContainerStyle={{marginHorizontal: 20, paddingBottom: 50}}>
             <BackBtn onPress={navigation.goBack} />
 
-            <View>
-              <MyText
-                bold={FONT_WEIGHT.bold}
-                size={FONT_SIZE['2xl']}
-                center
-                style={{ marginTop: pixelSizeVertical(24), marginBottom: pixelSizeVertical(8) }}>
-                Complete Your Account
-              </MyText>
-              <View
-                style={{
-                  backgroundColor: COLORS.white,
-                  width: widthPixel(100),
-                  height: heightPixel(104),
-                  borderRadius: BORDER_RADIUS.Circle,
-                  alignSelf: 'center',
-                  marginVertical: pixelSizeVertical(20),
-                  position: 'relative',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                {selectedImage === null ? (
-                  <Feather size={widthPixel(36)} name="image" color={COLORS.lightgrey} />
-                ) : selectedImage['isDefaultAvatar'] ? (
-                  <Image
-                    source={selectedImage.img}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      borderRadius: BORDER_RADIUS.Circle,
-                      resizeMode: 'cover',
-                    }}
-                  />
-                ) : (
-                  <Image
-                    source={{ uri: selectedImage.path }}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      borderRadius: BORDER_RADIUS.Circle,
-                      resizeMode: 'cover',
-                    }}
-                  />
-                )}
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate('ChooseProfileImage', {
-                      // @ts-ignore
-                      setSelectedImage,
-                    })
-                  }
-                  style={{
-                    backgroundColor: COLORS.greenDark,
-                    width: widthPixel(26),
-                    height: heightPixel(28),
-                    borderRadius: BORDER_RADIUS.Circle,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    position: 'absolute',
-                    bottom: 0,
-                    right: 0,
-                  }}>
-                  <Ionicons
-                    size={widthPixel(14)} name="cloud-upload"
-                    color={COLORS.white}
-                  />
-                </TouchableOpacity>
-              </View>
-              <MyText center size={FONT_SIZE.sm} color={COLORS.grey}>
-                Upload Business Profile
-              </MyText>
-            </View>
-            <View style={{marginTop: pixelSizeVertical(20)}}>
-              <InputWrapper title="Business Name">
-                <MyInput
-                  hasError={Boolean(errors.name && touched.name)}
-                  onBlur={handleBlur('name')}
-                  onChangeText={handleChange('name')}
-                  value={values.name}
-                  placeholder="Type your name"
-                />
-              </InputWrapper>
-              {errors.name && touched.name && (
-                <InputErrorMsg msg={errors.name} />
-              )}
-              <InputWrapper title="Description">
-                <TextArea
-                  hasError={Boolean(errors.bio && touched.bio)}
-                  onBlur={handleBlur('bio')}
-                  onChangeText={handleChange('bio')}
-                  value={values.bio}
-                  placeholder="Type here"
-                />
-              </InputWrapper>
-              {errors.bio && touched.bio && <InputErrorMsg msg={errors.bio} />}
+            <MyText
+              bold={FONT_WEIGHT.bold}
+              size={FONT_SIZE['2xl']}
+              center
+              style={{
+                marginTop: pixelSizeVertical(24),
+                marginBottom: pixelSizeVertical(8),
+              }}>
+              Complete Your Account
+            </MyText>
+            <MyText
+              center
+              color={COLORS.grey}
+              size={FONT_SIZE.sm}
+              style={{marginBottom: pixelSizeVertical(24)}}>
+              Tell us about yourself and your business
+            </MyText>
 
-              <InputWrapper title="Mobile no">
+            <View style={{marginTop: pixelSizeVertical(8)}}>
+              <InputWrapper title="Full Name">
                 <MyInput
-                  keyboardType="number-pad"
+                  hasError={Boolean(errors.fullname && touched.fullname)}
+                  onBlur={handleBlur('fullname')}
+                  onChangeText={handleChange('fullname')}
+                  value={values.fullname}
+                  placeholder="Your full name"
+                />
+              </InputWrapper>
+              {errors.fullname && touched.fullname && (
+                <InputErrorMsg msg={errors.fullname} />
+              )}
+
+              <InputWrapper title="Company Name">
+                <MyInput
+                  hasError={Boolean(errors.companyName && touched.companyName)}
+                  onBlur={handleBlur('companyName')}
+                  onChangeText={handleChange('companyName')}
+                  value={values.companyName}
+                  placeholder="Your business / company name"
+                />
+              </InputWrapper>
+              {errors.companyName && touched.companyName && (
+                <InputErrorMsg msg={errors.companyName} />
+              )}
+
+              <InputWrapper title="Mobile No">
+                <MyInput
+                  keyboardType="phone-pad"
                   hasError={Boolean(errors.phone && touched.phone)}
                   onBlur={handleBlur('phone')}
                   onChangeText={handleChange('phone')}
                   value={values.phone}
-                  placeholder="Type here"
+                  placeholder="+1234567890"
                 />
               </InputWrapper>
               {errors.phone && touched.phone && (
                 <InputErrorMsg msg={errors.phone} />
               )}
+
+              <InputWrapper title="Company Address (Optional)">
+                <MyInput
+                  onBlur={handleBlur('companyAddress')}
+                  onChangeText={handleChange('companyAddress')}
+                  value={values.companyAddress}
+                  placeholder="Street, city, country"
+                />
+              </InputWrapper>
+
               <PrimaryBtn
                 loading={loading}
                 onPress={handleSubmit}

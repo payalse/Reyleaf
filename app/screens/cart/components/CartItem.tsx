@@ -15,6 +15,7 @@ import { GetCartResponse } from '../../../types/apiResponse';
 import { BUILD_IMAGE_URL } from '../../../api';
 import { heightPixel, pixelSizeVertical, widthPixel } from '../../../utils/sizeNormalization';
 import FastImage from 'react-native-fast-image';
+import { formatMoney } from '../../../utils/currency';
 
 type Props = {
   id: string;
@@ -194,14 +195,14 @@ const CartItem = ({
         {shouldShowPrice && (
           <View style={{ gap: 4, alignItems: 'flex-end' }}>
             <MyText size={FONT_SIZE.xl} bold={FONT_WEIGHT.bold}>
-              ${totalPrice.toFixed(2)}
+              {formatMoney(totalPrice)}
             </MyText>
             {hasDiscount && (
               <MyText
                 size={FONT_SIZE.base}
                 color={COLORS.grey}
                 style={{ textDecorationLine: 'line-through' }}>
-                ${totalOldPrice.toFixed(2)}
+                {formatMoney(totalOldPrice)}
               </MyText>
             )}
           </View>

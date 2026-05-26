@@ -27,11 +27,12 @@ import TicketDetailScreen from '../screens/support/TicketDetailScreen';
 import VendorTab from './vendor/VendorTab';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
-import EarningScreen from '../screens/EarningScreen';
+import StripeOnboardingScreen from '../screens/vendor/StripeOnboardingScreen';
 import SupportChatScreen from '../screens/support/SupportChatScreen';
 import ChooseProfileImageScreen from '../screens/auth/ChooseProfileImageScreen';
-import AddNewAccount from '../screens/drawer/AddNewAccount';
-import UpdateAccountScreen from '../screens/drawer/UpdateAccountScreen';
+// import EarningScreen from '../screens/EarningScreen';
+// import AddNewAccount from '../screens/drawer/AddNewAccount';
+// import UpdateAccountScreen from '../screens/drawer/UpdateAccountScreen';
 import SearchStack from './SearchStack';
 import ConnectWithCalendarScreen from '../screens/drawer/ConnectCalender';
 import { Dimensions } from 'react-native';
@@ -139,18 +140,20 @@ const SupportStack = () => {
 
 // Earning STACK
 export type EarningStackParams = {
-  Earning: undefined;
-  EditAccount: undefined;
-  AddNewAccount: undefined;
+  StripeOnboarding: undefined;
+  // Earning: undefined;
+  // EditAccount: undefined;
+  // AddNewAccount: undefined;
 };
 // My Earning
 const Stack6 = createNativeStackNavigator<EarningStackParams>();
 const EarningStack = () => {
   return (
     <Stack6.Navigator screenOptions={{ headerShown: false }}>
-      <Stack6.Screen name="Earning" component={EarningScreen} />
-      <Stack6.Screen name="AddNewAccount" component={AddNewAccount} />
-      <Stack6.Screen name="EditAccount" component={UpdateAccountScreen} />
+      <Stack6.Screen name="StripeOnboarding" component={StripeOnboardingScreen} />
+      {/* <Stack6.Screen name="Earning" component={EarningScreen} /> */}
+      {/* <Stack6.Screen name="AddNewAccount" component={AddNewAccount} /> */}
+      {/* <Stack6.Screen name="EditAccount" component={UpdateAccountScreen} /> */}
     </Stack6.Navigator>
   );
 };

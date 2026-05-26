@@ -6,7 +6,9 @@ import MyButton from '../../../components/buttons/MyButton';
 import PrimaryBtn from '../../../components/buttons/PrimaryBtn';
 import OrderSuccessSvg from '../../../../assets/svg/illustrations/OrderSuccess.svg';
 import {useNavigation} from '@react-navigation/native';
+import {useHideBottomBar} from '../../../hook/useHideBottomBar';
 const OrderSuccessScreen = () => {
+  useHideBottomBar({});
   const navigation = useNavigation<any>();
   return (
     <LayoutBG type="bg-leaf">

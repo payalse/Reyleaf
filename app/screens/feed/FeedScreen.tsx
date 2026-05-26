@@ -1,31 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import MainHeader from '../../components/header/MainHeader';
 import {
+  Platform,
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
   View,
 } from 'react-native';
-import { COLORS, FONT_WEIGHT, hp, wp } from '../../styles';
-import { MyText } from '../../components/MyText';
+import {COLORS, FONT_SIZE, FONT_WEIGHT, hp, wp} from '../../styles';
+import {MyText} from '../../components/MyText';
 import AddActionButton from '../../components/buttons/AddActionButton';
-import { useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { FeedStackParams } from '../../naviagtion/types';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {FeedStackParams} from '../../naviagtion/types';
 import LoactionPermissionModal from '../../components/modal/LoactionPermissionModal';
 import FriendsTab from './FriendsTab';
 import FeedsTab from './FeedsTab';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../redux/store';
-import { FeedType } from '../../types';
-import { api_getFeeds, api_getFeedsByZipCode } from '../../api/feeds';
-import { addFeed } from '../../redux/features/feed/feedSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch, RootState} from '../../redux/store';
+import {FeedType} from '../../types';
+import {api_getFeeds, api_getFeedsByZipCode} from '../../api/feeds';
+import {addFeed} from '../../redux/features/feed/feedSlice';
 import FullScreenLoader from '../../components/FullScreenLoader';
-import {widthPixel,heightPixel,pixelSizeHorizontal} from '../../utils/sizeNormalization';
+import {
+  pixelSizeHorizontal,
+  pixelSizeVertical,
+  widthPixel,
+} from '../../utils/sizeNormalization';
+
 const Tabs = ['Feeds', 'Friends'];
 
 const FeedScreen = () => {
-  const route = useRoute();
   const navigation =
     useNavigation<NativeStackNavigationProp<FeedStackParams>>();
   const [activeTab, setActiveTab] = useState(Tabs[0]);
@@ -35,14 +40,12 @@ const FeedScreen = () => {
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
-  const { token, user } = useSelector((s: RootState) => s.auth);
+  const {token, user} = useSelector((s: RootState) => s.auth);
 
   const handleLocationPermissionModalClose = async () => {
     setIsLoactionPermissionModalOpen(false);
     try {
-      if (!text || !text.trim().length) {
-        return;
-      }
+      if (!text?.trim()) return;
       setLoading(true);
       const res = (await api_getFeedsByZipCode(token!, text)) as {
         data: FeedType[];
@@ -58,9 +61,7 @@ const FeedScreen = () => {
 
   const requestApi = async () => {
     try {
-      const res = (await api_getFeeds(token!, '')) as {
-        data: FeedType[];
-      };
+      const res = (await api_getFeeds(token!, '')) as {data: FeedType[]};
       dispatch(addFeed(res?.data));
     } catch (error) {
       console.log(error);
@@ -69,9 +70,9 @@ const FeedScreen = () => {
     }
   };
 
-  const switchTab = (tab: any) => {
+  const switchTab = (tab: string) => {
     setActiveTab(tab);
-    tab == 1 ? requestApi() : null;
+    if (tab === Tabs[0]) requestApi();
   };
 
   useEffect(() => {
@@ -81,6 +82,8 @@ const FeedScreen = () => {
   return (
     <React.Fragment>
       {loading && <FullScreenLoader />}
+
+      {/* Floating add button */}
       <View
         style={{
           display: activeTab === Tabs[1] ? 'none' : 'flex',
@@ -91,16 +94,16 @@ const FeedScreen = () => {
           left: 0,
           top: -20,
           pointerEvents: 'box-none',
-          opacity: 1,
         }}>
         <AddActionButton
-          onPress={() => {
-            navigation.navigate(activeTab === Tabs[0] ? 'CreateFeed' : 'Feed');
-          }}
+          onPress={() =>
+            navigation.navigate(activeTab === Tabs[0] ? 'CreateFeed' : 'Feed')
+          }
         />
       </View>
+
       {user?.role == 2 ? (
-        <View style={{ flex: 1 }}>
+        <View style={{flex: 1}}>
           <View style={styles.headerWrapper}>
             <SafeAreaView />
             <MainHeader
@@ -116,7 +119,7 @@ const FeedScreen = () => {
           </View>
         </View>
       ) : (
-        <View style={{ flex: 1 }}>
+        <View style={{flex: 1}}>
           <LoactionPermissionModal
             value={text}
             onChange={s => setText(s)}
@@ -129,34 +132,23 @@ const FeedScreen = () => {
               onMessagePress={() => navigation.navigate('ChatStack')}
               onNotiPress={() => navigation.navigate('AppNotification')}
             />
-            {/* TAB TOGGLE */}
-            <View
-              style={{
-                backgroundColor: COLORS.white,
-                paddingHorizontal: 8,
-                borderRadius: 30,
-                paddingVertical: 8,
-                flexDirection: 'row',
-                gap: 15,
-              }}>
+
+            {/* Tab toggle */}
+            <View style={styles.tabContainer}>
               {Tabs.map(tab => {
                 const isActive = tab === activeTab;
                 return (
                   <TouchableOpacity
                     onPress={() => switchTab(tab)}
                     key={tab}
-                    style={{
-                      flex: 1,
-                      backgroundColor: isActive
-                        ? COLORS.greenDark
-                        : COLORS.white,
-                      borderRadius: 30,
-                      height: 45,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
+                    activeOpacity={0.75}
+                    style={[
+                      styles.tabItem,
+                      isActive ? styles.tabItemActive : styles.tabItemInactive,
+                    ]}>
                     <MyText
-                      bold={isActive ? FONT_WEIGHT.bold : FONT_WEIGHT.normal}
+                      bold={isActive ? FONT_WEIGHT.semibold : FONT_WEIGHT.medium}
+                      size={FONT_SIZE.base}
                       center
                       color={isActive ? COLORS.white : COLORS.grey}>
                       {tab}
@@ -165,6 +157,7 @@ const FeedScreen = () => {
                 );
               })}
             </View>
+
             {activeTab === Tabs[0] && (
               <FeedsTab
                 isFocused={isFocused}
@@ -184,40 +177,43 @@ const FeedScreen = () => {
 export default FeedScreen;
 
 const styles = StyleSheet.create({
-  seprator: {
-    height: 0.3,
-    width: '90%',
-    backgroundColor: COLORS.lightgrey,
-    alignSelf: 'center',
-  },
   headerWrapper: {
     marginHorizontal: 20,
     flex: 1,
     minHeight: 0,
   },
-  searchContainer: {
+  tabContainer: {
+    backgroundColor: COLORS.white,
+    borderRadius: 30,
+    paddingHorizontal: pixelSizeHorizontal(6),
+    paddingVertical: pixelSizeVertical(6),
     flexDirection: 'row',
-    flex: 1,
-    alignItems: 'center',
-    gap: 20,
+    gap: pixelSizeHorizontal(6),
+    marginBottom: pixelSizeVertical(4),
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: {width: 0, height: 2},
+        shadowOpacity: 0.07,
+        shadowRadius: 6,
+      },
+      android: {elevation: 3},
+    }),
   },
-  searchInputWrapper: {
-    height: 45,
-    backgroundColor: COLORS.lightgrey2,
-    marginVertical: 10,
-    borderRadius: 40,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    gap: 10,
+  tabItem: {
     flex: 1,
-  },
-  locationBtn: {
-    backgroundColor: COLORS.darkBrown,
-    width: wp(12),
-    height: wp(12),
-    borderRadius: wp(12) / 2,
+    borderRadius: 30,
+    height: pixelSizeVertical(44),
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: pixelSizeHorizontal(12),
+  },
+  tabItemActive: {
+    backgroundColor: COLORS.greenDark,
+  },
+  tabItemInactive: {
+    backgroundColor: COLORS.white,
+    borderWidth: 1,
+    borderColor: COLORS.lightgrey2,
   },
 });

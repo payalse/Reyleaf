@@ -36,11 +36,12 @@ const AddContentScreen = () => {
 
   const onSubmit = async (values: Values) => {
     try {
-      const data = {
-        content: values.content,
-      };
       setLoading(true);
-      const res: any = await api_forumContent(token!, data, params.id);
+      const res: any = await api_forumContent(
+        token!,
+        {content: values.content},
+        params.id,
+      );
     } catch (error: any) {
       ShowAlert({textBody: error.message, type: ALERT_TYPE.DANGER});
     } finally {

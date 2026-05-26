@@ -1,59 +1,87 @@
-import {
-  SafeAreaView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import { useEffect, useState } from 'react';
+import {SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {useEffect, useState} from 'react';
 import SecondaryHeader from '../../../components/header/SecondaryHeader';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { OrderStackParams } from '../../../naviagtion/DrawerNavigator';
-import { BORDER_RADIUS, COLORS, FONT_SIZE, FONT_WEIGHT, hp, wp } from '../../../styles';
-import { MyText } from '../../../components/MyText';
-import { FlatList } from 'react-native-gesture-handler';
-import {
-  api_getOrderDetail,
-  api_sellerHomeOrderAction,
-} from '../../../api/order';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {OrderStackParams} from '../../../naviagtion/DrawerNavigator';
+import {BORDER_RADIUS, COLORS, FONT_SIZE, FONT_WEIGHT} from '../../../styles';
+import {MyText} from '../../../components/MyText';
+import {api_getOrderDetail, api_sellerHomeOrderAction} from '../../../api/order';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../../redux/store';
 import FullScreenLoader from '../../../components/FullScreenLoader';
-import { OrderType } from '../../../types';
-import { BUILD_IMAGE_URL } from '../../../api';
-import { useHideBottomBar } from '../../../hook/useHideBottomBar';
-import CartSvg from '../../../../assets/svg/tab/icons/CartFill.svg';
-import { Dropdown } from 'react-native-element-dropdown';
-import { ShowAlert } from '../../../utils/alert';
-import { ALERT_TYPE } from 'react-native-alert-notification';
-import { fontPixel, heightPixel, pixelSizeHorizontal, pixelSizeVertical, widthPixel } from '../../../utils/sizeNormalization';
+import {OrderType} from '../../../types';
+import {BUILD_IMAGE_URL} from '../../../api';
+import {useHideBottomBar} from '../../../hook/useHideBottomBar';
+import {Dropdown} from 'react-native-element-dropdown';
+import {ShowAlert} from '../../../utils/alert';
+import {ALERT_TYPE} from 'react-native-alert-notification';
+import {
+  fontPixel,
+  heightPixel,
+  pixelSizeHorizontal,
+  pixelSizeVertical,
+  widthPixel,
+} from '../../../utils/sizeNormalization';
 import FastImage from 'react-native-fast-image';
+import {formatMoney} from '../../../utils/currency';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import moment from 'moment';
 
-// const Steps = [
-//   'Order Placed on 10 Dec',
-//   'Order Accepted on 10 Dec',
-//   'Order Packed',
-//   'Order Ready to Dispatch',
-//   'Order Dispatched',
-//   'Order Deliverd',
-// ];
-
-const data = [
-  { value: 'pending', label: 'Pending' },
-  { value: 'accepted', label: 'Accepted' },
-  { value: 'declined', label: 'Declined' },
-  { value: 'packedlabele', label: 'Packed' },
-  { value: 'dispatched', label: 'Dispatched' },
-  { value: 'completed', label: 'Completed' },
-  { value: 'cancelled', label: 'Cancelled' },
+const STATUS_OPTIONS = [
+  {value: 'pending', label: 'Pending'},
+  {value: 'accepted', label: 'Accepted'},
+  {value: 'declined', label: 'Declined'},
+  {value: 'packedlabele', label: 'Packed'},
+  {value: 'dispatched', label: 'Dispatched'},
+  {value: 'completed', label: 'Completed'},
+  {value: 'cancelled', label: 'Cancelled'},
 ];
+
+const STATUS_CONFIG: Record<string, {bg: string; text: string}> = {
+  accepted:  {bg: '#E8F5F0', text: COLORS.greenDark},
+  completed: {bg: '#E8F5F0', text: COLORS.greenDark},
+  declined:  {bg: '#FDECEA', text: COLORS.red},
+  cancelled: {bg: '#FDECEA', text: COLORS.red},
+  pending:   {bg: '#FEF9EC', text: '#B45309'},
+  packedlabele: {bg: '#EEF2FF', text: '#4338CA'},
+  dispatched:{bg: '#EEF2FF', text: '#4338CA'},
+};
+
+const SummaryRow = ({
+  label,
+  value,
+  bold,
+  color,
+  topDivider,
+}: {
+  label: string;
+  value: string;
+  bold?: boolean;
+  color?: string;
+  topDivider?: boolean;
+}) => (
+  <View style={[styles.summaryRow, topDivider && styles.summaryDivider]}>
+    <MyText
+      size={bold ? FONT_SIZE.base : FONT_SIZE.base}
+      bold={bold ? FONT_WEIGHT.semibold : FONT_WEIGHT.normal}
+      color={color ?? COLORS.grey}>
+      {label}
+    </MyText>
+    <MyText
+      size={bold ? FONT_SIZE.base : FONT_SIZE.base}
+      bold={bold ? FONT_WEIGHT.semibold : FONT_WEIGHT.normal}
+      color={color ?? COLORS.grey}>
+      {value}
+    </MyText>
+  </View>
+);
 
 const VendorOrderDetailScreen = () => {
   useHideBottomBar({});
   const params = useRoute<RouteProp<OrderStackParams, 'OrderDetail'>>().params;
-  const navigation =
-    useNavigation<NativeStackNavigationProp<OrderStackParams>>();
-  const { token } = useSelector((s: RootState) => s.auth);
+  const navigation = useNavigation<NativeStackNavigationProp<OrderStackParams>>();
+  const {token} = useSelector((s: RootState) => s.auth);
   const [orderData, setOrderData] = useState<OrderType | null>(null);
   const [loading, setLoading] = useState(false);
   const [dropValue, setDropValue] = useState('');
@@ -61,21 +89,17 @@ const VendorOrderDetailScreen = () => {
   const fetchOrderDetail = async () => {
     try {
       setLoading(true);
-
-      const res = await api_getOrderDetail(token!, params.orderId) as {
+      const res = (await api_getOrderDetail(token!, params.orderId)) as {
         status: number;
         data: OrderType;
         message?: string;
       };
-
       if (!res || res.status !== 200 || !res.data) {
         throw new Error(res?.message || 'Invalid response received.');
       }
-
       setOrderData(res.data);
       setDropValue(res.data.status);
     } catch (error: any) {
-      console.error('Error fetching order details:', error?.message || error);
       ShowAlert({
         textBody: error?.message || 'Failed to load order details.',
         type: ALERT_TYPE.DANGER,
@@ -89,25 +113,19 @@ const VendorOrderDetailScreen = () => {
     fetchOrderDetail();
   }, [params]);
 
-  if (loading) {
-    return <FullScreenLoader />;
-  }
-
   const handleStatusUpdate = async (action: string) => {
     setLoading(true);
     try {
-      const res = await api_sellerHomeOrderAction(token!, params.orderId, action) as {
-        status: number;
-        message?: string;
-      };
-
+      const res = (await api_sellerHomeOrderAction(
+        token!,
+        params.orderId,
+        action,
+      )) as {status: number; message?: string};
       if (!res || res.status !== 200) {
         throw new Error(res?.message || 'Failed to update order status.');
       }
-
-      ShowAlert({ textBody: 'Status Updated', type: ALERT_TYPE.SUCCESS });
+      ShowAlert({textBody: 'Status updated', type: ALERT_TYPE.SUCCESS});
     } catch (error: any) {
-      console.error('Error updating status:', error?.message || error);
       ShowAlert({
         textBody: error?.message || 'Failed to update status.',
         type: ALERT_TYPE.DANGER,
@@ -117,315 +135,473 @@ const VendorOrderDetailScreen = () => {
     }
   };
 
+  if (loading) return <FullScreenLoader />;
+
+  const statusCfg = STATUS_CONFIG[dropValue?.toLowerCase()] ?? {
+    bg: COLORS.lightgrey2,
+    text: COLORS.grey,
+  };
+  const earnings =
+    (orderData?.totalAmount || 0) - (orderData?.appFee || 0);
+
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.root}>
       <SafeAreaView />
-      <SecondaryHeader onBack={navigation.goBack} title="Order Summery" />
+      <SecondaryHeader onBack={navigation.goBack} title="Order Summary" />
 
-      <FlatList
+      <ScrollView
         showsVerticalScrollIndicator={false}
-        ListHeaderComponent={() => {
-          return (
-            <View style={{ marginTop: pixelSizeVertical(15) }}>
-              <MyText size={FONT_SIZE.xl} bold={FONT_WEIGHT.bold}>
-                Order ID - {orderData?.orderId || params.orderId || ''}
-              </MyText>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  gap: 5,
-                  marginVertical: pixelSizeVertical(10),
-                  backgroundColor: COLORS.darkBrown,
-                  alignSelf: 'flex-start',
-                  flex: 0,
-                  padding: heightPixel(10),
-                  borderRadius: BORDER_RADIUS.Circle,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <CartSvg width={widthPixel(30)} />
-                <MyText size={FONT_SIZE.base} color={COLORS.white}>
-                  Total Order item {orderData?.items.length || 0} Items
-                </MyText>
-              </View>
-              <View
-                style={{
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  flexDirection: 'row',
-                }}>
-                <MyText>Order Status</MyText>
-                <View style={{ width: widthPixel(200) }}>
-                  <Dropdown
-                    itemTextStyle={{ color: 'black' }}
-                    style={styles.dropdown}
-                    placeholderStyle={styles.placeholderStyle}
-                    selectedTextStyle={styles.selectedTextStyle}
-                    inputSearchStyle={[styles.inputSearchStyle]}
-                    iconStyle={styles.iconStyle}
-                    data={data}
-                    maxHeight={heightPixel(300)}
-                    labelField="label"
-                    valueField="value"
-                    placeholder="Change Status"
-                    searchPlaceholder="Search..."
-                    value={dropValue}
-                    onChange={item => {
-                      setDropValue(item.value);
-                      handleStatusUpdate(item.value);
-                    }}
-                    renderLeftIcon={() => null}
-                  />
-                </View>
-              </View>
+        contentContainerStyle={styles.scroll}>
 
-              <MyText bold={FONT_WEIGHT.semibold} style={{ marginTop: 15 }}>
-                Order Items
+        {/* ── Order header card ── */}
+        <View style={styles.card}>
+          {/* Dark brown banner */}
+          <View style={styles.cardBanner}>
+            <View>
+              <MyText size={FONT_SIZE.sm} color="rgba(255,255,255,0.6)">
+                Order ID
+              </MyText>
+              <MyText
+                bold={FONT_WEIGHT.bold}
+                size={FONT_SIZE['1.5xl']}
+                color={COLORS.white}
+                style={styles.orderIdText}>
+                #{orderData?.orderId || params.orderId}
+              </MyText>
+              {orderData?.createdAt ? (
+                <MyText size={FONT_SIZE.sm} color="rgba(255,255,255,0.6)" style={styles.dateText}>
+                  {moment(orderData.createdAt).format('MMM D, YYYY · h:mm A')}
+                </MyText>
+              ) : null}
+            </View>
+            <View style={[styles.badge, {backgroundColor: statusCfg.bg}]}>
+              <MyText bold={FONT_WEIGHT.semibold} size={FONT_SIZE.sm} color={statusCfg.text}>
+                {STATUS_OPTIONS.find(o => o.value === dropValue)?.label ?? dropValue}
               </MyText>
             </View>
-          );
-        }}
-        style={{ marginTop: pixelSizeVertical(20) }}
-        data={orderData?.items || []}
-        contentContainerStyle={{
-          marginHorizontal: pixelSizeHorizontal(20),
-          gap: 10,
-        }}
-        renderItem={({ item }: any) => {
-          // Calculate effective price (discounted if available, otherwise original)
-          const discountedPrice = item?.product?.discountedProce || 0;
-          const originalPrice = item?.product?.price || 0;
-          const effectivePrice =
-            discountedPrice > 0 ? discountedPrice : originalPrice;
-          const hasDiscount = discountedPrice > 0 && originalPrice > discountedPrice;
+          </View>
 
-          return (
-            <TouchableOpacity
-              style={{
-                padding: heightPixel(11),
-                maxHeight: heightPixel(74),
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 10,
-                backgroundColor: COLORS.white,
-                borderRadius: BORDER_RADIUS.Medium,
-                justifyContent: 'center',
-                marginBottom: pixelSizeVertical(6),
-              }}>
-              <View
-                style={{
-                  backgroundColor: COLORS.grey,
-                  width: widthPixel(56),
-                  height: heightPixel(60),
-                  borderRadius: BORDER_RADIUS.Medium,
-                }}>
-                <FastImage
-                  source={
-                    item?.product?.photos[0]?.url
-                      ? { uri: BUILD_IMAGE_URL(item.product.photos[0].url) }
-                      : require('../../../../assets/img/productPlaceholder.jpeg')
-                  }
-                  style={{
-                    width: widthPixel(56),
-                    height: heightPixel(60),
-                    borderRadius: BORDER_RADIUS.Medium,
-                  }}
-                  resizeMode={
-                    item?.product?.photos[0]?.url
-                      ? FastImage.resizeMode.contain
-                      : FastImage.resizeMode.stretch
-                  }
-                />
-              </View>
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                }}>
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}>
-                  <MyText bold={FONT_WEIGHT.semibold}>
-                    {item?.product?.title.length > 30
-                      ? `${item?.product?.title.substring(0, 30)}...`
-                      : item?.product?.title}
-                  </MyText>
-                  <MyText bold={FONT_WEIGHT.semibold}>
-                    ${effectivePrice.toFixed(2)}
-                  </MyText>
-                </View>
+          {/* Status update dropdown */}
+          <View style={styles.statusRow}>
+            <MyText size={FONT_SIZE.base} color={COLORS.grey}>
+              Update status
+            </MyText>
+            <Dropdown
+              itemTextStyle={styles.dropItemText}
+              style={styles.dropdown}
+              placeholderStyle={styles.dropPlaceholder}
+              selectedTextStyle={styles.dropSelected}
+              inputSearchStyle={styles.dropSearch}
+              iconStyle={styles.dropIcon}
+              data={STATUS_OPTIONS}
+              maxHeight={heightPixel(280)}
+              labelField="label"
+              valueField="value"
+              placeholder="Select"
+              value={dropValue}
+              onChange={item => {
+                setDropValue(item.value);
+                handleStatusUpdate(item.value);
+              }}
+              renderLeftIcon={() => null}
+            />
+          </View>
+        </View>
 
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}>
-                  <MyText size={FONT_SIZE.base}>Qty</MyText>
-                  <MyText size={FONT_SIZE.base}>{item?.quantity}</MyText>
-                </View>
+        {/* ── Order items ── */}
+        <View style={styles.sectionHeader}>
+          <View style={styles.sectionLabelRow}>
+            <View style={styles.sectionAccent} />
+            <MyText bold={FONT_WEIGHT.bold} size={FONT_SIZE.base} color={COLORS.darkBrown}>
+              Order Items
+            </MyText>
+          </View>
+          <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
+            {orderData?.items?.length ?? 0}{' '}
+            {(orderData?.items?.length ?? 0) === 1 ? 'item' : 'items'}
+          </MyText>
+        </View>
 
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}>
-                  <MyText size={FONT_SIZE.base}>
-                    {item?.product?.categoryId?.name}
-                  </MyText>
-                  {hasDiscount && (
+        <View style={styles.card}>
+          {(orderData?.items || []).map((item: any, index: number) => {
+            const discounted = item?.product?.discountedProce || 0;
+            const original = item?.product?.price || 0;
+            const effectivePrice = discounted > 0 ? discounted : original;
+            const hasDiscount = discounted > 0 && original > discounted;
+            const isLast = index === (orderData?.items?.length ?? 0) - 1;
+
+            return (
+              <View key={item._id ?? index}>
+                <View style={styles.itemRow}>
+                  <FastImage
+                    source={
+                      item?.product?.photos?.[0]?.url
+                        ? {uri: BUILD_IMAGE_URL(item.product.photos[0].url)}
+                        : require('../../../../assets/img/productPlaceholder.jpeg')
+                    }
+                    style={styles.itemImage}
+                    resizeMode={
+                      item?.product?.photos?.[0]?.url
+                        ? FastImage.resizeMode.contain
+                        : FastImage.resizeMode.stretch
+                    }
+                  />
+                  <View style={styles.itemInfo}>
                     <MyText
-                      style={{ textDecorationLine: 'line-through' }}
+                      bold={FONT_WEIGHT.semibold}
                       size={FONT_SIZE.base}
-                      color={COLORS.grey}>
-                      ${originalPrice.toFixed(2)}
+                      color={COLORS.darkBrown}
+                      numberOfLines={1}>
+                      {item?.product?.title}
                     </MyText>
-                  )}
+                    <MyText
+                      size={FONT_SIZE.sm}
+                      color={COLORS.grey}
+                      style={styles.itemCategory}>
+                      {item?.product?.categoryId?.name}
+                    </MyText>
+                    <View style={styles.itemPriceRow}>
+                      <MyText size={FONT_SIZE.sm} color={COLORS.grey}>
+                        Qty: {item?.quantity}
+                      </MyText>
+                      <View style={styles.itemPrices}>
+                        {hasDiscount && (
+                          <MyText
+                            size={FONT_SIZE.sm}
+                            color={COLORS.grey}
+                            style={styles.strikethrough}>
+                            {formatMoney(original)}
+                          </MyText>
+                        )}
+                        <MyText
+                          bold={FONT_WEIGHT.semibold}
+                          size={FONT_SIZE.base}
+                          color={COLORS.greenDark}>
+                          {formatMoney(effectivePrice)}
+                        </MyText>
+                      </View>
+                    </View>
+                  </View>
                 </View>
+                {!isLast && <View style={styles.divider} />}
               </View>
-            </TouchableOpacity>
-          );
-        }}
-      />
+            );
+          })}
+        </View>
 
-      <View
-        style={{
-          backgroundColor: COLORS.white,
-          width: '90%',
-          alignSelf: 'center',
-          marginVertical: pixelSizeVertical(20),
-          borderRadius: BORDER_RADIUS.XMedium,
-          padding: heightPixel(20),
-        }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <View
-            style={{
-              width: widthPixel(58),
-              height: heightPixel(60),
-              backgroundColor: COLORS.lightgrey,
-              borderRadius: BORDER_RADIUS.Circle,
-              overflow: 'hidden',
-            }}>
-            {orderData?.user?.picture && (
-              <FastImage
-                source={{ uri: BUILD_IMAGE_URL(orderData?.user?.picture) }}
-                style={{ width: '100%', height: '100%' }}
-              />
-            )}
-          </View>
-          <View style={{ flex: 1, marginLeft: pixelSizeHorizontal(20) }}>
-            <MyText>{orderData?.user?.fullname}</MyText>
-            <MyText style={{ marginTop: pixelSizeVertical(2) }} size={FONT_SIZE.base} color={COLORS.grey}>
-              {orderData?.user?.email}
+        {/* ── Customer & address ── */}
+        <View style={styles.sectionHeader}>
+          <View style={styles.sectionLabelRow}>
+            <View style={styles.sectionAccent} />
+            <MyText bold={FONT_WEIGHT.bold} size={FONT_SIZE.base} color={COLORS.darkBrown}>
+              Customer
             </MyText>
           </View>
-          {/* <View
-            style={{
-              width: widthPixel(40),
-              height:heightPixel(40),
-              borderRadius: 10,
-              backgroundColor: COLORS.greenDark,
-            }}></View> */}
         </View>
-        <View style={{ marginVertical: pixelSizeVertical(10) }}>
-          <MyText bold={FONT_WEIGHT.black}>Shipping Address</MyText>
-          <MyText color={COLORS.black}
-            style={{
-              opacity: .5,
-              marginTop: pixelSizeVertical(4)
-            }}>
-            {orderData?.address?.address}, {orderData?.address?.city}, {orderData?.address?.state}, {orderData?.address?.country}
-          </MyText>
-        </View>
-      </View>
 
-      <View
-        style={{
-          backgroundColor: COLORS.white,
-          padding: heightPixel(20),
-          height: "18%",
-          marginTop: 'auto',
-          gap: 8,
-        }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <MyText color={COLORS.grey} size={FONT_SIZE.base}>
-            Sub total
-          </MyText>
-          <MyText color={COLORS.grey} size={FONT_SIZE.base}>
-            ${(orderData?.subtotal || orderData?.totalAmount || 0).toFixed(2)}
-          </MyText>
+        <View style={styles.card}>
+          <View style={styles.customerRow}>
+            <View style={styles.avatar}>
+              {orderData?.user?.picture ? (
+                <FastImage
+                  source={{uri: BUILD_IMAGE_URL(orderData.user.picture)}}
+                  style={styles.avatarImage}
+                />
+              ) : (
+                <AntDesign name="user" size={fontPixel(22)} color={COLORS.white} />
+              )}
+            </View>
+            <View style={styles.customerInfo}>
+              <MyText bold={FONT_WEIGHT.semibold} size={FONT_SIZE.base} color={COLORS.darkBrown}>
+                {orderData?.user?.fullname}
+              </MyText>
+              <MyText size={FONT_SIZE.sm} color={COLORS.grey} style={styles.customerEmail}>
+                {orderData?.user?.email}
+              </MyText>
+            </View>
+          </View>
+
+          {orderData?.address && (
+            <>
+              <View style={styles.divider} />
+              <View style={styles.addressRow}>
+                <AntDesign
+                  name="enviromento"
+                  size={fontPixel(14)}
+                  color={COLORS.greenDark}
+                  style={styles.addressIcon}
+                />
+                <MyText size={FONT_SIZE.sm} color={COLORS.grey} style={styles.addressText}>
+                  {[
+                    orderData.address.address,
+                    orderData.address.city,
+                    orderData.address.state,
+                    orderData.address.country,
+                  ]
+                    .filter(Boolean)
+                    .join(', ')}
+                </MyText>
+              </View>
+            </>
+          )}
         </View>
-        {(orderData?.taxAmount || 0) > 0 && (
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <MyText color={COLORS.grey} size={FONT_SIZE.base}>
-              Tax
-            </MyText>
-            <MyText color={COLORS.grey} size={FONT_SIZE.base}>
-              ${(orderData?.taxAmount || 0).toFixed(2)}
+
+        {/* ── Order summary ── */}
+        <View style={styles.sectionHeader}>
+          <View style={styles.sectionLabelRow}>
+            <View style={styles.sectionAccent} />
+            <MyText bold={FONT_WEIGHT.bold} size={FONT_SIZE.base} color={COLORS.darkBrown}>
+              Summary
             </MyText>
           </View>
-        )}
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <MyText color={COLORS.grey} size={FONT_SIZE.base}>
-            Shipping fee
-          </MyText>
-          <MyText color={COLORS.grey} size={FONT_SIZE.base}>
-            ${(orderData?.shippingCost || 0).toFixed(2)}
-          </MyText>
         </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <MyText
-            color={COLORS.black}
-            bold={FONT_WEIGHT.bold}
-            size={FONT_SIZE.xl}>
-            Total
-          </MyText>
-          <MyText
-            color={COLORS.black}
-            bold={FONT_WEIGHT.bold}
-            size={FONT_SIZE.xl}>
-            ${(orderData?.totalAmount || 0).toFixed(2)}
-          </MyText>
+
+        <View style={styles.card}>
+          <SummaryRow
+            label="Subtotal"
+            value={formatMoney(orderData?.subtotal || orderData?.totalAmount || 0)}
+          />
+          {(orderData?.taxAmount || 0) > 0 && (
+            <SummaryRow
+              label="Tax"
+              value={formatMoney(orderData?.taxAmount || 0)}
+            />
+          )}
+          <SummaryRow
+            label="Shipping"
+            value={
+              (orderData?.shippingCost || 0) === 0
+                ? 'Free'
+                : formatMoney(orderData?.shippingCost || 0)
+            }
+          />
+          {(orderData?.fee_snapshot?.app_fee_computed || orderData?.appFee || 0) > 0 && (
+            <SummaryRow
+              label="Platform fee"
+              value={formatMoney(
+                orderData?.fee_snapshot?.app_fee_computed || orderData?.appFee || 0,
+              )}
+            />
+          )}
+          <SummaryRow
+            label="Total"
+            value={formatMoney(orderData?.totalAmount || 0)}
+            bold
+            color={COLORS.darkBrown}
+            topDivider
+          />
+          {/* Earnings highlight row */}
+          <View style={styles.earningsRow}>
+            <MyText bold={FONT_WEIGHT.semibold} size={FONT_SIZE.base} color={COLORS.greenDark}>
+              Your earnings
+            </MyText>
+            <MyText bold={FONT_WEIGHT.bold} size={FONT_SIZE.base} color={COLORS.greenDark}>
+              {formatMoney(earnings)}
+            </MyText>
+          </View>
         </View>
-      </View>
+
+      </ScrollView>
     </View>
   );
 };
 
 export default VendorOrderDetailScreen;
+
 const styles = StyleSheet.create({
-  dropdown: {
-    width: widthPixel(150),
-    alignSelf: 'flex-end',
-    borderColor: 'gray',
-    borderWidth: 0.5,
-    borderRadius: BORDER_RADIUS.Circle,
+  root: {
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+  },
+  scroll: {
+    paddingHorizontal: pixelSizeHorizontal(16),
+    paddingTop: pixelSizeVertical(14),
+    paddingBottom: heightPixel(40),
+  },
+  card: {
+    backgroundColor: COLORS.white,
+    borderRadius: BORDER_RADIUS.Medium,
+    borderWidth: 1,
+    borderColor: COLORS.lightgrey2,
+    overflow: 'hidden',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: COLORS.lightgrey2,
+  },
+  // Order header banner
+  cardBanner: {
+    backgroundColor: COLORS.darkBrown,
+    paddingHorizontal: pixelSizeHorizontal(16),
+    paddingVertical: pixelSizeVertical(16),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  orderIdText: {
+    marginTop: pixelSizeVertical(3),
+    marginBottom: pixelSizeVertical(4),
+  },
+  dateText: {},
+  badge: {
     paddingHorizontal: pixelSizeHorizontal(10),
+    paddingVertical: pixelSizeVertical(4),
+    borderRadius: BORDER_RADIUS.Circle,
+  },
+  statusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: pixelSizeHorizontal(16),
+    paddingVertical: pixelSizeVertical(12),
+  },
+  // Dropdown
+  dropdown: {
+    width: widthPixel(160),
+    borderColor: COLORS.lightgrey2,
+    borderWidth: 1,
+    borderRadius: BORDER_RADIUS.Circle,
+    paddingHorizontal: pixelSizeHorizontal(12),
     paddingVertical: pixelSizeVertical(6),
   },
-  icon: {
+  dropItemText: {
+    color: COLORS.darkBrown,
+    fontSize: FONT_SIZE.base,
+  },
+  dropPlaceholder: {
+    fontSize: FONT_SIZE.base,
+    color: COLORS.grey,
+  },
+  dropSelected: {
+    fontSize: FONT_SIZE.base,
+    color: COLORS.greenDark,
+    fontWeight: FONT_WEIGHT.semibold,
+  },
+  dropSearch: {
+    height: heightPixel(40),
+    fontSize: FONT_SIZE.base,
+    color: COLORS.darkBrown,
+  },
+  dropIcon: {
+    width: widthPixel(18),
+    height: heightPixel(18),
+  },
+  // Section header — drives all vertical rhythm
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: pixelSizeVertical(20),
+    marginBottom: pixelSizeVertical(8),
+    paddingHorizontal: pixelSizeHorizontal(2),
+  },
+  sectionLabelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  sectionAccent: {
+    width: widthPixel(3),
+    height: heightPixel(16),
+    backgroundColor: COLORS.greenDark,
+    borderRadius: widthPixel(2),
+    marginRight: pixelSizeHorizontal(8),
+  },
+  // Item row
+  itemRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: pixelSizeHorizontal(16),
+    paddingVertical: pixelSizeVertical(12),
+  },
+  itemImage: {
+    width: widthPixel(56),
+    height: heightPixel(60),
+    borderRadius: BORDER_RADIUS.Small,
+    backgroundColor: COLORS.lightgrey2,
+    marginRight: pixelSizeHorizontal(12),
+  },
+  itemInfo: {
+    flex: 1,
+  },
+  itemCategory: {
+    marginTop: pixelSizeVertical(2),
+  },
+  itemPriceRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: pixelSizeVertical(6),
+  },
+  itemPrices: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    columnGap: pixelSizeHorizontal(6),
+  },
+  strikethrough: {
+    textDecorationLine: 'line-through',
+  },
+  // Customer
+  customerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: pixelSizeHorizontal(16),
+    paddingVertical: pixelSizeVertical(14),
+  },
+  avatar: {
+    width: widthPixel(44),
+    height: widthPixel(44),
+    borderRadius: widthPixel(22),
+    backgroundColor: COLORS.darkBrown,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    marginRight: pixelSizeHorizontal(12),
+  },
+  avatarImage: {
+    width: '100%',
+    height: '100%',
+  },
+  customerInfo: {
+    flex: 1,
+  },
+  customerEmail: {
+    marginTop: pixelSizeVertical(2),
+  },
+  addressRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    paddingHorizontal: pixelSizeHorizontal(16),
+    paddingBottom: pixelSizeVertical(14),
+  },
+  addressIcon: {
+    marginTop: pixelSizeVertical(1),
     marginRight: pixelSizeHorizontal(6),
   },
-  placeholderStyle: {
-    fontSize: FONT_SIZE.base,
-    color: 'black',
+  addressText: {
+    flex: 1,
+    lineHeight: 18,
   },
-  selectedTextStyle: {
-    fontSize: fontPixel(16),
-    color: COLORS.greenDark,
+  // Summary
+  summaryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: pixelSizeVertical(7),
+    paddingHorizontal: pixelSizeHorizontal(16),
   },
-  iconStyle: {
-    width: widthPixel(20),
-    height: heightPixel(20),
-    color: 'black',
+  summaryDivider: {
+    borderTopWidth: 1,
+    borderTopColor: COLORS.lightgrey2,
+    marginTop: pixelSizeVertical(2),
+    paddingTop: pixelSizeVertical(6),
   },
-  inputSearchStyle: {
-    height: heightPixel(40),
-    fontSize: fontPixel(16),
-    color: 'black',
+  earningsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#E8F5F0',
+    paddingVertical: pixelSizeVertical(12),
+    paddingHorizontal: pixelSizeHorizontal(16),
+    marginTop: pixelSizeVertical(4),
   },
 });

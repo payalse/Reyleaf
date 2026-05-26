@@ -11,7 +11,7 @@ interface AppConfig {
 
 const CONFIG_MAP: Record<AppEnvironment, AppConfig> = {
   development: {
-    BASE_URL: 'https://dev-reyleaf-api.flynautstaging.com',
+    BASE_URL: 'http://192.168.1.3:5011',
     APP_NAME: 'ReyLeaf Dev',
     STRIPE_KEY:
       'pk_test_51OcfYUEJs3bbNiuc0gCyyArVknf1IsZQbxXRWFHEFGmbflpPGPIHf2kAOIcdlc6bdmc1aicyV7VPjfe50IJn6VDi00coecLuIo',

@@ -23,7 +23,8 @@ export type RootStackParams = {
   VendorForgetPasswordOtpVerification: {verifyToken: string};
   CompleteYourBusinessProfile: {authToken: string};
   AddYourBusinessAddress: {authToken: string};
-  ApplicationUnderReview: undefined;
+  VendorOnboarding: {authToken: string};
+  ApplicationUnderReview: {vendorStatus?: number; rejectReason?: string};
   MainTab: undefined;
   AppDrawer: undefined;
   //
@@ -91,6 +92,7 @@ export type VendorHomeStackParams = {
   VendorOrderDetail: {orderId: string};
   ChatStack: undefined;
   AppNotification: undefined;
+  StripeOnboarding: undefined;
 };
 export type VendorAllOrdersStackStackParams = {
   AllOrder: undefined;
@@ -99,7 +101,7 @@ export type VendorAllOrdersStackStackParams = {
 
 export type CartStackParams = {
   Cart: undefined;
-  CheckOut: {total: number, subtotal: number, shippingTotal: number, taxTotal: number};
+  CheckOut: undefined;
   AddAddress: undefined;
   EditAddress: undefined;
   EditCard: {

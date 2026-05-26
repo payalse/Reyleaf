@@ -23,11 +23,11 @@ const VendorOtpVerificationScreen = () => {
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(false);
   const [code, setCode] = useState<string>('');
-  const [minutes, setMinutes] = useState(2);
+  const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(59);
 
   const resendOTPStartTimmer = () => {
-    setMinutes(2);
+    setMinutes(0);
     setSeconds(59);
   };
 
@@ -44,13 +44,11 @@ const VendorOtpVerificationScreen = () => {
       const res = (await api_verifyEmail(payload)) as VerifyEmailResponse;
 
       if (res?.status === 200) {
-        navigation.navigate('CompleteYourBusinessProfile', { authToken: params.authToken });
-        ShowAlert({ type: ALERT_TYPE.SUCCESS, textBody: res.message || 'Email verified successfully!' });
+        ShowAlert({ type: ALERT_TYPE.SUCCESS, textBody: 'Email verified! Please sign in.' });
+        navigation.navigate('VendorLogin');
       } else {
-        const message = res?.message || 'Verification failed. Please try again.';
-        ShowAlert({ type: ALERT_TYPE.DANGER, textBody: message });
+        ShowAlert({ type: ALERT_TYPE.DANGER, textBody: res?.message || 'Verification failed. Please try again.' });
       }
-      ShowAlert({ type: ALERT_TYPE.SUCCESS, textBody: res.message });
     } catch (error: any) {
       ShowAlert({ type: ALERT_TYPE.DANGER, textBody: error.message });
     } finally {

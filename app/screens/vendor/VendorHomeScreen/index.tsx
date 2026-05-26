@@ -4,6 +4,7 @@ import MainLayout from '../../../components/layout/MainLayout';
 import MainHeader from '../../../components/header/MainHeader';
 import { MyText } from '../../../components/MyText';
 import { BORDER_RADIUS, COLORS, FONT_SIZE, FONT_WEIGHT } from '../../../styles';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import OrderChart from './components/OrderChart';
 import AllList from './AllList';
 import AcceptedList from './AcceptedList';
@@ -21,6 +22,7 @@ import {
   api_getSellersReviews,
 } from '../../../api/seller';
 import { fontPixel, heightPixel, pixelSizeHorizontal, pixelSizeVertical, widthPixel } from '../../../utils/sizeNormalization';
+import { formatMoney } from '../../../utils/currency';
 
 const VendorHomeScreen = () => {
   const navigaion =
@@ -88,6 +90,24 @@ const VendorHomeScreen = () => {
           <MyText size={FONT_SIZE['3xl']} style={{ width: "78%", lineHeight: fontPixel(40) }} bold={FONT_WEIGHT.bold}>
             Let's manage all of your Orders, {user?.fullname} 🎯
           </MyText>
+
+          {/* Stripe onboarding banner — only shown until setup is complete */}
+          {!user?.stripeOnboardingComplete && (
+            <TouchableOpacity
+              style={styles.stripeBanner}
+              onPress={() => navigaion.navigate('StripeOnboarding')}
+              activeOpacity={0.85}>
+              <View style={{ flex: 1 }}>
+                <MyText bold={FONT_WEIGHT.bold} size={FONT_SIZE.base} color={COLORS.white}>
+                  Set up Stripe Payouts
+                </MyText>
+                <MyText size={FONT_SIZE.sm} color={COLORS.white} style={{ opacity: 0.85, marginTop: pixelSizeVertical(2) }}>
+                  Connect your bank to receive payments
+                </MyText>
+              </View>
+              <AntDesign name="arrowright" size={fontPixel(20)} color={COLORS.white} />
+            </TouchableOpacity>
+          )}
           {/* Charts */}
           <View style={styles.chartContainer}>
             <View style={styles.chartLeftView}>
@@ -145,7 +165,7 @@ const VendorHomeScreen = () => {
                 <View style={{ flexDirection: 'row', gap: 12 }}>
                   <View>
                     <MyText size={FONT_SIZE.base} bold={FONT_WEIGHT.bold}>
-                      ${income?.totalIncome || 0}
+                      {formatMoney(income?.totalIncome || 0)}
                     </MyText>
                     <MyText color={COLORS.grey} size={FONT_SIZE.base} style={{ marginTop: pixelSizeVertical(2) }}>
                       Total Income
@@ -153,7 +173,7 @@ const VendorHomeScreen = () => {
                   </View>
                   <View>
                     <MyText size={FONT_SIZE.base} bold={FONT_WEIGHT.bold}>
-                      ${income?.todayIncome || 0}
+                      {formatMoney(income?.todayIncome || 0)}
                     </MyText>
                     <MyText color={COLORS.grey} size={FONT_SIZE.base} style={{ marginTop: pixelSizeVertical(2) }}>
                       Today
@@ -221,6 +241,16 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     paddingTop: pixelSizeVertical(10),
+  },
+  stripeBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.darkBrown,
+    borderRadius: BORDER_RADIUS['Semi-Large'],
+    paddingHorizontal: pixelSizeHorizontal(16),
+    paddingVertical: pixelSizeVertical(14),
+    marginTop: pixelSizeVertical(14),
+    gap: pixelSizeHorizontal(12),
   },
   chartContainer: {
     // height: hp(35),

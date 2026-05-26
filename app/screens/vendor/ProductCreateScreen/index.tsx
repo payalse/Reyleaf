@@ -29,50 +29,26 @@ import { api_productCreate } from '../../../api/product';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { useHideBottomBar } from '../../../hook/useHideBottomBar';
-
-type TaxEntry = {
-  type: string;
-  rate: string;
-  region: string;
-  zipCode: string;
-};
+import { amountToCents } from '../../../utils/currency';
 
 type FormValues = {
   name: string;
   bio: string;
   price: string;
   discountPrice: string;
-  shippingCost: string;
-  freeShippingAbove: string;
 };
+
 const validationSchema = Yup.object().shape({
   name: Yup.string()
     .trim()
     .min(4, ({ min }) => `Name must be at least ${min} characters`)
-    .required('Required')
     .required('Name is Required!'),
   bio: Yup.string()
     .trim()
     .min(10, ({ min }) => `Bio must be at least ${min} characters`)
     .required('Description is Required!'),
-  price: Yup.string().trim()
-    .required('price is Required!'),
-  discountPrice: Yup.string().trim()
-    .required('Discount Price is Required!'),
-  shippingCost: Yup.string()
-    .trim()
-    .required('Shipping Cost is Required!')
-    .test('min', 'Shipping Cost must be 0 or greater', (value) => {
-      const num = parseFloat(value || '0');
-      return num >= 0;
-    }),
-  freeShippingAbove: Yup.string()
-    .trim()
-    .required('Free Shipping Above is Required!')
-    .test('min', 'Free Shipping Above must be 0 or greater', (value) => {
-      const num = parseFloat(value || '0');
-      return num >= 0;
-    }),
+  price: Yup.string().trim().required('Price is Required!'),
+  discountPrice: Yup.string().trim().required('Discount Price is Required!'),
 });
 
 const ProductCreateScreen = () => {
@@ -82,21 +58,13 @@ const ProductCreateScreen = () => {
   const { token } = useSelector((s: RootState) => s.auth);
   const [loading, setLoading] = useState(false);
 
-  const [selectCategory, setSelectCategory] = useState<null | CategoryType>(
-    null,
-  );
-  const [extraErr, setExtraErr] = useState({
-    category: '',
-    shippingMethod: '',
-    tax: '',
-  });
-
+  const [selectCategory, setSelectCategory] = useState<null | CategoryType>(null);
+  const [extraErr, setExtraErr] = useState({ category: '', shippingMethod: '' });
   const [selectedImages, setSelectedImages] = useState<SelectedImage[]>([]);
   const [shippingMethod, setShippingMethod] = useState<{value: string; label: string}>({
     value: 'standard',
-    label: 'Standard',
+    label: 'Standard Delivery',
   });
-  const [taxEntries, setTaxEntries] = useState<TaxEntry[]>([]);
 
   const pickImages = async () => {
     try {
@@ -107,7 +75,6 @@ const ProductCreateScreen = () => {
         multiple: true,
         mediaType: 'photo',
       });
-      console.log(res);
       // @ts-ignore
       setSelectedImages(prev => [...prev, ...res]);
     } catch (error) {
@@ -119,69 +86,25 @@ const ProductCreateScreen = () => {
     setSelectedImages(prev => prev.filter((_, idx) => idx !== index));
   };
 
-  const addTaxEntry = () => {
-    setTaxEntries([
-      ...taxEntries,
-      { type: 'SalesTax', rate: '', region: '', zipCode: '' },
-    ]);
-  };
-
-  const removeTaxEntry = (index: number) => {
-    setTaxEntries(taxEntries.filter((_, idx) => idx !== index));
-  };
-
-  const updateTaxEntry = (index: number, field: keyof TaxEntry, value: string) => {
-    const updated = [...taxEntries];
-    updated[index] = { ...updated[index], [field]: value };
-    setTaxEntries(updated);
-  };
-
   const onSubmit = async (values: FormValues) => {
     let isValid = true;
-    const newErrors = { category: '', shippingMethod: '', tax: '' };
+    const newErrors = { category: '', shippingMethod: '' };
 
     if (selectCategory === null) {
-      newErrors.category = 'please Select Category';
+      newErrors.category = 'Please select a category';
       isValid = false;
     }
 
-    console.log(values, 'values');
-    // Shipping method defaults to 'standard' if not set
-
-    // Validate tax entries
-    for (let i = 0; i < taxEntries.length; i++) {
-      const tax = taxEntries[i];
-      if (!tax.rate || parseFloat(tax.rate) < 0 || parseFloat(tax.rate) > 1) {
-        newErrors.tax = `Tax rate at entry ${i + 1} must be between 0 and 1`;
-        isValid = false;
-        break;
-      }
-    }
-
     setExtraErr(newErrors);
-
-    if (!isValid) {
-      return;
-    }
+    if (!isValid) return;
 
     const formData = new FormData();
     formData.append('categoryId', selectCategory?._id);
     formData.append('title', values.name);
-    formData.append('price', values.price);
-    formData.append('discountedProce', values.discountPrice);
+    formData.append('price', String(amountToCents(values.price)));
+    formData.append('discountedProce', String(amountToCents(values.discountPrice)));
     formData.append('description', values.bio);
     formData.append('shippingMethod', shippingMethod.value);
-    formData.append('shippingCost', values.shippingCost);
-    formData.append('freeShippingAbove', values.freeShippingAbove);
-
-    if (taxEntries.length > 0) {
-      formData.append('tax', JSON.stringify(taxEntries.map(tax => ({
-        type: tax.type,
-        rate: parseFloat(tax.rate),
-        region: tax.region || undefined,
-        zipCode: tax.zipCode || undefined,
-      }))));
-    }
 
     if (selectedImages.length) {
       for (const i of selectedImages) {
@@ -195,8 +118,7 @@ const ProductCreateScreen = () => {
     }
     try {
       setLoading(true);
-      const res = await api_productCreate(formData, token!);
-      console.log(res);
+      await api_productCreate(formData, token!);
       navigation.goBack();
     } catch (error: any) {
       ShowAlert({ textBody: error.message, type: ALERT_TYPE.DANGER });
@@ -213,8 +135,6 @@ const ProductCreateScreen = () => {
         name: '',
         price: '',
         discountPrice: '',
-        shippingCost: '0',
-        freeShippingAbove: '0',
       }}
       onSubmit={onSubmit}>
       {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
@@ -339,9 +259,7 @@ const ProductCreateScreen = () => {
             <InputWrapper title="Discount Price">
               <MyInput
                 keyboardType="number-pad"
-                hasError={Boolean(
-                  errors.discountPrice && touched.discountPrice,
-                )}
+                hasError={Boolean(errors.discountPrice && touched.discountPrice)}
                 onBlur={handleBlur('discountPrice')}
                 onChangeText={handleChange('discountPrice')}
                 value={values.discountPrice}
@@ -385,151 +303,6 @@ const ProductCreateScreen = () => {
               <InputErrorMsg msg={extraErr?.shippingMethod} />
             )}
 
-            <InputWrapper title="Shipping Cost">
-              <MyInput
-                keyboardType="decimal-pad"
-                hasError={Boolean(errors.shippingCost && touched.shippingCost)}
-                onBlur={handleBlur('shippingCost')}
-                onChangeText={handleChange('shippingCost')}
-                value={values.shippingCost}
-                placeholder="0.00"
-              />
-            </InputWrapper>
-            {errors.shippingCost && touched.shippingCost && (
-              <InputErrorMsg msg={errors.shippingCost} />
-            )}
-
-            <InputWrapper title="Free Shipping Above">
-              <MyInput
-                keyboardType="decimal-pad"
-                hasError={Boolean(
-                  errors.freeShippingAbove && touched.freeShippingAbove,
-                )}
-                onBlur={handleBlur('freeShippingAbove')}
-                onChangeText={handleChange('freeShippingAbove')}
-                value={values.freeShippingAbove}
-                placeholder="0.00"
-              />
-            </InputWrapper>
-            {errors.freeShippingAbove && touched.freeShippingAbove && (
-              <InputErrorMsg msg={errors.freeShippingAbove} />
-            )}
-
-            <View style={{ marginTop: 20 }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginBottom: 10,
-                }}>
-                <MyText size={FONT_SIZE.lg} style={{ fontWeight: 'bold' }}>
-                  Tax Information
-                </MyText>
-                <TouchableOpacity
-                  onPress={addTaxEntry}
-                  style={{
-                    backgroundColor: COLORS.greenDark,
-                    paddingHorizontal: 15,
-                    paddingVertical: 8,
-                    borderRadius: 20,
-                  }}>
-                  <MyText color={COLORS.white} size={FONT_SIZE.sm}>
-                    + Add Tax
-                  </MyText>
-                </TouchableOpacity>
-              </View>
-              {extraErr?.tax && <InputErrorMsg msg={extraErr?.tax} />}
-
-              {taxEntries.map((tax, index) => (
-                <View
-                  key={index}
-                  style={{
-                    backgroundColor: COLORS.white,
-                    padding: 15,
-                    borderRadius: 10,
-                    marginBottom: 15,
-                    borderWidth: 1,
-                    borderColor: COLORS.lightgrey,
-                  }}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      marginBottom: 10,
-                    }}>
-                    <MyText size={FONT_SIZE.lg} style={{ fontWeight: 'bold' }}>
-                      Tax Entry {index + 1}
-                    </MyText>
-                    <TouchableOpacity onPress={() => removeTaxEntry(index)}>
-                      <AntDesign
-                        name="closecircle"
-                        size={FONT_SIZE.xl}
-                        color={COLORS.red}
-                      />
-                    </TouchableOpacity>
-                  </View>
-
-                  <InputWrapper title="Tax Type">
-                    <SelectInput
-                      value={
-                        tax.type === 'SalesTax'
-                          ? 'Sales Tax'
-                          : tax.type === 'GST'
-                          ? 'GST'
-                          : tax.type === 'PST'
-                          ? 'PST'
-                          : tax.type === 'HST'
-                          ? 'HST'
-                          : 'VAT'
-                      }
-                      placeholder="Select tax type"
-                      onPress={() => {
-                        SheetManager.show(SHEETS.TaxTypeSelectSheet, {
-                          // @ts-ignore
-                          payload: {
-                            onSelect: (data: {value: string; label: string}) => {
-                              updateTaxEntry(index, 'type', data.value);
-                            },
-                          },
-                        });
-                      }}
-                    />
-                  </InputWrapper>
-
-                  <InputWrapper title="Tax Rate (0-1)">
-                    <MyInput
-                      keyboardType="decimal-pad"
-                      onChangeText={(value) => updateTaxEntry(index, 'rate', value)}
-                      value={tax.rate}
-                      placeholder="0.00"
-                    />
-                  </InputWrapper>
-
-                  <InputWrapper title="Region (Optional)">
-                    <MyInput
-                      onChangeText={(value) =>
-                        updateTaxEntry(index, 'region', value)
-                      }
-                      value={tax.region}
-                      placeholder="State/Province"
-                    />
-                  </InputWrapper>
-
-                  <InputWrapper title="Zip Code (Optional)">
-                    <MyInput
-                      onChangeText={(value) =>
-                        updateTaxEntry(index, 'zipCode', value)
-                      }
-                      value={tax.zipCode}
-                      placeholder="Zip Code"
-                    />
-                  </InputWrapper>
-                </View>
-              ))}
-            </View>
-
             <PrimaryBtn
               loading={loading}
               onPress={handleSubmit}
@@ -547,4 +320,3 @@ const ProductCreateScreen = () => {
 };
 
 export default ProductCreateScreen;
-

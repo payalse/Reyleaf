@@ -45,18 +45,21 @@ const RenderProducts = () => {
         token!,
         categoryId,
       )) as GetHomeProductResponse;
-      // console.warn(res,"res api_getHomeProducts")
+      // console.log('[HomeScreen] api_getHomeProducts response:', JSON.stringify(res, null, 2));
       if ('bestSeller' in res.data) {
+        // console.log('[HomeScreen] bestSeller:', res.data.bestSeller);
         dispatch(setBestSellingProduct(res.data.bestSeller));
       }
       if ('newAdded' in res.data) {
+        // console.log('[HomeScreen] newAdded:', res.data.newAdded);
         dispatch(setNewlyProduct(res.data.newAdded));
       }
       if ('recentViewed' in res.data) {
+        // console.log('[HomeScreen] recentViewed:', res.data.recentViewed);
         dispatch(setRecentlyViewedProduct(res.data.recentViewed));
       }
     } catch (error) {
-      console.log(error);
+      console.log(error, 'Failed to fetch home products');
     } finally {
       setLoading(false);
     }

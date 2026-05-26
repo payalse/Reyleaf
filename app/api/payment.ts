@@ -3,10 +3,11 @@ import {BASE_URL} from './index';
 export const api_chargePayment = (
   payload: {
     email: string;
-    amount: number;
-    currency: String;
+    currency: string;
     source: string;
     description: string;
+    addressId: string;
+    shippingMethod?: string;
   },
   token: string,
 ) => {
@@ -23,7 +24,7 @@ export const api_chargePayment = (
       .then(res => res.json())
       .then(data => {
         if (data?.Status !== 200) {
-          throw new Error(data.message || 'something went wrong!');
+          throw new Error(data.error || data.message || 'something went wrong!');
         }
         resolve(data);
       })

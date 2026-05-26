@@ -6,11 +6,11 @@ import {COLORS, FONT_WEIGHT} from '../styles';
 import {MyText} from '../components/MyText';
 
 const shippingMethods = [
-  {value: 'standard', label: 'Standard'},
-  {value: 'express', label: 'Express'},
-  {value: 'two_day', label: 'Two Day'},
-  {value: 'next_day', label: 'Next Day'},
-  {value: 'pickup', label: 'Pickup'},
+  {value: 'standard', label: 'Standard Delivery'},
+  {value: 'express', label: 'Express Delivery'},
+  {value: 'two_day', label: '2-Day Delivery'},
+  {value: 'next_day', label: 'Next Day Delivery'},
+  {value: 'pickup', label: 'Store Pickup'},
 ];
 
 const ShippingMethodSelectSheet = (props: any) => {

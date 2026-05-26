@@ -13,6 +13,7 @@ import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../redux/store';
+import {useHideBottomBar} from '../../../hook/useHideBottomBar';
 import {
   CountryType,
   countries,
@@ -51,6 +52,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const EditAddressScreen = () => {
+  useHideBottomBar({});
   const {params} = useRoute<RouteProp<ShippingAddressStackParams>>();
   const navigation = useNavigation();
   console.log(params);

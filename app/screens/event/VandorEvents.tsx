@@ -18,7 +18,7 @@ const VendorEventScreen = () => {
   const [activeTab, setActiveTab] = useState(Tabs[0]);
   const isFocused = useIsFocused();
   return (
-    <MainLayout>
+    <MainLayout bgColor={COLORS.white}>
       <View style={{flex: 1, paddingBottom: 200}}>
         <RenderCalander />
         <View

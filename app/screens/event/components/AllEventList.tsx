@@ -22,7 +22,7 @@ const AllEventList = ({isFocused}: {isFocused: boolean}) => {
     try {
       setLoading(true);
       const res: any = await api_getEvents(token!);
-      console.log(res);
+      // console.log(res);
       setEvents(res?.data);
     } catch (error) {
       console.log(error);
@@ -48,6 +48,7 @@ const AllEventList = ({isFocused}: {isFocused: boolean}) => {
   }, [isFocused]);
 
   useEffect(() => {
+    if (!activeEventDate) return;
     getEventByDate(activeEventDate);
   }, [activeEventDate]);
 

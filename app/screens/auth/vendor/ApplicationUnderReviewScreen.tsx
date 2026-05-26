@@ -1,4 +1,4 @@
-import {ScrollView, Text, View} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import React from 'react';
 
 import UnderReviewSvg from '../../../../assets/svg/illustrations/UnderReview.svg';
@@ -6,16 +6,19 @@ import LayoutBG from '../../../components/layout/LayoutBG';
 import {MyText} from '../../../components/MyText';
 import PrimaryBtn from '../../../components/buttons/PrimaryBtn';
 import {COLORS, FONT_SIZE, FONT_WEIGHT} from '../../../styles';
-import {setIsAuthenticated} from '../../../redux/features/auth/authSlice';
-import {
-  changeAppMode,
-  setFirstLaunched,
-} from '../../../redux/features/app/appSlice';
-import {useDispatch} from 'react-redux';
-import {AppDispatch} from '../../../redux/store';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParams} from '../../../naviagtion/types';
 
 const ApplicationUnderReviewScreen = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParams>>();
+  const params =
+    useRoute<RouteProp<RootStackParams, 'ApplicationUnderReview'>>().params;
+
+  const isRejected = params?.vendorStatus === 3;
+  const rejectReason = params?.rejectReason;
+
   return (
     <LayoutBG type="bg-tr-bl">
       <ScrollView
@@ -24,38 +27,39 @@ const ApplicationUnderReviewScreen = () => {
         }}>
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <UnderReviewSvg style={{marginTop: 100, marginBottom: 50}} />
+
           <MyText
             color={COLORS.black}
             size={FONT_SIZE['3xl']}
             center
             bold={FONT_WEIGHT.bold}>
-            Your Application is
+            {isRejected ? 'Application Rejected' : 'Your Application is'}
           </MyText>
-          <MyText
-            color={COLORS.black}
-            size={FONT_SIZE['3xl']}
-            center
-            bold={FONT_WEIGHT.bold}>
-            Under Review
-          </MyText>
+          {!isRejected && (
+            <MyText
+              color={COLORS.black}
+              size={FONT_SIZE['3xl']}
+              center
+              bold={FONT_WEIGHT.bold}>
+              Under Review
+            </MyText>
+          )}
+
           <MyText
             style={{marginVertical: 20, lineHeight: 25}}
             center
             color={COLORS.grey}>
-            Thank you for completing your profile. We are currently reviewing
-            your profile and will notify you once a decision is made. We
-            appreciate your patience.
+            {isRejected
+              ? rejectReason ||
+                'Your application was not approved at this time. Please contact support for more information.'
+              : 'Thank you for completing your profile. We are currently reviewing your account and will notify you once a decision is made. We appreciate your patience.'}
           </MyText>
         </View>
       </ScrollView>
       <View style={{paddingHorizontal: 20, paddingBottom: 40}}>
         <PrimaryBtn
-          text="Connect with Us"
-          onPress={() => {
-            dispatch(changeAppMode('VENDOR'));
-            dispatch(setFirstLaunched(false));
-            dispatch(setIsAuthenticated(true));
-          }}
+          text="Go to Login"
+          onPress={() => navigation.navigate('VendorLogin')}
         />
       </View>
     </LayoutBG>

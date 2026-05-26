@@ -12,8 +12,10 @@ import { CardField, useStripe } from '@stripe/stripe-react-native';
 import { BORDER_RADIUS, COLORS, FONT_SIZE, FONT_WEIGHT } from '../../../styles';
 import { MyText } from '../../../components/MyText';
 import { heightPixel, pixelSizeHorizontal, pixelSizeVertical } from '../../../utils/sizeNormalization';
+import {useHideBottomBar} from '../../../hook/useHideBottomBar';
 
 const AddCardScreen = () => {
+  useHideBottomBar({});
   const { user: auth, token: authToken } = useSelector((s: RootState) => s.auth);
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);

@@ -79,7 +79,7 @@ export type OrderType = {
     quantity: 5;
     _id: string;
   }[];
-  totalAmount: string;
+  totalAmount: number;
   status: string;
   createdAt: string;
 };
@@ -112,7 +112,7 @@ const AllList = ({isFocused}: {isFocused: any}) => {
   return (
     <View style={{gap: 20, marginVertical: 20, paddingBottom: 150}}>
       {allOrders.map((item, index) => {
-        console.log(item['status'], '0000');
+        // console.log(item['status'], '0000');
         return (
           <OrderStatus
             isActionNeeded={item['status'] === 'pending'}

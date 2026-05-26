@@ -12,12 +12,14 @@ import {ALERT_TYPE} from 'react-native-alert-notification';
 import {api_deleteCard} from '../../../api/payment';
 import {RootState} from '../../../redux/store';
 import {useSelector} from 'react-redux';
+import {useHideBottomBar} from '../../../hook/useHideBottomBar';
 
 const formatMonthWithZero = (month: number) => {
   return month < 10 ? `0${month}` : month;
 };
 
 const EditCardScreen = () => {
+  useHideBottomBar({});
   const navigation = useNavigation();
   const {params}: any = useRoute<RouteProp<CartStackParams>>();
   const {token: authToken, user} = useSelector((s: RootState) => s.auth);

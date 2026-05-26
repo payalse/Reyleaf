@@ -1,25 +1,41 @@
 import {BASE_URL} from './index';
 
+export const api_checkoutPreview = (
+  token: string,
+  addressId: string,
+  shippingMethod?: string,
+) => {
+  const uri = `${BASE_URL}/api/v1/product/checkout/preview`;
+  const body: any = {addressId};
+  if (shippingMethod) body.shippingMethod = shippingMethod;
+  return new Promise((resolve, reject) => {
+    fetch(uri, {
+      method: 'POST',
+      headers: {
+        Authorization: token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data?.status !== 200) {
+          throw new Error(data.message || 'something went wrong!');
+        }
+        resolve(data);
+      })
+      .catch(err => reject(err));
+  });
+};
+
 export const api_orderPlace = (
   token: string,
   addressId: string,
-  orderData?: {
-    subtotal: number;
-    shippingCost: number;
-    taxAmount: number;
-    totalAmount: number;
-  },
+  shippingMethod?: string,
 ) => {
-  let uri = `${BASE_URL}/api/v1/product/orderPlace`;
+  const uri = `${BASE_URL}/api/v1/product/orderPlace`;
   const body: any = {addressId};
-  
-  if (orderData) {
-    body.subtotal = orderData.subtotal;
-    body.shippingCost = orderData.shippingCost;
-    body.taxAmount = orderData.taxAmount;
-    body.totalAmount = orderData.totalAmount;
-  }
-  
+  if (shippingMethod) body.shippingMethod = shippingMethod;
   return new Promise((resolve, reject) => {
     fetch(uri, {
       method: 'POST',

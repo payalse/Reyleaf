@@ -17,6 +17,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import FullScreenLoader from '../../../components/FullScreenLoader';
 import { pixelSizeHorizontal, pixelSizeVertical } from '../../../utils/sizeNormalization';
+import { formatMoney } from '../../../utils/currency';
 
 export const OptionBox = ({
   leftIcon,
@@ -256,7 +257,7 @@ const PaymentAndBillingScreen = () => {
                 </MyText>
               </View>
               <MyText color={COLORS.greenDark} bold={FONT_WEIGHT.bold}>
-                ${item.totalAmount}
+                {formatMoney(item.totalAmount || 0)}
               </MyText>
             </View>
           );

@@ -15,11 +15,8 @@ import { RootStackParams } from '../../../naviagtion/types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { ALERT_TYPE } from 'react-native-alert-notification';
-import { updateUser } from '../../../redux/features/auth/authSlice';
 import { ShowAlert } from '../../../utils/alert';
 import { api_addUpdateAddress } from '../../../api/auth';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../../redux/store';
 import { CountryType } from '../../../utils/countryTable';
 import InputErrorMsg from '../../../components/inputs/InputErrorMsg';
 import { SheetManager } from 'react-native-actions-sheet';
@@ -62,7 +59,6 @@ const AddYourBusinessAddressScreen = () => {
     useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const params =
     useRoute<RouteProp<RootStackParams, 'AddYourBusinessAddress'>>().params;
-  const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState(false);
   const [country, setCoutry] = useState<null | CountryType>(null);
   const [extraErr, setExtraErr] = useState({
@@ -86,12 +82,10 @@ const AddYourBusinessAddressScreen = () => {
     };
     try {
       setLoading(true);
-      const res = (await api_addUpdateAddress(
-        payload,
-        params.authToken,
-      )) as any;
-      dispatch(updateUser(res));
-      navigation.navigate('AccountCreatedSuccess');
+      await api_addUpdateAddress(payload, params.authToken);
+      navigation.navigate('VendorOnboarding', {
+        authToken: params.authToken,
+      });
     } catch (error: any) {
       ShowAlert({ textBody: error.message, type: ALERT_TYPE.DANGER });
     } finally {

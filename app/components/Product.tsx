@@ -17,6 +17,7 @@ import { api_addProductToFavourite } from '../api/product';
 import { Rating } from 'react-native-ratings';
 import { heightPixel, pixelSizeHorizontal, pixelSizeVertical, widthPixel } from '../utils/sizeNormalization';
 import FastImage from 'react-native-fast-image';
+import { formatMoney } from '../utils/currency';
 
 type Props = {
   id: string;
@@ -192,14 +193,14 @@ const Product = ({
             return (
               <>
                 <MyText size={FONT_SIZE.xl} bold={FONT_WEIGHT.semibold}>
-                  ${effectivePrice.toFixed(2)}
+                  {formatMoney(effectivePrice)}
                 </MyText>
                 {hasDiscount && (
                   <MyText
                     size={FONT_SIZE.base}
                     color={COLORS.grey}
                     style={{ textDecorationLine: 'line-through' }}>
-                    ${originalPrice.toFixed(2)}
+                    {formatMoney(originalPrice)}
                   </MyText>
                 )}
               </>

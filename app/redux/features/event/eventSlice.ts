@@ -1,7 +1,7 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
-  activeEventDate: new Date().toISOString().slice(0, 10),
+  activeEventDate: '',
 };
 
 export const eventSlice = createSlice({
